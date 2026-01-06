@@ -10,6 +10,7 @@ export const apiFetch = async (endpoint: string, options: any = {}) => {
     const headers = {
         ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        'ngrok-skip-browser-warning': 'true', // Bypass ngrok warning page
         ...options.headers,
     };
 

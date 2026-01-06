@@ -9,6 +9,7 @@ export class WhatsAppController {
 
     @Get('status')
     async getStatus(@Request() req) {
+        console.log(`[WhatsApp] Status check request received for user: ${req.user.id}`);
         return this.whatsappService.getStatus(req.user.id);
     }
 
