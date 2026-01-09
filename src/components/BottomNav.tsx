@@ -5,10 +5,11 @@ import {
     Users,
     Plus,
     Search,
-    FileText
+    Stethoscope
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { AddPatientDialog } from "@/components/AddPatientDialog";
 
 interface BottomNavProps {
@@ -25,24 +26,24 @@ export function BottomNav({ activeTab, setActiveTab, onSearchClick }: BottomNavP
         { id: 'contacts', label: 'المرضى', icon: Users },
         { id: 'add-patient', label: 'إضافة', icon: Plus, isSpecial: true },
         { id: 'search', label: 'بحث', icon: Search, isAction: true, action: onSearchClick },
-        { id: 'patient-inquiry', label: 'السجلات', icon: FileText },
+        { id: 'clinic-settings', label: 'حسابي', icon: Stethoscope },
     ];
 
     return (
         <>
-            <div className="md:hidden fixed bottom-4 left-4 right-4 h-16 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl z-50 shadow-lg flex justify-around items-center px-2">
+            <Card className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/20 dark:bg-black/40 backdrop-blur-2xl border-t border-white/20 rounded-none z-50 shadow-[0_-8px_32px_rgba(0,0,0,0.1)] flex justify-around items-center px-2">
                 {navItems.map((item) => {
                     const isActive = activeTab === item.id;
 
                     if (item.isSpecial) {
                         return (
-                            <div key={item.id} className="relative -top-6">
+                            <div key={item.id} className="flex items-center justify-center">
                                 <Button
                                     size="icon"
-                                    className="h-14 w-14 rounded-full bg-gradient-to-tr from-blue-600 to-blue-400 shadow-[0_8px_30px_rgb(59,130,246,0.5)] border-4 border-background/50 backdrop-blur-sm hover:scale-105 transition-all duration-300 flex items-center justify-center group"
+                                    className="h-12 w-12 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-400 shadow-lg border border-white/20 hover:scale-105 transition-all duration-300 flex items-center justify-center group"
                                     onClick={() => setIsAddPatientOpen(true)}
                                 >
-                                    <Plus className="h-7 w-7 text-white group-hover:rotate-90 transition-transform duration-300" />
+                                    <Plus className="h-6 w-6 text-white group-hover:rotate-90 transition-transform duration-300" />
                                 </Button>
                             </div>
                         );
@@ -72,7 +73,7 @@ export function BottomNav({ activeTab, setActiveTab, onSearchClick }: BottomNavP
                         </button>
                     );
                 })}
-            </div>
+            </Card>
 
             <AddPatientDialog
                 isOpen={isAddPatientOpen}

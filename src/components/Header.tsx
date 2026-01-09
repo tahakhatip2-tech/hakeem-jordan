@@ -18,6 +18,7 @@ import {
     CheckCircle2,
     Menu as MenuIcon,
     Sparkles,
+    Languages,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -111,17 +112,16 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
             <div className="w-full flex h-16 items-center justify-between px-4 sm:px-6 mx-auto max-w-7xl">
 
                 {/* Mobile Layout: Unified Profile & Menu (Right) + Clinic Branding (Left) */}
-                <div className="flex lg:hidden items-center justify-between w-full gap-2 min-w-0">
-                    {/* Right Side: Merged Menu & Profile Dropdown */}
-                    <div className="flex items-center">
+                <div className="flex lg:hidden items-center justify-between w-full gap-2 min-w-0" dir="rtl">
+                    {/* Right Side: Quick Actions & Profile Dropdown Row */}
+                    <div className="flex items-center gap-1.5 sm:gap-3">
+                        {/* Profile & Menu Dropdown */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button className="relative group outline-none active:scale-95 transition-all duration-300">
-                                    {/* Profile Image with Blur Background */}
                                     <div className="relative">
                                         <div className="absolute -inset-1.5 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-full blur-md opacity-20 group-hover:opacity-40 transition duration-500" />
-
-                                        <div className="relative h-11 w-11 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white overflow-hidden shadow-xl">
+                                        <div className="relative h-11 w-11 rounded-full bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-white overflow-hidden shadow-xl border-2 border-white/50 dark:border-blue-900/50">
                                             {user?.avatar ?
                                                 <img
                                                     src={user.avatar.startsWith('http') ? user.avatar : `${BASE_URL}${user.avatar}`}
@@ -130,16 +130,12 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                                 <User className="h-5 w-5" />
                                             }
                                         </div>
-
-                                        {/* Integrated Hamburger Badge (Facebook Style) */}
+                                        {/* Hamburger/Menu Badge */}
                                         <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-white dark:bg-blue-950 rounded-full flex flex-col items-center justify-center gap-0.5 border-2 border-blue-50 dark:border-blue-950 shadow-lg group-hover:scale-110 transition-transform">
                                             <div className="w-2.5 h-[1.5px] bg-blue-600 dark:bg-blue-400 rounded-full"></div>
-                                            <div className="w-1.5 h-[1.5px] bg-blue-600 dark:bg-blue-400 rounded-full self-center"></div>
+                                            <div className="w-1.5 h-[1.5px] bg-blue-600 dark:bg-blue-400 rounded-full"></div>
                                             <div className="w-2.5 h-[1.5px] bg-blue-600 dark:bg-blue-400 rounded-full"></div>
                                         </div>
-
-                                        {/* Performance Dot (Green) */}
-                                        <div className="absolute top-0.5 right-0.5 h-2.5 w-2.5 bg-green-500 border-2 border-white dark:border-blue-900 rounded-full animate-pulse shadow-sm" />
                                     </div>
                                 </button>
                             </DropdownMenuTrigger>
@@ -160,7 +156,7 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                     </div>
                                 </div>
 
-                                {/* Counters Section (New) */}
+                                {/* Counters Section */}
                                 <div className="grid grid-cols-3 gap-2 mb-4">
                                     <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-2.5 border border-white/10 text-center flex flex-col items-center justify-center gap-0.5">
                                         <Users className="h-3.5 w-3.5 text-blue-200" />
@@ -179,102 +175,104 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                     </div>
                                 </div>
 
-                                {/* Navigation Section (Mobile Only) */}
-                                <div className="space-y-1 mb-3">
-                                    <div className="flex items-center justify-between px-3 pb-2">
-                                        <DropdownMenuLabel className="p-0 text-[10px] uppercase font-black tracking-widest text-blue-600 dark:text-blue-400/60 opacity-60">
-                                            التنقل السريع
-                                        </DropdownMenuLabel>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {navItems.map((item) => (
-                                            <DropdownMenuItem
-                                                key={item.id}
-                                                onSelect={() => onTabChange && onTabChange(item.id)}
-                                                className={cn(
-                                                    "flex flex-col items-center justify-center p-3 rounded-2xl border transition-all cursor-pointer group/item text-center gap-1.5",
-                                                    activeTab === item.id
-                                                        ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/25"
-                                                        : "bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800 text-blue-900 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-800/30"
-                                                )}
-                                            >
-                                                <item.icon className={cn(
-                                                    "h-5 w-5 transition-transform group-hover/item:scale-110",
-                                                    activeTab === item.id ? "text-white" : "text-blue-600 dark:text-blue-400"
-                                                )} />
-                                                <span className="text-[10px] font-black">{item.label}</span>
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </div>
+                                {/* Navigation Items */}
+                                <div className="grid grid-cols-2 gap-2 mb-3">
+                                    {navItems.map((item) => (
+                                        <DropdownMenuItem
+                                            key={item.id}
+                                            onSelect={() => onTabChange && onTabChange(item.id)}
+                                            className={cn(
+                                                "flex flex-col items-center justify-center p-3 rounded-2xl border transition-all cursor-pointer group/item text-center gap-1.5",
+                                                activeTab === item.id
+                                                    ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/25"
+                                                    : "bg-blue-50/50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800 text-blue-900 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-800/30 font-black"
+                                            )}
+                                        >
+                                            <item.icon className="h-5 w-5" />
+                                            <span className="text-[10px]">{item.label}</span>
+                                        </DropdownMenuItem>
+                                    ))}
                                 </div>
 
                                 <DropdownMenuSeparator className="bg-blue-100/50 dark:bg-blue-900/50 my-2" />
 
-                                {/* Management Actions (Card Style) */}
-                                <div className="space-y-1 mb-2">
-                                    <div className="flex items-center justify-between px-3 pb-1.5">
-                                        <DropdownMenuLabel className="p-0 text-[10px] uppercase font-black tracking-widest text-blue-600 dark:text-blue-400/60 opacity-60">
-                                            الإدارة والإعدادات
-                                        </DropdownMenuLabel>
-                                    </div>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <DropdownMenuItem
-                                            onSelect={() => onNavigate ? onNavigate('/profile') : navigate('/profile')}
-                                            className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-all cursor-pointer group/item text-center gap-1.5 focus:bg-blue-100 dark:focus:bg-blue-800/40"
-                                        >
-                                            <User className="h-5 w-5 text-blue-600 dark:text-blue-400 group-hover/item:scale-110 transition-transform" />
-                                            <span className="text-[9px] font-black whitespace-nowrap">حسابي</span>
-                                        </DropdownMenuItem>
-
-                                        <DropdownMenuItem
-                                            onSelect={() => onTabChange && onTabChange('clinic-settings')}
-                                            className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-800/30 transition-all cursor-pointer group/item text-center gap-1.5 focus:bg-blue-100 dark:focus:bg-blue-800/40"
-                                        >
-                                            <Settings className="h-5 w-5 text-blue-600 dark:text-blue-400 group-hover/item:scale-110 transition-transform" />
-                                            <span className="text-[9px] font-black whitespace-nowrap">الإعدادات</span>
-                                        </DropdownMenuItem>
-
-                                        <DropdownMenuItem
-                                            onSelect={() => signOut()}
-                                            className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 text-red-900 dark:text-red-100 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all cursor-pointer group/item text-center gap-1.5 focus:bg-red-100 dark:focus:bg-red-900/40"
-                                        >
-                                            <LogOut className="h-5 w-5 text-red-600 dark:text-red-400 group-hover/item:scale-110 transition-transform" />
-                                            <span className="text-[9px] font-black whitespace-nowrap">خروج</span>
-                                        </DropdownMenuItem>
-                                    </div>
-                                </div>
-
-                                <div className="px-1 py-1">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="w-full h-10 gap-3 rounded-2xl text-blue-600/60 dark:text-blue-400/60 font-black text-[11px] hover:bg-blue-50/50 border border-transparent hover:border-blue-100/50 transition-all"
-                                        onClick={toggleTheme}
+                                {/* Management Quick Actions */}
+                                <div className="grid grid-cols-3 gap-2 mb-2">
+                                    <DropdownMenuItem
+                                        onSelect={() => onNavigate ? onNavigate('/profile') : navigate('/profile')}
+                                        className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100"
                                     >
-                                        <div className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30">
-                                            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                                        </div>
-                                        {theme === 'dark' ? 'الوضع النهاري' : 'الوضع الليلي'}
-                                    </Button>
+                                        <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                        <span className="text-[9px] font-black">حسابي</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() => onTabChange && onTabChange('clinic-settings')}
+                                        className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100"
+                                    >
+                                        <Settings className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                        <span className="text-[9px] font-black">الإعدادات</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() => signOut()}
+                                        className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 text-red-900 dark:text-red-100 hover:bg-red-100"
+                                    >
+                                        <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
+                                        <span className="text-[9px] font-black">خروج</span>
+                                    </DropdownMenuItem>
                                 </div>
+
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="w-full h-10 gap-3 rounded-2xl text-blue-600/60 font-black text-[11px] hover:bg-blue-50/50"
+                                    onClick={toggleTheme}
+                                >
+                                    <div className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+                                        {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                                    </div>
+                                    {theme === 'dark' ? 'الوضع النهاري' : 'الوضع الليلي'}
+                                </Button>
                             </DropdownMenuContent>
                         </DropdownMenu>
+
+                        {/* Static Notification Bell */}
+                        <div className="relative">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-11 w-11 rounded-full bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 shadow-sm active:scale-90"
+                            >
+                                <Bell className="h-5 w-5" />
+                                <span className="absolute -top-1 -right-1 h-5 w-5 bg-blue-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-blue-950 shadow-md animate-bounce">
+                                    3
+                                </span>
+                            </Button>
+                        </div>
+
+                        {/* Static Language Toggle */}
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-11 w-11 rounded-full bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 shadow-sm active:scale-90"
+                        >
+                            <Languages className="h-5 w-5" />
+                        </Button>
                     </div>
 
-                    {/* Left Side: Dynamic Clinic Branding */}
+                    {/* Left Side: Clinic Branding Section */}
                     <div className="flex items-center gap-2 min-w-0 flex-1 justify-end">
-                        <div className="flex flex-col items-end leading-none translate-y-0.5 min-w-0">
+                        <div className="flex flex-col items-end leading-none min-w-0">
                             <h1 className="text-xs font-black tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent truncate w-full text-right">
                                 {clinicName}
                             </h1>
                             <p className="text-[8px] text-blue-600 dark:text-blue-400 font-bold opacity-70 truncate w-full text-right">{clinicDesc}</p>
                         </div>
-                        <div className="h-8 w-8 relative flex-shrink-0">
+                        <div className="h-9 w-9 relative flex-shrink-0">
                             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full blur opacity-20"></div>
                             <img
                                 src={clinicLogo}
                                 alt="Logo"
-                                className="relative h-full w-full object-contain drop-shadow-lg"
+                                className="relative h-full w-full object-contain"
                             />
                         </div>
                     </div>
@@ -511,8 +509,8 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                         </div>
                     </div>
                 </div>
-            </div>
-        </header>
+            </div >
+        </header >
     );
 };
 

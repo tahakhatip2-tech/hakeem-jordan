@@ -49,7 +49,7 @@ export const PatientCard = ({
 
     return (
         <Card className={cn(
-            "p-6 transition-all duration-300 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-[2rem] shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 relative overflow-hidden group flex flex-col",
+            "p-6 transition-all duration-300 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.25rem] md:rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 relative overflow-hidden group flex flex-col",
             status === 'active' && "ring-4 ring-blue-500/10 border-blue-500/50"
         )}>
             {/* Header */}

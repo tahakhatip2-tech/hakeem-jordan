@@ -15,8 +15,7 @@ export function AutoReplyToggle({ isActive = true }: AutoReplyToggleProps) {
 
     return (
         <Card className={cn(
-            "p-6 border-border/50 backdrop-blur-sm transition-all duration-500",
-            "bg-primary/5 shadow-[0_0_20px_rgba(29,78,216,0.1)]"
+            "p-5 md:p-6 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.25rem] md:rounded-[2rem] shadow-xl hover:shadow-primary/10 transition-all duration-500 hover:border-primary/30"
         )}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">

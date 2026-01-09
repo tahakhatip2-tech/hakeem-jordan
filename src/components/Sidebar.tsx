@@ -71,8 +71,8 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     ];
 
     return (
-        <div className="w-full h-full bg-gradient-to-b from-card/80 to-card/50 backdrop-blur-xl border-l border-border/50 flex flex-col overflow-hidden">
-            <div className="p-6 border-b border-border/50 flex-shrink-0">
+        <div className="w-full h-full bg-white/10 dark:bg-black/20 backdrop-blur-[40px] border-l border-white/20 dark:border-white/10 flex flex-col overflow-hidden">
+            <div className="p-6 border-b border-white/10 flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <img
                         src={branding.logo}

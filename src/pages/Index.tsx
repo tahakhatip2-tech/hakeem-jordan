@@ -204,26 +204,26 @@ const Index = () => {
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                <Card className="p-6 border border-border/50 bg-card/40 backdrop-blur-sm hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group" onClick={() => setActiveTab('whatsapp-bot')}>
+                <Card className="p-5 md:p-6 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.25rem] md:rounded-[2rem] shadow-xl hover:shadow-primary/10 hover:border-primary/30 transition-all cursor-pointer group" onClick={() => setActiveTab('whatsapp-bot')}>
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-2xl border-2 border-primary/10 bg-primary/5 text-primary/70 transition-all duration-300 group-hover:scale-110 group-hover:border-primary/30 group-hover:text-primary">
-                      <MessageCircle className="h-7 w-7" />
+                    <div className="p-3.5 rounded-2xl border border-primary/20 bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                      <MessageCircle className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold mb-1 text-foreground">عرض المحادثات</h3>
-                      <p className="text-sm text-muted-foreground/80 font-medium">تحدث مع المرضى عبر واتساب</p>
+                      <h3 className="text-base md:text-lg font-black mb-0.5 text-foreground leading-none">عرض المحادثات</h3>
+                      <p className="text-[10px] md:text-sm text-muted-foreground/80 font-black">تواصل مباشر مع المرضى</p>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="p-6 border border-border/50 bg-card/40 backdrop-blur-sm hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group" onClick={() => setActiveTab('appointments')}>
+                <Card className="p-5 md:p-6 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.25rem] md:rounded-[2rem] shadow-xl hover:shadow-primary/10 hover:border-primary/30 transition-all cursor-pointer group" onClick={() => setActiveTab('appointments')}>
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-2xl border-2 border-primary/10 bg-primary/5 text-primary/70 transition-all duration-300 group-hover:scale-110 group-hover:border-primary/30 group-hover:text-primary">
-                      <Calendar className="h-7 w-7" />
+                    <div className="p-3.5 rounded-2xl border border-primary/20 bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                      <Calendar className="h-6 w-6" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold mb-1 text-foreground">التقويم الكامل</h3>
-                      <p className="text-sm text-muted-foreground/80 font-medium">عرض جميع المواعيد</p>
+                      <h3 className="text-base md:text-lg font-black mb-0.5 text-foreground leading-none">التقويم الكامل</h3>
+                      <p className="text-[10px] md:text-sm text-muted-foreground/80 font-black">إدارة جدول المواعيد</p>
                     </div>
                   </div>
                 </Card>

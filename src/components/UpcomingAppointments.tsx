@@ -20,7 +20,7 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
     const displayAppointments = appointments;
 
     return (
-        <Card className="p-5 md:p-8 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl">
+        <Card className="p-5 md:p-8 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.25rem] md:rounded-[2.5rem] shadow-xl">
             <div className="flex items-center justify-between mb-6 md:mb-8">
                 <div className="flex items-center gap-3 md:gap-4">
                     <div className="p-2.5 md:p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-lg shadow-blue-500/20">
@@ -46,7 +46,7 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
                 {displayAppointments.map((appointment) => (
                     <div
                         key={appointment.id}
-                        className="group flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-white/50 dark:bg-black/20 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all duration-300 border border-blue-100 dark:border-blue-900/50 hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/10 cursor-pointer relative overflow-hidden"
+                        className="group flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-white/30 dark:bg-white/5 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-300 border border-white/40 dark:border-white/5 hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/10 cursor-pointer relative overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-1.5 h-full bg-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
 
