@@ -16,6 +16,7 @@ export const apiFetch = async (endpoint: string, options: any = {}) => {
         ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         'ngrok-skip-browser-warning': 'true', // Bypass ngrok warning page
+        'Bypass-Tunnel-Reminder': 'true', // Bypass localtunnel warning page
         ...options.headers,
     };
 
