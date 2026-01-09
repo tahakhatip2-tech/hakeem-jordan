@@ -32,7 +32,7 @@ const Profile = () => {
     const fetchProfile = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${BASE_URL}/api/auth/profile`, {
+            const res = await fetch(`${BASE_URL}/auth/profile`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.ok) {
@@ -56,7 +56,7 @@ const Profile = () => {
         setSaving(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${BASE_URL}/api/auth/profile`, {
+            const res = await fetch(`${BASE_URL}/auth/profile`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const Profile = () => {
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${BASE_URL}/api/auth/profile/avatar`, {
+            const res = await fetch(`${BASE_URL}/auth/profile/avatar`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
                 body: formData,

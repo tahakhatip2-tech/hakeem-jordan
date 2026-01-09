@@ -19,7 +19,7 @@ export default function TelegramBot() {
     const checkStatus = async () => {
         try {
             const authToken = localStorage.getItem('token');
-            const res = await fetch('http://127.0.0.1:3001/api/telegram/status', {
+            const res = await fetch(`${BASE_URL}/telegram/status`, {
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
             const data = await res.json();
@@ -32,7 +32,7 @@ export default function TelegramBot() {
     const fetchSettings = async () => {
         try {
             const authToken = localStorage.getItem('token');
-            const res = await fetch('http://127.0.0.1:3001/api/whatsapp/settings', { // Reusing settings endpoint
+            const res = await fetch(`${BASE_URL}/whatsapp/settings`, { // Reusing settings endpoint
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
             const data = await res.json();
@@ -53,7 +53,7 @@ export default function TelegramBot() {
         setLoading(true);
         try {
             const authToken = localStorage.getItem('token');
-            const res = await fetch('http://127.0.0.1:3001/api/telegram/start', {
+            const res = await fetch(`${BASE_URL}/telegram/start`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export default function TelegramBot() {
         setLoading(true);
         try {
             const authToken = localStorage.getItem('token');
-            const res = await fetch('http://127.0.0.1:3001/api/telegram/stop', {
+            const res = await fetch(`${BASE_URL}/telegram/stop`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });

@@ -25,7 +25,7 @@ export default function CRMBoard({ onOpenChat }: { onOpenChat?: (phone: string, 
     const fetchContacts = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${BASE_URL}/api/contacts`, {
+            const res = await fetch(`${BASE_URL}/contacts`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -43,7 +43,7 @@ export default function CRMBoard({ onOpenChat }: { onOpenChat?: (phone: string, 
 
         try {
             const token = localStorage.getItem('token');
-            await fetch(`${BASE_URL}/api/contacts/${id}`, {
+            await fetch(`${BASE_URL}/contacts/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -63,7 +63,7 @@ export default function CRMBoard({ onOpenChat }: { onOpenChat?: (phone: string, 
 
         try {
             const token = localStorage.getItem('token');
-            await fetch(`${BASE_URL}/api/contacts/${contactId}/status`, {
+            await fetch(`${BASE_URL}/contacts/${contactId}/status`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

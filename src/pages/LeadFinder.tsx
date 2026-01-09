@@ -174,7 +174,7 @@ export default function LeadFinder() {
 
                                     toastWithSound.success("جاري تحليل النص...");
                                     try {
-                                        const res = await fetch('http://127.0.0.1:3001/api/leads/parse', {
+                                        const res = await fetch(`${BASE_URL}/leads/parse`, {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json',
