@@ -36,7 +36,7 @@ const Extract = () => {
     tiktok: 'bg-foreground',
     youtube: 'bg-red-600',
     telegram: 'bg-sky-500',
-    whatsapp: 'bg-green-600',
+    whatsapp: 'bg-primary',
   };
 
   return (
@@ -60,7 +60,7 @@ const Extract = () => {
           {/* Main Extractor */}
           <div className="lg:col-span-2 space-y-6">
             <DataExtractor />
-            
+
             {/* Contacts List */}
             <Card className="border-border/50 bg-card/50 backdrop-blur">
               <CardHeader className="flex flex-row items-center justify-between">
@@ -94,8 +94,8 @@ const Extract = () => {
                 ) : (
                   <div className="space-y-3 max-h-[600px] overflow-y-auto">
                     {contacts.map((contact) => (
-                      <div 
-                        key={contact.id} 
+                      <div
+                        key={contact.id}
                         className="p-4 rounded-lg border border-border bg-background/50 flex items-center justify-between hover:border-primary/30 transition-colors"
                       >
                         <div className="flex items-center gap-3">

@@ -48,7 +48,7 @@ export default function BroadcastManager() {
     const CRM_TAGS = [
         { id: 'status_new', name: 'عملاء جدد', color: '#3b82f6', isStatus: true, statusId: 'new' },
         { id: 'status_interested', name: 'مهتمون', color: '#eab308', isStatus: true, statusId: 'interested' },
-        { id: 'status_customer', name: 'تم البيع', color: '#22c55e', isStatus: true, statusId: 'customer' },
+        { id: 'status_customer', name: 'تم البيع', color: '#1d4ed8', isStatus: true, statusId: 'customer' },
         { id: 'status_junk', name: 'غير مهتم', color: '#ef4444', isStatus: true, statusId: 'junk' },
     ];
 
@@ -164,7 +164,7 @@ export default function BroadcastManager() {
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case 'completed': return <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 font-bold">مكتملة</span>;
+            case 'completed': return <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">مكتملة</span>;
             case 'running': return <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-bold animate-pulse">جاري الإرسال</span>;
             case 'paused': return <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-600 font-bold">متوقفة</span>;
             case 'failed': return <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 font-bold">فشلت</span>;
@@ -270,9 +270,9 @@ export default function BroadcastManager() {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="p-3 rounded-xl bg-green-500/5 border border-green-500/10 space-y-1">
-                                    <p className="text-xs font-bold text-green-700">🔒 أمان الإرسال:</p>
-                                    <p className="text-[10px] text-green-600/80">فواصل زمنية (10-30 ثانية) لتجنب الحظر.</p>
+                                <div className="p-3 rounded-xl bg-primary/5 border border-primary/10 space-y-1">
+                                    <p className="text-xs font-bold text-primary">🔒 أمان الإرسال:</p>
+                                    <p className="text-[10px] text-primary/80">فواصل زمنية (10-30 ثانية) لتجنب الحظر.</p>
                                 </div>
                                 <div className="p-3 rounded-xl bg-blue-500/5 border border-blue-500/10 space-y-1">
                                     <p className="text-xs font-bold text-blue-700">⚙️ المعالجة:</p>
@@ -281,7 +281,7 @@ export default function BroadcastManager() {
                             </div>
 
                             <Button
-                                className="w-full h-12 text-lg gradient-primary"
+                                className="w-full h-12 text-lg"
                                 onClick={startBroadcast}
                                 disabled={sending || selectedContacts.length === 0 || !message}
                             >
@@ -317,8 +317,8 @@ export default function BroadcastManager() {
                                         <div key={camp.id} className="p-4 rounded-xl border bg-muted/5 space-y-3">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
-                                                    <div className={`p-2 rounded-lg ${camp.status === 'completed' ? 'bg-green-500/10' : 'bg-primary/10'}`}>
-                                                        <Megaphone className={`h-4 w-4 ${camp.status === 'completed' ? 'text-green-600' : 'text-primary'}`} />
+                                                    <div className={`p-2 rounded-lg ${camp.status === 'completed' ? 'bg-primary/10' : 'bg-primary/10'}`}>
+                                                        <Megaphone className={`h-4 w-4 ${camp.status === 'completed' ? 'text-primary' : 'text-primary'}`} />
                                                     </div>
                                                     <div>
                                                         <h4 className="text-sm font-bold">{camp.name}</h4>
@@ -336,7 +336,7 @@ export default function BroadcastManager() {
                                                 <Progress value={progress} className="h-1.5" />
                                                 <div className="flex justify-between items-center text-[10px] pt-1">
                                                     <div className="flex gap-3">
-                                                        <span className="flex items-center gap-1 text-green-600">
+                                                        <span className="flex items-center gap-1 text-primary">
                                                             <CheckCircle2 className="h-3 w-3" /> {camp.sent_count} تم بنجاح
                                                         </span>
                                                         <span className="flex items-center gap-1 text-red-500">
@@ -354,6 +354,6 @@ export default function BroadcastManager() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

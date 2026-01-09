@@ -12,6 +12,11 @@ export class ContactsController {
         return this.contactsService.findAll(req.user.id);
     }
 
+    @Get('search/national-id/:id')
+    async findByNationalId(@Param('id') id: string, @Request() req) {
+        return this.contactsService.findByNationalId(req.user.id, id);
+    }
+
     @Post('sync')
     async sync(@Request() req) {
         return this.contactsService.syncFromWhatsApp(req.user.id);

@@ -68,91 +68,105 @@ const Admin = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background flex flex-col" dir="rtl">
-            <Header />
-            <main className="flex-1 p-8 overflow-y-auto">
-                <div className="max-w-7xl mx-auto space-y-8">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold flex items-center gap-2">
-                                <Shield className="h-8 w-8 text-primary" />
-                                لوحة تحكم المدير
-                            </h1>
-                            <p className="text-muted-foreground mt-2">إدارة المستخدمين، الاشتراكات، وحظر الحسابات</p>
-                        </div>
-                        <Button variant="outline" onClick={() => navigate("/")}>العودة للرئيسية</Button>
-                    </div>
+        <div className="min-h-screen bg-background flex flex-col relative overflow-hidden" dir="rtl">
+            {/* Background Image with Overlay */}
+            <div
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 resize-bg-animation"
+                style={{ backgroundImage: 'url(/auth-bg-pro.png?v=5)' }}
+            >
+                <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px]"></div>
+            </div>
 
-                    <div className="grid gap-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>قائمة المشتركين ({users.length})</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="rounded-md border overflow-hidden">
-                                    <table className="w-full text-sm">
-                                        <thead className="bg-muted/50 border-b">
-                                            <tr>
-                                                <th className="p-4 text-right">البريد الإلكتروني</th>
-                                                <th className="p-4 text-right">الحالة</th>
-                                                <th className="p-4 text-right">تاريخ الانتهاء</th>
-                                                <th className="p-4 text-right">الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y">
-                                            {users.map((u) => (
-                                                <tr key={u.id} className="hover:bg-muted/30 transition-colors">
-                                                    <td className="p-4 font-medium">{u.email}</td>
-                                                    <td className="p-4">
-                                                        <span className={`px-2 py-1 rounded-full text-xs ${u.status === 'active' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
-                                                            }`}>
-                                                            {u.status === 'active' ? 'نشط' : 'محظور'}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-4 text-muted-foreground">
-                                                        {u.expiry_date ? new Date(u.expiry_date).toLocaleDateString('ar-EG') : 'غير محدد'}
-                                                    </td>
-                                                    <td className="p-4 flex items-center gap-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="h-8 gap-2"
-                                                            onClick={() => handleExtendExpiry(u.id, u.expiry_date)}
-                                                        >
-                                                            <Calendar className="h-3.5 w-3.5" />
-                                                            تمديد شهر
-                                                        </Button>
-                                                        {u.status === 'active' ? (
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                                                                onClick={() => handleStatusChange(u.id, 'blocked')}
-                                                            >
-                                                                <UserX className="h-4 w-4" />
-                                                            </Button>
-                                                        ) : (
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="h-8 w-8 text-green-500 hover:text-green-600 hover:bg-green-50"
-                                                                onClick={() => handleStatusChange(u.id, 'active')}
-                                                            >
-                                                                <UserCheck className="h-4 w-4" />
-                                                            </Button>
-                                                        )}
-                                                    </td>
+            <div className="relative z-10 flex-1 flex flex-col">
+                <Header transparent activeTab="admin" />
+                <main className="flex-1 p-8 overflow-y-auto">
+                    <div className="max-w-7xl mx-auto space-y-8 animate-fade-in-up">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-black flex items-center gap-2 text-white drop-shadow-md">
+                                    <Shield className="h-8 w-8 text-orange-400" />
+                                    لوحة تحكم المدير
+                                </h1>
+                                <p className="text-blue-200 mt-2 font-medium">إدارة المستخدمين، الاشتراكات، وحظر الحسابات</p>
+                            </div>
+                            <Button variant="outline" onClick={() => navigate("/")} className="bg-white/10 hover:bg-white/20 text-white border-white/20">العودة للرئيسية</Button>
+                        </div>
+
+                        <div className="grid gap-6">
+                            <Card className="border-white/20 shadow-2xl bg-white/10 backdrop-blur-xl">
+                                <CardHeader>
+                                    <CardTitle className="text-white">قائمة المشتركين ({users.length})</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="rounded-xl border border-white/10 overflow-hidden bg-white/5">
+                                        <table className="w-full text-sm">
+                                            <thead className="bg-blue-900/40 border-b border-white/10 text-white">
+                                                <tr>
+                                                    <th className="p-4 text-right">البريد الإلكتروني</th>
+                                                    <th className="p-4 text-right">الحالة</th>
+                                                    <th className="p-4 text-right">تاريخ الانتهاء</th>
+                                                    <th className="p-4 text-right">الإجراءات</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/10">
+                                                {users.map((user) => (
+                                                    <tr key={user.id} className="hover:bg-white/5 transition-colors text-blue-50">
+                                                        <td className="p-4">{user.email}</td>
+                                                        <td className="p-4">
+                                                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${user.status === 'active'
+                                                                ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                                                                : 'bg-red-500/20 text-red-300 border border-red-500/30'
+                                                                }`}>
+                                                                {user.status === 'active' ? 'نشط' : 'محظور'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-4 flex items-center gap-2">
+                                                            <Calendar className="h-4 w-4 text-orange-400" />
+                                                            {new Date(user.expiry_date).toLocaleDateString('ar-JO')}
+                                                        </td>
+                                                        <td className="p-4">
+                                                            <div className="flex gap-2">
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    className="border-white/20 hover:bg-white/10 text-white hover:text-orange-400"
+                                                                    onClick={() => handleExtendExpiry(user.id, user.expiry_date)}
+                                                                >
+                                                                    تمديد
+                                                                </Button>
+                                                                {user.status === 'active' ? (
+                                                                    <Button
+                                                                        variant="destructive"
+                                                                        size="sm"
+                                                                        className="bg-red-500/80 hover:bg-red-600"
+                                                                        onClick={() => handleStatusChange(user.id, 'banned')}
+                                                                    >
+                                                                        <UserX className="h-4 w-4" />
+                                                                    </Button>
+                                                                ) : (
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        className="border-green-500/50 text-green-400 hover:bg-green-500/20"
+                                                                        onClick={() => handleStatusChange(user.id, 'active')}
+                                                                    >
+                                                                        <UserCheck className="h-4 w-4" />
+                                                                    </Button>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
-                </div>
-            </main>
-            <Footer />
+                </main>
+                <Footer />
+            </div>
         </div>
     );
 };

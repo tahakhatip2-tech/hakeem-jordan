@@ -64,10 +64,10 @@ export default function AddAppointmentDialog({ open, onOpenChange, onSuccess }: 
             const fullDateTime = `${formData.appointment_date}T${formData.appointment_time}:00`;
 
             await appointmentsApi.create({
-                customer_name: formData.customer_name,
+                customerName: formData.customer_name,
                 phone: formData.phone,
-                appointment_date: fullDateTime,
-                appointment_type: formData.appointment_type,
+                appointmentDate: fullDateTime,
+                appointmentType: formData.appointment_type,
                 notes: formData.notes,
                 status: 'scheduled'
             });
@@ -205,7 +205,7 @@ export default function AddAppointmentDialog({ open, onOpenChange, onSuccess }: 
                         <Button
                             type="submit"
                             disabled={loading}
-                            className="h-12 flex-[2] font-bold rounded-2xl gradient-primary shadow-glow"
+                            className="h-12 flex-[2] font-bold rounded-2xl transition-all duration-300"
                         >
                             {loading ? "جاري الحفظ..." : "تأكيد وحفظ الموعد"}
                         </Button>

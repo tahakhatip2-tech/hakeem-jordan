@@ -7,25 +7,31 @@ import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { toastWithSound } from '@/lib/toast-with-sound';
 import { appointmentsApi, dataApi } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import AddAppointmentDialog from './AddAppointmentDialog';
 import CompleteAppointmentDialog from './CompleteAppointmentDialog';
 
 interface Appointment {
     id: number;
-    patient_name: string;
-    customer_name?: string;
+    patient_name?: string; // Legacy
+    customerName?: string; // New
+    patient_name_new?: string; // Fallback helper if needed
     phone: string;
-    appointment_date: string;
+    appointment_date?: string; // Legacy
+    appointmentDate?: string; // New
     duration: number;
-    appointment_type: string;
+    appointment_type?: string; // Legacy
+    type?: string; // New
+    appointmentType?: string; // Just in case
     status: string;
     notes: string;
     doctor_name?: string;
+    doctorName?: string;
 }
 
 const statusConfig = {
     scheduled: { label: 'محجوز', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
-    confirmed: { label: 'مؤكد', color: 'bg-green-500/10 text-green-600 border-green-500/20' },
+    confirmed: { label: 'مؤكد', color: 'bg-primary/10 text-primary border-primary/20' },
     completed: { label: 'مكتمل', color: 'bg-gray-500/10 text-gray-600 border-gray-500/20' },
     cancelled: { label: 'ملغي', color: 'bg-red-500/10 text-red-600 border-red-500/20' },
     'no-show': { label: 'لم يحضر', color: 'bg-orange-500/10 text-orange-600 border-orange-500/20' },
@@ -98,26 +104,39 @@ export default function AppointmentsCalendar() {
         : appointments.filter(apt => apt.status === statusFilter);
 
     const groupedByDate = filteredAppointments.reduce((acc, apt) => {
-        const date = new Date(apt.appointment_date).toISOString().split('T')[0];
-        if (!acc[date]) acc[date] = [];
-        acc[date].push(apt);
+        const dateRaw = apt.appointmentDate || apt.appointment_date;
+        if (!dateRaw) return acc;
+
+        try {
+            const dateObj = new Date(dateRaw);
+            if (isNaN(dateObj.getTime())) return acc;
+
+            const date = dateObj.toISOString().split('T')[0];
+            if (!acc[date]) acc[date] = [];
+            acc[date].push(apt);
+        } catch (e) {
+            console.error('Invalid date for appointment:', apt.id, dateRaw);
+        }
         return acc;
     }, {} as Record<string, Appointment[]>);
 
     return (
         <div className="space-y-6 animate-fade-in pb-10">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
-                    <h2 className="text-2xl font-display font-bold">المواعيد</h2>
-                    <p className="text-sm text-muted-foreground">إدارة مواعيد المرضى</p>
+                    <h2 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent flex items-center gap-2">
+                        <Calendar className="h-7 w-7 text-blue-600" />
+                        المواعيد
+                    </h2>
+                    <p className="text-sm text-blue-600 dark:text-blue-400 font-bold opacity-80">إدارة وتتبع مواعيد المرضى اليومية والأسبوعية</p>
                 </div>
                 <Button
-                    className="gap-2 gradient-primary"
+                    className="gap-2 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-xl shadow-blue-600/20 rounded-2xl h-11 px-6 transition-all hover:scale-105 active:scale-95 group font-black"
                     onClick={() => setIsAddDialogOpen(true)}
                 >
-                    <Plus className="h-4 w-4" />
-                    موعد جديد
+                    <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform" />
+                    حجز موعد جديد
                 </Button>
             </div>
 
@@ -128,44 +147,45 @@ export default function AppointmentsCalendar() {
             />
 
             {/* Filters */}
-            <Card className="p-4">
-                <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center gap-2">
-                        <Filter className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">الفترة:</span>
-                        <div className="flex gap-2">
-                            <Button
-                                variant={filter === 'today' ? 'default' : 'outline'}
-                                size="sm"
-                                onClick={() => setFilter('today')}
-                            >
-                                اليوم
-                            </Button>
-                            <Button
-                                variant={filter === 'week' ? 'default' : 'outline'}
-                                size="sm"
-                                onClick={() => setFilter('week')}
-                            >
-                                هذا الأسبوع
-                            </Button>
-                            <Button
-                                variant={filter === 'all' ? 'default' : 'outline'}
-                                size="sm"
-                                onClick={() => setFilter('all')}
-                            >
-                                الكل
-                            </Button>
+            <Card className="p-4 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-xl">
+                <div className="flex flex-wrap items-center gap-6">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-800">
+                            <Filter className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <span className="text-xs font-black text-blue-900 dark:text-blue-100 uppercase tracking-wider">الفترة :</span>
+                        <div className="flex gap-2 p-1 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-800">
+                            {[
+                                { id: 'today', label: 'اليوم' },
+                                { id: 'week', label: 'الأسبوع' },
+                                { id: 'all', label: 'الكل' }
+                            ].map((item) => (
+                                <Button
+                                    key={item.id}
+                                    variant={filter === item.id ? 'default' : 'ghost'}
+                                    size="sm"
+                                    onClick={() => setFilter(item.id as any)}
+                                    className={cn(
+                                        "h-8 px-4 rounded-lg text-xs font-black transition-all",
+                                        filter === item.id
+                                            ? "bg-blue-600 text-white shadow-md"
+                                            : "text-blue-600 dark:text-blue-400 hover:bg-blue-600/10"
+                                    )}
+                                >
+                                    {item.label}
+                                </Button>
+                            ))}
                         </div>
                     </div>
 
-                    <div className="h-6 w-px bg-border" />
+                    <div className="h-8 w-px bg-blue-200 dark:bg-blue-800 hidden md:block" />
 
-                    <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">الحالة:</span>
+                    <div className="flex items-center gap-3">
+                        <span className="text-xs font-black text-blue-900 dark:text-blue-100 uppercase tracking-wider">الحالة :</span>
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="text-sm border rounded-md px-3 py-1.5 bg-background"
+                            className="text-xs font-black border-2 border-blue-100 dark:border-blue-800/50 rounded-xl px-4 py-2 bg-white/50 dark:bg-black/20 text-blue-900 dark:text-blue-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                         >
                             <option value="all">الكل</option>
                             <option value="scheduled">محجوز</option>
@@ -193,77 +213,74 @@ export default function AppointmentsCalendar() {
             ) : (
                 <div className="space-y-6">
                     {Object.entries(groupedByDate).map(([date, dayAppointments]) => (
-                        <div key={date}>
-                            <div className="flex items-center gap-3 mb-4">
-                                <Calendar className="h-5 w-5 text-primary" />
-                                <h3 className="text-lg font-bold">
+                        <div key={date} className="relative">
+                            <div className="flex items-center gap-4 mb-6 sticky top-0 z-10 py-2 bg-gradient-to-b from-blue-50/80 to-transparent dark:from-blue-950/80 backdrop-blur-sm px-4 -mx-4 rounded-b-3xl">
+                                <div className="p-2.5 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-lg shadow-blue-500/20">
+                                    <Calendar className="h-5 w-5" />
+                                </div>
+                                <h3 className="text-xl font-black text-blue-900 dark:text-blue-100 drop-shadow-sm">
                                     {format(new Date(date), 'EEEE، d MMMM yyyy', { locale: ar })}
                                 </h3>
-                                <Badge variant="outline" className="mr-auto">
-                                    {dayAppointments.length} موعد
-                                </Badge>
+                                <div className="mr-auto px-4 py-1.5 rounded-full bg-blue-600/10 border border-blue-600/20 text-blue-600 dark:text-blue-400 text-xs font-black">
+                                    {dayAppointments.length} مواعيد
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {dayAppointments.map((appointment) => (
                                     <Card
                                         key={appointment.id}
-                                        className="p-5 hover:shadow-xl transition-all border-border/50 bg-card/50 backdrop-blur-sm relative group overflow-hidden"
+                                        className="p-6 transition-all duration-300 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl hover:shadow-2xl hover:shadow-blue-500/10 rounded-[2rem] relative group overflow-hidden"
                                     >
-                                        <div className="absolute top-0 right-0 w-1 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="absolute top-0 right-0 w-2 h-full bg-gradient-to-b from-blue-600 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                                         <div className="space-y-4">
                                             {/* Header */}
                                             <div className="flex items-start justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="p-2.5 rounded-full bg-primary/10 ring-4 ring-primary/5">
-                                                        <User className="h-5 w-5 text-primary" />
+                                                <div className="flex items-center gap-4">
+                                                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 border-2 border-white dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-lg group-hover:scale-110 transition-transform">
+                                                        <User className="h-6 w-6 font-black" />
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-bold text-base leading-tight">
-                                                            {appointment.patient_name || 'بدون اسم'}
+                                                        <h4 className="font-black text-lg text-blue-900 dark:text-blue-100 leading-tight">
+                                                            {appointment.customerName || appointment.patient_name || 'بدون اسم'}
                                                         </h4>
                                                         <a
                                                             href={`tel:${appointment.phone.split('@')[0]}`}
-                                                            className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 mt-1 font-medium"
+                                                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-1.5 mt-1 font-black"
                                                         >
-                                                            <Phone className="h-3 w-3" />
+                                                            <div className="h-5 w-5 rounded-full bg-blue-600 text-white flex items-center justify-center scale-75">
+                                                                <Phone className="h-3 w-3" />
+                                                            </div>
                                                             {appointment.phone.split('@')[0]}
                                                         </a>
                                                     </div>
                                                 </div>
-                                                <Badge
-                                                    variant="outline"
-                                                    className={`${statusConfig[appointment.status as keyof typeof statusConfig]?.color} px-2.5 py-0.5 font-medium`}
-                                                >
+                                                <div className={cn(
+                                                    "px-3 py-1 rounded-xl text-[10px] font-black border uppercase tracking-wider shadow-sm",
+                                                    statusConfig[appointment.status as keyof typeof statusConfig]?.color
+                                                )}>
                                                     {statusConfig[appointment.status as keyof typeof statusConfig]?.label}
-                                                </Badge>
+                                                </div>
                                             </div>
 
                                             {/* Time & Type & Messaging */}
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex flex-wrap items-center gap-3 text-sm">
-                                                    <div className="flex items-center gap-1.5 text-muted-foreground bg-muted/50 px-2 py-1 rounded-md">
-                                                        <Clock className="h-3.5 w-3.5 text-primary/70" />
-                                                        <span className="font-medium">
-                                                            {format(new Date(appointment.appointment_date), 'hh:mm a', { locale: ar })}
-                                                        </span>
+                                            <div className="flex items-center justify-between bg-blue-50/50 dark:bg-blue-950/30 p-3 rounded-2xl border border-blue-100 dark:border-blue-900/50">
+                                                <div className="flex flex-wrap items-center gap-3">
+                                                    <div className="flex items-center gap-2 text-xs font-black text-blue-600 dark:text-blue-400">
+                                                        <Clock className="h-4 w-4" />
+                                                        <span className="tabular-nums">{format(new Date(appointment.appointmentDate || appointment.appointment_date || ""), 'hh:mm a', { locale: ar })}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1.5 text-muted-foreground bg-muted/50 px-2 py-1 rounded-md">
-                                                        <Calendar className="h-3.5 w-3.5 text-primary/70" />
-                                                        <span className="font-medium text-xs">
-                                                            {format(new Date(appointment.appointment_date), 'd MMMM', { locale: ar })}
-                                                        </span>
-                                                    </div>
-                                                    <div className="text-muted-foreground text-xs font-semibold px-2 py-1 bg-primary/5 rounded-md border border-primary/10">
-                                                        {typeConfig[appointment.appointment_type as keyof typeof typeConfig] || appointment.appointment_type}
+                                                    <div className="h-4 w-px bg-blue-200 dark:bg-blue-800" />
+                                                    <div className="text-[10px] font-black text-blue-900/60 dark:text-blue-100/60">
+                                                        {typeConfig[(appointment.type || appointment.appointment_type) as keyof typeof typeConfig] || appointment.type || appointment.appointment_type}
                                                     </div>
                                                 </div>
 
                                                 <Button
                                                     size="icon"
                                                     variant="ghost"
-                                                    className="h-9 w-9 rounded-full text-green-600 hover:text-green-700 hover:bg-green-50 bg-green-50/50 border border-green-100/50"
+                                                    className="h-9 w-9 rounded-xl text-blue-600 hover:text-white hover:bg-blue-600 bg-white dark:bg-black/40 border border-blue-200 dark:border-blue-800 shadow-sm transition-all"
                                                     onClick={() => {
                                                         const cleanPhone = appointment.phone.split('@')[0].replace(/\D/g, '');
                                                         if (cleanPhone.length > 5) {
@@ -272,9 +289,8 @@ export default function AppointmentsCalendar() {
                                                             toastWithSound.error('رقم الهاتف غير صالح للمراسلة');
                                                         }
                                                     }}
-                                                    title="مراسلة عبر واتساب"
                                                 >
-                                                    <MessageCircle className="h-4.5 w-4.5" />
+                                                    <MessageCircle className="h-5 w-5" />
                                                 </Button>
                                             </div>
 
@@ -293,19 +309,19 @@ export default function AppointmentsCalendar() {
                                             {/* Actions */}
                                             <div className="pt-2">
                                                 {appointment.status === 'scheduled' && (
-                                                    <div className="flex gap-2">
+                                                    <div className="flex gap-3">
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="flex-1 text-xs hover:bg-green-50 hover:text-green-600 hover:border-green-200 transition-colors"
+                                                            className="flex-1 rounded-xl text-xs font-black border-blue-200 dark:border-blue-800 text-blue-600 hover:bg-blue-600 hover:text-white transition-all h-10"
                                                             onClick={() => updateStatus(appointment.id, 'confirmed')}
                                                         >
-                                                            تأكيد
+                                                            تأكيد الحجز
                                                         </Button>
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="flex-1 text-xs hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                                                            className="flex-1 rounded-xl text-xs font-black border-red-200 dark:border-red-900/30 text-red-600 hover:bg-red-500 hover:text-white transition-all h-10"
                                                             onClick={() => updateStatus(appointment.id, 'cancelled')}
                                                         >
                                                             إلغاء
@@ -315,7 +331,7 @@ export default function AppointmentsCalendar() {
                                                 {appointment.status === 'confirmed' && (
                                                     <Button
                                                         size="sm"
-                                                        className="w-full text-xs gradient-primary shadow-sm hover:shadow-md transition-all py-5"
+                                                        className="w-full h-11 rounded-xl font-black bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all"
                                                         onClick={() => updateStatus(appointment.id, 'completed', appointment)}
                                                     >
                                                         ✅ تسجيل الحضور وإتمام الكشف

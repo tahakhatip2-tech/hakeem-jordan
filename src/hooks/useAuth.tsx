@@ -36,8 +36,8 @@ export const useAuth = () => {
   const signIn = async (email: string, password: string) => {
     try {
       const data = await authApi.login({ email, password });
-      // data: { access_token, user }
-      localStorage.setItem('token', data.access_token);
+      // Express backend returns { token, user }
+      localStorage.setItem('token', data.token || data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       return { error: null };

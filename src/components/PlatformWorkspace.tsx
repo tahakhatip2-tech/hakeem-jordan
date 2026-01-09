@@ -48,7 +48,7 @@ const PlatformWorkspace = ({ platform, platformInfo, contacts, onExport, onDelet
         twitter: 'bg-sky-500',
         linkedin: 'bg-blue-700',
         youtube: 'bg-red-600',
-        whatsapp: 'bg-green-600',
+        whatsapp: 'bg-primary',
     };
 
     return (

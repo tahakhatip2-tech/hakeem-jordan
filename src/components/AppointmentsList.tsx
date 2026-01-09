@@ -92,7 +92,7 @@ export default function AppointmentsList({ onOpenChat }: AppointmentsListProps) 
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'confirmed':
-                return <Badge className="bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20 px-3 py-1 font-bold">مؤكد</Badge>;
+                return <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 px-3 py-1 font-bold">مؤكد</Badge>;
             case 'completed':
                 return <Badge className="bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-blue-500/20 px-3 py-1 font-bold">منجز</Badge>;
             case 'cancelled':
@@ -181,14 +181,14 @@ export default function AppointmentsList({ onOpenChat }: AppointmentsListProps) 
                                                     </div>
                                                     <div className="flex flex-col">
                                                         <span className="font-black text-foreground">
-                                                            {apt.chat_name || apt.customer_name || 'عميل الخطيب'}
+                                                            {apt.customerName || apt.patient_name || apt.customer_name || 'عميل الخطيب'}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-2 group-hover:text-primary transition-colors font-display text-sm tracking-wide" dir="ltr">
-                                                    {(apt.chat_phone || apt.phone || '').split('@')[0]}
+                                                    {(apt.phone || apt.chat_phone || '').split('@')[0]}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5">
@@ -197,7 +197,7 @@ export default function AppointmentsList({ onOpenChat }: AppointmentsListProps) 
                                                         <Calendar className="h-4 w-4 text-primary opacity-70" />
                                                         {(() => {
                                                             try {
-                                                                const d = new Date(apt.appointment_date);
+                                                                const d = new Date(apt.appointmentDate || apt.appointment_date || "");
                                                                 return isNaN(d.getTime()) ? 'No Date' : format(d, 'EEEE dd MMMM yyyy', { locale: ar });
                                                             } catch (e) { return 'No Date'; }
                                                         })()}
@@ -206,7 +206,7 @@ export default function AppointmentsList({ onOpenChat }: AppointmentsListProps) 
                                                         <Clock className="h-3.5 w-3.5" />
                                                         {(() => {
                                                             try {
-                                                                const d = new Date(apt.appointment_date);
+                                                                const d = new Date(apt.appointmentDate || apt.appointment_date || "");
                                                                 return isNaN(d.getTime()) ? '--:--' : format(d, 'hh:mm a');
                                                             } catch (e) { return '--:--'; }
                                                         })()}
@@ -226,7 +226,7 @@ export default function AppointmentsList({ onOpenChat }: AppointmentsListProps) 
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-9 w-9 rounded-xl hover:bg-green-500/10 hover:text-green-500 text-muted-foreground transition-all active:scale-90"
+                                                        className="h-9 w-9 rounded-xl hover:bg-primary/10 hover:text-primary text-muted-foreground transition-all active:scale-90"
                                                         onClick={() => onOpenChat(apt.phone)}
                                                         title="رد سريع واتساب"
                                                     >
@@ -245,7 +245,7 @@ export default function AppointmentsList({ onOpenChat }: AppointmentsListProps) 
                                                             </Button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="start" className="w-40 rounded-xl border-border/50">
-                                                            <DropdownMenuItem className="gap-2 focus:bg-green-500/10 focus:text-green-600 font-bold" onClick={() => handleStatusUpdate(apt.id, 'confirmed')}>
+                                                            <DropdownMenuItem className="gap-2 focus:bg-primary/10 focus:text-primary font-bold" onClick={() => handleStatusUpdate(apt.id, 'confirmed')}>
                                                                 <CheckCircle className="h-4 w-4" /> تأكيد الموعد
                                                             </DropdownMenuItem>
                                                             <DropdownMenuItem className="gap-2 focus:bg-blue-500/10 focus:text-blue-600 font-bold" onClick={() => handleStatusUpdate(apt.id, 'completed', apt)}>

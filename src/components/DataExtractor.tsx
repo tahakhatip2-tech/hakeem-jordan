@@ -32,7 +32,7 @@ const platforms = [
   { id: 'tiktok', name: 'تيك توك', icon: Camera, color: 'text-foreground' },
   { id: 'youtube', name: 'يوتيوب', icon: Youtube, color: 'text-red-600' },
   { id: 'telegram', name: 'تيليجرام', icon: Send, color: 'text-sky-500' },
-  { id: 'whatsapp', name: 'واتساب', icon: MessageCircle, color: 'text-green-600' },
+  { id: 'whatsapp', name: 'واتساب', icon: MessageCircle, color: 'text-primary' },
 ];
 
 const extractTypes = [

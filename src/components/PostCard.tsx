@@ -47,7 +47,7 @@ export const PostCard = ({ groupName, content, timeAgo, comments, extractedConta
         )}
       </div>
 
-      <Button className="w-full gradient-primary" size="sm">
+      <Button className="w-full" size="sm">
         عرض التفاصيل واستخراج البيانات
       </Button>
     </Card>

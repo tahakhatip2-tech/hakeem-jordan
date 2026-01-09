@@ -131,28 +131,36 @@ const Profile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background" dir="rtl">
+        <div className="min-h-screen bg-background relative overflow-hidden" dir="rtl">
+            {/* Background Image with Overlay */}
+            <div
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 resize-bg-animation"
+                style={{ backgroundImage: 'url(/auth-bg-pro.png?v=5)' }}
+            >
+                <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px]"></div>
+            </div>
+
             {/* Header */}
-            <header className="border-b border-border/40 bg-card/40 backdrop-blur-xl sticky top-0 z-50">
+            <header className="border-b border-white/10 bg-white/10 backdrop-blur-xl sticky top-0 z-50 relative">
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="hover:bg-primary/10">
+                        <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="hover:bg-white/10 text-white">
                             <ArrowRight className="h-5 w-5" />
                         </Button>
 
                         <div className="flex items-center gap-3">
-                            <img src="./logo.png" alt="Logo" className="h-10 w-10 rounded-xl shadow-sm object-cover border border-border/50" />
+                            <img src="./logo.png" alt="Logo" className="h-10 w-10 rounded-xl shadow-lg object-contain drop-shadow-md" />
                             <div>
-                                <h1 className="text-xl font-display font-black leading-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                                <h1 className="text-xl font-black leading-tight text-white drop-shadow-md">
                                     AL-Khatib
                                 </h1>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Marketing & Software</p>
+                                <p className="text-[10px] text-blue-200 uppercase tracking-wider font-bold">Marketing & Software</p>
                             </div>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" className="text-muted-foreground hover:text-destructive gap-2" onClick={handleSignOut}>
+                        <Button variant="ghost" className="text-blue-100 hover:text-white hover:bg-white/10 gap-2" onClick={handleSignOut}>
                             <LogOut className="h-4 w-4" />
                             <span className="hidden sm:inline">تسجيل الخروج</span>
                         </Button>
@@ -160,25 +168,25 @@ const Profile = () => {
                 </div>
             </header>
 
-            <main className="container mx-auto p-8 max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <main className="container mx-auto p-8 max-w-5xl animate-fade-in-up relative z-10">
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">إعدادات الحساب</h1>
-                    <p className="text-muted-foreground mt-2">قم بإدارة ملفك الشخصي وتفضيلات الحساب</p>
+                    <h1 className="text-3xl font-black tracking-tight text-white drop-shadow-md">إعدادات الحساب</h1>
+                    <p className="text-blue-200 mt-2 font-medium">قم بإدارة ملفك الشخصي وتفضيلات الحساب</p>
                 </div>
 
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
                     {/* Profile Card */}
-                    <Card className="md:col-span-1">
+                    <Card className="md:col-span-1 border-white/20 shadow-2xl bg-white/10 backdrop-blur-xl">
                         <CardHeader>
-                            <CardTitle>الصورة الشخصية</CardTitle>
+                            <CardTitle className="text-white">الصورة الشخصية</CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-col items-center gap-4">
                             <div className="relative group cursor-pointer">
-                                <Avatar className="w-32 h-32 border-4 border-primary/10">
+                                <Avatar className="w-32 h-32 border-4 border-white/20 shadow-lg">
                                     <AvatarImage src={profile?.avatar?.startsWith('http') ? profile.avatar : `${BASE_URL}${profile?.avatar}`} />
-                                    <AvatarFallback className="text-4xl">{profile?.name?.charAt(0) || <User />}</AvatarFallback>
+                                    <AvatarFallback className="text-4xl bg-white/20 text-white">{profile?.name?.charAt(0) || <User />}</AvatarFallback>
                                 </Avatar>
                                 <label htmlFor="avatar-upload" className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white">
                                     <Upload className="w-8 h-8" />
@@ -186,9 +194,9 @@ const Profile = () => {
                                 <input type="file" id="avatar-upload" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
                             </div>
                             <div className="text-center">
-                                <h3 className="font-semibold text-lg">{profile?.name || "مستخدم"}</h3>
-                                <p className="text-sm text-muted-foreground">{profile?.email}</p>
-                                <div className="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                <h3 className="font-bold text-lg text-white">{profile?.name || "مستخدم"}</h3>
+                                <p className="text-sm text-blue-200">{profile?.email}</p>
+                                <div className="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/10">
                                     {profile?.role}
                                 </div>
                             </div>
@@ -196,29 +204,52 @@ const Profile = () => {
                     </Card>
 
                     {/* Details Edit */}
-                    <Card className="md:col-span-2">
+                    <Card className="md:col-span-2 border-white/20 shadow-2xl bg-white/10 backdrop-blur-xl">
                         <CardHeader>
-                            <CardTitle>تعديل المعلومات</CardTitle>
-                            <CardDescription>قم بتحديث معلوماتك الشخصية وكلمة المرور</CardDescription>
+                            <CardTitle className="text-white">تعديل المعلومات</CardTitle>
+                            <CardDescription className="text-blue-200">قم بتحديث معلوماتك الشخصية وكلمة المرور</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="name">الاسم الكامل</Label>
-                                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="أدخل اسمك" />
+                                <Label htmlFor="name" className="text-blue-100">الاسم الكامل</Label>
+                                <Input
+                                    id="name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="أدخل اسمك"
+                                    className="bg-white/10 border-white/20 focus:border-orange-400 text-white placeholder:text-blue-200/50 rounded-xl"
+                                />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="email">البريد الإلكتروني</Label>
-                                <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@email.com" />
+                                <Label htmlFor="email" className="text-blue-100">البريد الإلكتروني</Label>
+                                <Input
+                                    id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="example@email.com"
+                                    className="bg-white/10 border-white/20 focus:border-orange-400 text-white placeholder:text-blue-200/50 rounded-xl"
+                                />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="password">كلمة المرور الجديدة (اختياري)</Label>
-                                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="اتركه فارغاً إذا لم ترد التغيير" />
+                                <Label htmlFor="password" className="text-blue-100">كلمة المرور الجديدة (اختياري)</Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="اتركه فارغاً إذا لم ترد التغيير"
+                                    className="bg-white/10 border-white/20 focus:border-orange-400 text-white placeholder:text-blue-200/50 rounded-xl"
+                                />
                             </div>
 
                             <div className="pt-4 flex justify-end">
-                                <Button onClick={handleUpdate} disabled={saving} className="w-full sm:w-auto">
+                                <Button
+                                    onClick={handleUpdate}
+                                    disabled={saving}
+                                    className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-lg hover:shadow-orange-500/25 border-none"
+                                >
                                     {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                                     حفظ التغييرات
                                 </Button>

@@ -177,7 +177,7 @@ export default function WhatsAppChat({ chat, onBack }: WhatsAppChatProps) {
                             </div>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span className="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
                             <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">متصل الآن</span>
                         </div>
                     </div>
@@ -317,7 +317,7 @@ export default function WhatsAppChat({ chat, onBack }: WhatsAppChatProps) {
                         onClick={handleSend}
                         disabled={sending || (!newMessage.trim() && !selectedFile)}
                         size="icon"
-                        className="gradient-primary rounded-full h-10 w-10 shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+                        className="rounded-full h-10 w-10 transition-all active:scale-95"
                     >
                         {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                     </Button>

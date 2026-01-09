@@ -43,26 +43,33 @@ export const PatientCard = ({
 
     const statusConfig: any = {
         new: { label: 'جديد', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
-        active: { label: 'نشط', color: 'bg-green-500/10 text-green-500 border-green-500/20' },
+        active: { label: 'نشط', color: 'bg-primary/10 text-primary border-primary/20' },
         inactive: { label: 'غير نشط', color: 'bg-gray-500/10 text-gray-500 border-gray-500/20' },
     };
 
     return (
         <Card className={cn(
-            "p-5 border-border/50 transition-all duration-300 shadow-card hover:shadow-elevated relative overflow-hidden group flex flex-col",
-            status === 'active' ? "border-green-500/30 bg-green-500/5" : "bg-card"
+            "p-6 transition-all duration-300 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-[2rem] shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 relative overflow-hidden group flex flex-col",
+            status === 'active' && "ring-4 ring-blue-500/10 border-blue-500/50"
         )}>
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
-                        <User className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-4">
+                    <div className="h-14 w-14 rounded-[1.25rem] bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/40 dark:to-blue-800/20 border-2 border-white dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-lg group-hover:scale-110 transition-transform">
+                        <User className="h-7 w-7 font-black" />
                     </div>
                     <div>
-                        <h4 className="font-bold text-foreground leading-none mb-1">{name || 'مريض'}</h4>
-                        <Badge variant="outline" className={cn("text-[10px] py-0 h-5", statusConfig[status]?.color)}>
-                            {statusConfig[status]?.label}
-                        </Badge>
+                        <h4 className="font-black text-lg text-blue-950 dark:text-blue-50 leading-none mb-2">{name || 'مريض جديد'}</h4>
+                        <div className="flex items-center gap-2">
+                            <div className={cn("text-[9px] font-black py-0.5 px-2.5 rounded-full border uppercase tracking-wider shadow-sm", statusConfig[status]?.color)}>
+                                {statusConfig[status]?.label}
+                            </div>
+                            {total_appointments !== undefined && total_appointments > 0 && (
+                                <div className="text-[9px] font-black py-0.5 px-2.5 rounded-full bg-blue-600 text-white border border-blue-500 shadow-sm">
+                                    {total_appointments} {total_appointments === 1 ? 'زيارة' : 'زيارات'}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
                 <Button
@@ -75,92 +82,72 @@ export const PatientCard = ({
                 </Button>
             </div>
 
-            {/* Phone */}
-            <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-muted/20 border border-border/50">
-                <Phone className="h-4 w-4 text-success" />
+            <div className="flex items-center gap-3 mb-5 p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-800 shadow-inner">
+                <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center">
+                    <Phone className="h-4 w-4" />
+                </div>
                 {hasPhone ? (
                     <>
-                        <span className="font-mono font-bold flex-1 text-center text-sm" dir="ltr">{phone}</span>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-primary/10" onClick={copyToClipboard}>
-                            <Copy className="h-3.5 w-3.5 text-primary" />
+                        <span className="font-black tabular-nums flex-1 text-center text-sm text-blue-900 dark:text-blue-100" dir="ltr">{phone}</span>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-blue-600 hover:text-white transition-all rounded-lg" onClick={copyToClipboard}>
+                            <Copy className="h-4 w-4" />
                         </Button>
                     </>
                 ) : (
-                    <span className="flex-1 text-center text-sm text-muted-foreground">لا يوجد رقم هاتف</span>
+                    <span className="flex-1 text-center text-xs font-black text-blue-400">لا يوجد رقم هاتف</span>
                 )}
             </div>
 
             {/* Medical Info */}
-            <div className="space-y-2 mb-4">
+            <div className="space-y-2.5 mb-6">
                 {last_visit && (
-                    <div className="flex items-center gap-2 text-xs p-2 rounded-lg bg-muted/20">
-                        <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="text-muted-foreground">آخر زيارة:</span>
-                        <span className="font-medium">{format(new Date(last_visit), 'dd/MM/yyyy', { locale: ar })}</span>
+                    <div className="flex items-center gap-3 text-xs p-3 rounded-xl bg-white/50 dark:bg-black/20 border border-blue-100 dark:border-blue-900 group/row hover:border-blue-400 transition-colors">
+                        <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400 font-bold" />
+                        <span className="text-blue-900/60 dark:text-blue-100/60 font-black">آخر زيارة:</span>
+                        <span className="font-black text-blue-900 dark:text-blue-100 mr-auto">{format(new Date(last_visit), 'dd/MM/yyyy', { locale: ar })}</span>
                     </div>
                 )}
 
                 {blood_type && (
-                    <div className="flex items-center gap-2 text-xs p-2 rounded-lg bg-red-500/5 border border-red-500/10">
-                        <Droplet className="h-3.5 w-3.5 text-red-500" />
-                        <span className="text-muted-foreground">فصيلة الدم:</span>
-                        <span className="font-bold text-red-600">{blood_type}</span>
-                    </div>
-                )}
-
-                {allergies && (
-                    <div className="flex items-start gap-2 text-xs p-2 rounded-lg bg-orange-500/5 border border-orange-500/10">
-                        <AlertTriangle className="h-3.5 w-3.5 text-orange-500 mt-0.5" />
-                        <div className="flex-1">
-                            <span className="text-muted-foreground">حساسية:</span>
-                            <p className="font-medium text-orange-700 mt-0.5">{allergies}</p>
+                    <div className="flex items-center gap-3 text-xs p-3 rounded-xl bg-red-50/50 dark:bg-red-950/20 border border-red-100 dark:border-red-900 group/row hover:border-red-400 transition-colors">
+                        <div className="h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center scale-90">
+                            <Droplet className="h-3.5 w-3.5 font-black" />
                         </div>
+                        <span className="text-red-900/60 dark:text-red-100/60 font-black">فصيلة الدم:</span>
+                        <span className="font-black text-red-600 mr-auto">{blood_type}</span>
                     </div>
                 )}
 
-                {chronic_diseases && (
-                    <div className="flex items-start gap-2 text-xs p-2 rounded-lg bg-purple-500/5 border border-purple-500/10">
-                        <Activity className="h-3.5 w-3.5 text-purple-500 mt-0.5" />
-                        <div className="flex-1">
-                            <span className="text-muted-foreground">أمراض مزمنة:</span>
-                            <p className="font-medium text-purple-700 mt-0.5">{chronic_diseases}</p>
-                        </div>
-                    </div>
-                )}
-
-                {medical_notes && (
-                    <div className="flex items-start gap-2 text-xs p-2 rounded-lg bg-blue-500/5 border border-blue-500/10">
-                        <FileText className="h-3.5 w-3.5 text-blue-500 mt-0.5" />
-                        <div className="flex-1">
-                            <span className="text-muted-foreground">ملاحظات طبية:</span>
-                            <p className="font-medium text-blue-700 mt-0.5 line-clamp-2">{medical_notes}</p>
-                        </div>
-                    </div>
-                )}
-
-                {last_diagnosis && (
-                    <div className="flex items-start gap-2 text-xs p-2 rounded-lg bg-indigo-500/5 border border-indigo-500/10">
-                        <Activity className="h-3.5 w-3.5 text-indigo-500 mt-0.5" />
-                        <div className="flex-1">
-                            <span className="text-muted-foreground">آخر تشخيص:</span>
-                            <p className="font-medium text-indigo-700 mt-0.5 line-clamp-1">{last_diagnosis}</p>
-                        </div>
-                    </div>
-                )}
-
-                {total_appointments !== undefined && total_appointments > 0 && (
-                    <div className="flex items-center justify-between text-[10px] px-2 py-1 bg-primary/5 rounded-full border border-primary/10">
-                        <span className="text-muted-foreground">عدد الزيارات:</span>
-                        <span className="font-black text-primary">{total_appointments}</span>
+                {(allergies || chronic_diseases || medical_notes || last_diagnosis) && (
+                    <div className="grid grid-cols-1 gap-2">
+                        {allergies && (
+                            <div className="flex items-start gap-3 text-xs p-3 rounded-xl bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900">
+                                <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5" />
+                                <div className="flex-1">
+                                    <span className="text-orange-900/60 dark:text-orange-100/60 font-black">حساسية:</span>
+                                    <p className="font-black text-orange-700 dark:text-orange-400 mt-1">{allergies}</p>
+                                </div>
+                            </div>
+                        )}
+                        {chronic_diseases && (
+                            <div className="flex items-start gap-3 text-xs p-3 rounded-xl bg-purple-50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900">
+                                <Activity className="h-4 w-4 text-purple-600 dark:text-purple-400 mt-0.5" />
+                                <div className="flex-1">
+                                    <span className="text-purple-900/60 dark:text-purple-100/60 font-black">أمراض مزمنة:</span>
+                                    <p className="font-black text-purple-700 dark:text-purple-400 mt-1">{chronic_diseases}</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2 mt-auto pt-3 border-t border-border/50">
+            <div className="flex gap-3 mt-auto pt-4 border-t border-blue-100 dark:border-blue-900/50">
                 {hasPhone && (
                     <Button
-                        className="flex-1 gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white shadow-sm h-9"
+                        variant="outline"
+                        className="flex-1 gap-2 border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all h-11 font-black rounded-2xl shadow-sm"
                         size="sm"
                         onClick={() => {
                             if (onOpenChat) {
@@ -176,28 +163,27 @@ export const PatientCard = ({
                 )}
                 {hasPhone && onBookAppointment && (
                     <Button
-                        variant="outline"
-                        className="flex-1 gap-2 border-primary/20 hover:bg-primary/5 h-9"
+                        className="flex-1 gap-2 bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-200 dark:border-blue-800 transition-all h-11 font-black rounded-2xl"
                         size="sm"
                         onClick={() => onBookAppointment(phone, name)}
                     >
-                        <Calendar className="h-4 w-4 text-primary" />
-                        حجز موعد
+                        <Calendar className="h-4 w-4" />
+                        حجز
                     </Button>
                 )}
             </div>
 
             {/* Status Toggle */}
-            <div className="flex bg-muted/30 p-1 rounded-lg gap-1 mt-3">
+            <div className="flex bg-blue-50/50 dark:bg-blue-900/10 p-1.5 rounded-2xl gap-2 mt-4 border border-blue-100 dark:border-blue-900/50">
                 {Object.keys(statusConfig).map((s) => (
                     <button
                         key={s}
                         onClick={() => onUpdateStatus(id, s)}
                         className={cn(
-                            "flex-1 py-1.5 rounded-md text-[10px] font-medium transition-all",
+                            "flex-1 py-2 rounded-xl text-[10px] font-black transition-all",
                             status === s
-                                ? "bg-card text-foreground shadow-sm scale-[1.02]"
-                                : "text-muted-foreground hover:text-foreground hover:bg-card/50"
+                                ? "bg-white dark:bg-blue-600 text-blue-600 dark:text-white shadow-md scale-[1.05]"
+                                : "text-blue-900/40 dark:text-blue-100/40 hover:text-blue-600 hover:bg-white/50"
                         )}
                     >
                         {statusConfig[s].label}

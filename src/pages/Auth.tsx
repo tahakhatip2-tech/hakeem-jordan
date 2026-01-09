@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { toastWithSound } from '@/lib/toast-with-sound';
 import { Loader2 } from "lucide-react";
 import { authSchema } from "@/lib/validations";
+import Footer from "@/components/Footer";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -83,86 +84,163 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4" dir="rtl">
-      <Card className="w-full max-w-md p-8 gradient-card border-border/50 shadow-elevated animate-scale-in">
-        <div className="flex flex-col items-center justify-center gap-4 mb-8">
-          <img src="./logo.png" alt="Logo" className="h-20 w-20 rounded-2xl shadow-glow animate-bounce-slow" />
-          <div className="text-center">
-            <h1 className="text-5xl font-black bg-gradient-to-r from-primary via-orange-500 to-secondary bg-clip-text text-transparent drop-shadow-sm mb-2" style={{ textShadow: '4px 4px 8px rgba(212, 100, 48, 0.2)' }}>
-              AL-Khatib
-            </h1>
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Marketing & Software</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden" dir="rtl">
+      {/* Background Image with Overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 resize-bg-animation"
+        style={{ backgroundImage: 'url(/auth-bg-pro.png?v=5)' }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-l from-blue-900/40 via-blue-900/20 to-transparent backdrop-blur-[1px]"></div>
+      </div>
 
-        <h2 className="text-xl font-semibold text-center mb-6">
-          {isLogin ? "تسجيل الدخول" : "إنشاء حساب جديد"}
-        </h2>
+      {/* Content Container */}
+      <div className="flex-1 flex flex-col lg:flex-row items-center justify-center w-full px-4 lg:px-20 relative z-10 gap-12 lg:gap-20">
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {!isLogin && (
-            <div className="space-y-2">
-              <Label htmlFor="fullName">الاسم الكامل</Label>
-              <Input
-                id="fullName"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="أدخل اسمك الكامل"
-                className="bg-secondary/50 border-border/50"
-              />
+        {/* Right Side: Login Form */}
+        <div className="w-full lg:w-auto flex flex-col items-center justify-center">
+          {/* ... form ... */}
+          <Card className="w-full max-w-sm p-6 border-white/20 shadow-2xl bg-white/10 backdrop-blur-xl animate-fade-in-up hover:bg-white/15 transition-all duration-300 border-t-white/30 rounded-3xl">
+            <div className="flex flex-col items-center justify-center gap-3 mb-6">
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-20 rounded-full"></div>
+                <img src="./logo.png" alt="Hakeem Jordan Logo" className="h-20 w-auto object-contain drop-shadow-2xl relative z-10 transition-transform hover:scale-105 duration-500" />
+              </div>
+              <div className="text-center">
+                <h1 className="text-3xl font-black text-white drop-shadow-md mb-1 tracking-tight">
+                  Hakeem Jordan
+                </h1>
+                <p className="text-xs text-blue-200 font-bold uppercase tracking-[0.2em] drop-shadow-sm">Clinic Management System</p>
+              </div>
             </div>
-          )}
 
-          <div className="space-y-2">
-            <Label htmlFor="email">البريد الإلكتروني</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="أدخل بريدك الإلكتروني"
-              required
-              className="bg-secondary/50 border-border/50"
-            />
-          </div>
+            <h2 className="text-lg font-semibold text-center mb-4 text-white drop-shadow-sm">
+              {isLogin ? "تسجيل الدخول" : "إنشاء حساب جديد"}
+            </h2>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">كلمة المرور</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="أدخل كلمة المرور"
-              required
-              className="bg-secondary/50 border-border/50"
-            />
-          </div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="fullName" className="text-blue-100 text-xs">الاسم الكامل</Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="أدخل اسمك الكامل"
+                    className="bg-white/10 border-white/20 focus:border-blue-400 text-white placeholder:text-blue-200/50 rounded-xl h-10 text-sm"
+                  />
+                </div>
+              )}
 
-          <Button
-            type="submit"
-            className="w-full gradient-primary hover:opacity-90 transition-opacity"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin ml-2" />
-            ) : null}
-            {isLogin ? "تسجيل الدخول" : "إنشاء الحساب"}
-          </Button>
-        </form>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-blue-100 text-xs">البريد الإلكتروني</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="أدخل بريدك الإلكتروني"
+                  required
+                  className="bg-white/10 border-white/20 focus:border-blue-400 text-white placeholder:text-blue-200/50 rounded-xl h-10 text-sm"
+                />
+              </div>
 
-        <div className="mt-6 text-center">
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-primary hover:text-primary-glow transition-colors text-sm"
-          >
-            {isLogin ? "ليس لديك حساب؟ أنشئ حساباً جديداً" : "لديك حساب؟ سجل الدخول"}
-          </button>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-blue-100 text-xs">كلمة المرور</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="أدخل كلمة المرور"
+                  required
+                  className="bg-white/10 border-white/20 focus:border-blue-400 text-white placeholder:text-blue-200/50 rounded-xl h-10 text-sm"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold h-10 rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 border border-white/10 text-sm"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                    معالجة...
+                  </>
+                ) : (
+                  isLogin ? "دخول للنظام" : "إنشاء حساب"
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-xs text-blue-100 hover:text-white underline decoration-blue-400/50 hover:decoration-blue-400 underline-offset-4 transition-all"
+              >
+                {isLogin
+                  ? "ليس لديك حساب؟ إنشاء حساب جديد"
+                  : "لديك حساب بالفعل؟ تسجيل الدخول"}
+              </button>
+            </div>
+
+            {/* Mobile Vision & Footer (Inside Card) */}
+            <div className="lg:hidden mt-6 pt-4 border-t border-white/10 flex flex-col items-center gap-3 animate-fade-in-up">
+              {/* Vision - Compact */}
+              <div className="text-center space-y-1">
+                <h3 className="text-[10px] font-black text-orange-400 uppercase tracking-wider opacity-80">الرؤية الوطنية</h3>
+                <p className="text-xs font-bold leading-tight text-blue-50/90 max-w-[250px] mx-auto">
+                  "أول نظام عربي لإدارة النظام الصحي إلكترونياً بسكرتير آلي ذكي."
+                </p>
+              </div>
+
+              {/* Tags - Compact */}
+              <div className="flex flex-wrap justify-center gap-1.5 opacity-80">
+                <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded-full text-[8px] text-blue-200">الاول في الشرق الأوسط</span>
+                <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded-full text-[8px] text-blue-200">سكرتير آلي</span>
+              </div>
+
+              {/* Signature & Version - Compact Row */}
+              <div className="w-full flex items-center justify-between text-[9px] text-blue-300/50 font-medium tracking-wider pt-2 border-t border-white/5 mt-1">
+                <span>By Al-Khatib Software</span>
+                <span className="font-mono opacity-70">v1.0</span>
+              </div>
+            </div>
+          </Card>
         </div>
-      </Card >
-    </div >
+
+        {/* Left Side: Vision Text - Condensed & Professional */}
+        <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center items-start text-white p-8 animate-fade-in-up delay-200">
+          <div className="relative">
+            <div className="absolute -left-4 top-0 w-1 h-20 bg-gradient-to-b from-orange-400 to-transparent rounded-full"></div>
+            <div className="pl-6 space-y-4">
+              <h3 className="text-xl font-black text-orange-400 uppercase tracking-wider drop-shadow-md">الرؤية الوطنية</h3>
+              <p className="text-2xl font-bold leading-relaxed text-blue-50 max-w-lg drop-shadow-sm" style={{ lineHeight: '1.5' }}>
+                "رؤيتنا أول نظام عربي في الشرق الأوسط لإدارة النظام الصحي إلكترونياً، يعتمد على سكرتير آلي لإتمام المهام وإدارة النظام بالكامل."
+              </p>
+              <div className="flex items-center gap-2 pt-2">
+                <span className="px-3 py-1 bg-blue-500/20 border border-blue-400/30 rounded-full text-xs text-blue-200 font-bold backdrop-blur-sm">
+                  الاول في الشرق الأوسط
+                </span>
+                <span className="px-3 py-1 bg-blue-500/20 border border-blue-400/30 rounded-full text-xs text-blue-200 font-bold backdrop-blur-sm">
+                  سكرتير آلي ذكي
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-orange-400/90 text-sm font-bold pt-4">
+                <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+                نحو تحول رقمي شامل
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer minimal */}
+      <div className="absolute bottom-4 left-0 right-0 z-10 text-center pointer-events-none">
+        <p className="text-[10px] text-white/40">Powered by Al-Khatib Software</p>
+      </div>
+    </div>
   );
 };
 

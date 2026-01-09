@@ -7,20 +7,58 @@ export class ContactsService {
     constructor(private prisma: PrismaService) { }
 
     async findAll(userId: number): Promise<any[]> {
-        // Note: We are using $queryRaw for the complex SQL query from the original Express controller
-        // or we can try to translate it to Prisma Fluent API.
-        // Let's use Prisma to get the basic data first, then we can optimize with Raw if needed.
-
-        return this.prisma.contact.findMany({
+        const contacts = await this.prisma.contact.findMany({
             where: { userId },
             include: {
                 appointment: {
                     orderBy: { appointmentDate: 'desc' },
                     take: 1,
                 },
+                _count: {
+                    select: { appointment: true }
+                },
                 tags: true,
             },
             orderBy: { createdAt: 'desc' },
+        });
+
+        // Map to match frontend expectations and filter non-individual JIDs
+        return contacts
+            .filter(contact => contact.phone.endsWith('@s.whatsapp.net'))
+            .map(contact => ({
+                ...contact,
+                total_appointments: contact._count.appointment,
+                last_visit: contact.appointment[0]?.appointmentDate || null,
+                patient_status: contact.status // Backend uses 'status', frontend uses 'patient_status'
+            }));
+    }
+
+    async create(userId: number, data: any): Promise<Contact> {
+        return this.prisma.contact.create({
+            data: {
+                ...data,
+                userId,
+            },
+        });
+    }
+
+    async update(id: number, userId: number, data: any): Promise<Contact> {
+        return this.prisma.contact.update({
+            where: { id, userId },
+            data,
+        });
+    }
+
+    async findByNationalId(userId: number, nationalId: string): Promise<Contact | null> {
+        return this.prisma.contact.findFirst({
+            where: { userId, nationalId },
+            include: {
+                appointment: {
+                    orderBy: { appointmentDate: 'desc' },
+                },
+                tags: true,
+                medicalRecords: true
+            }
         });
     }
 
@@ -44,6 +82,9 @@ export class ContactsService {
 
         let syncCount = 0;
         for (const chat of chats) {
+            if (!chat.phone.endsWith('@s.whatsapp.net')) {
+                continue;
+            }
             try {
                 await this.prisma.contact.upsert({
                     where: {

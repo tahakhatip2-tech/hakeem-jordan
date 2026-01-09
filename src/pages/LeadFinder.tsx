@@ -119,7 +119,7 @@ export default function LeadFinder() {
                         <div className="pt-4">
                             <Button
                                 onClick={handleSearch}
-                                className="w-full h-12 text-lg font-bold gradient-primary shadow-glow transition-all hover:scale-[1.01]"
+                                className="w-full h-12 text-lg font-bold transition-all hover:scale-[1.01]"
                                 disabled={loading}
                             >
                                 {loading ? (
@@ -155,7 +155,7 @@ export default function LeadFinder() {
                 <Card className="lg:col-span-3 border-border/50 bg-card/50 backdrop-blur shadow-card">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                            <MapPin className="h-5 w-5 text-green-500" />
+                            <MapPin className="h-5 w-5 text-primary" />
                             استيراد ذكي للنصوص (نسخ ولصق)
                         </CardTitle>
                         <CardDescription>الصق أي نص يحتوي على أرقام وأسماء (مثلاً من خرائط جوجل) وسنقوم باستخراجها فوراً.</CardDescription>
@@ -192,7 +192,7 @@ export default function LeadFinder() {
                                         toastWithSound.error("حدث خطأ أثناء الاتصال بالخادم");
                                     }
                                 }}
-                                className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                                className="bg-primary hover:bg-primary/90 text-white gap-2"
                             >
                                 <Target className="h-4 w-4" />
                                 استخراج وبدء الحملة

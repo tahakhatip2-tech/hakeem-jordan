@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AppointmentsService } from '../appointments/appointments.service';
 import * as googleTTS from 'google-tts-api';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -10,7 +11,10 @@ export class AiService {
     private readonly logger = new Logger(AiService.name);
     private readonly uploadsDir = path.join(process.cwd(), 'uploads');
 
-    constructor(private prisma: PrismaService) {
+    constructor(
+        private prisma: PrismaService,
+        private appointmentsService: AppointmentsService,
+    ) {
         if (!fs.existsSync(this.uploadsDir)) {
             fs.mkdirSync(this.uploadsDir, { recursive: true });
         }
@@ -18,50 +22,97 @@ export class AiService {
 
     async getAIResponse(userId: number, userMessage: string, phone?: string, audioFilePath?: string): Promise<string | null> {
         try {
-            // 1. Check if AI is enabled
-            const settings = await this.prisma.setting.findMany({
-                where: { key: { in: ['ai_enabled', 'ai_api_key', 'ai_system_instruction'] } },
-            });
+            // 1. Fetch ALL Settings & Templates for deep context
+            const [settings, templates, services] = await Promise.all([
+                this.prisma.setting.findMany({ where: { userId } }),
+                this.prisma.autoReplyTemplate.findMany({ where: { userId, isActive: true } }),
+                this.prisma.service.findMany({ where: { userId, isActive: true } })
+            ]);
 
-            const aiEnabled = settings.find(s => s.key === 'ai_enabled')?.value === '1';
-            const apiKey = settings.find(s => s.key === 'ai_api_key')?.value?.trim();
-            const systemInstructionBase = settings.find(s => s.key === 'ai_system_instruction')?.value || "أنت مساعد ذكي ومفيد.";
+            const getSetting = (key: string) => settings.find(s => s.key === key)?.value || "";
+
+            const aiEnabledVal = getSetting('ai_enabled');
+            const aiEnabled = aiEnabledVal === undefined || aiEnabledVal === '1' || aiEnabledVal === 'true'; // Handle legacy '1' and boolean string
+            const apiKey = getSetting('ai_api_key');
 
             if (!aiEnabled || !apiKey) {
+                console.log('[AI Debug] AI Stopped: Missing Key or Disabled');
                 return null;
             }
 
-            // 2. Prepare context
-            const services = await this.prisma.service.findMany({ where: { isActive: true } });
-            const servicesContext = services.length > 0
-                ? `\n📌 خدماتنا:\n${services.map(s => `- ${s.name}: ${s.description}`).join('\n')}`
-                : "";
+            // 2. Build Clinic Persona & Context
+            const clinicName = getSetting('clinic_name') || 'العيادة';
+            const doctorName = getSetting('doctor_name') || 'الطبيب';
+            const clinicDesc = getSetting('clinic_description') || 'عيادة طبية';
+            const address = getSetting('address') || 'غير محدد';
+            const phoneNum = getSetting('phone');
+            const workStart = getSetting('working_hours_start') || '09:00';
+            const workEnd = getSetting('working_hours_end') || '17:00';
 
-            // 3. Prepare History
+            const knowledgeBase = templates.map(t => `- س: ${t.trigger}\n  ج: ${t.response}`).join('\n');
+            const servicesList = services.map(s => `- ${s.name}: ${s.description || ''} (${s.price || 'السعر عند الطبيب'})`).join('\n');
+
+            // 3. Fetch Availability
+            const todayStr = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+            const todaySlots = await this.appointmentsService.getAvailableSlots(userId, todayStr);
+            const tomorrowSlots = await this.appointmentsService.getAvailableSlots(userId, tomorrowStr);
+
+            // 4. Construct System Instruction
+            const systemInstruction = `
+أنت السكرتير الذكي والمخلص لـ "${clinicName}". 
+شخصيتك:
+- أنت تتحدث باسم "${clinicName}" التي يديرها "${doctorName}".
+- تخصص العيادة وهويتها: "${clinicDesc}".
+- أسلوبك: دافئ، مهني، مختصر، ومفيد جداً. تتحدث باللهجة البيضاء أو الفصحى المبسطة.
+
+معلومات العيادة (Facts):
+- العنوان: ${address}
+- ساعات العمل: من ${workStart} إلى ${workEnd}
+- الهاتف: ${phoneNum}
+- الخدمات:
+${servicesList}
+
+قاعدة المعرفة (Information Bank - اعتمد هذه الإجابات كحقائق):
+${knowledgeBase}
+
+المواعيد المتاحة حالياً (Real-time Availability):
+- اليوم (${todayStr}): ${todaySlots.length > 0 ? todaySlots.join(', ') : 'ممتلئ بالكامل'}
+- غداً (${tomorrowStr}): ${tomorrowSlots.length > 0 ? tomorrowSlots.join(', ') : 'ممتلئ بالكامل'}
+*ملاحظة هامة:* لا تقترح أبداً وقتاً غير موجود في هذه القائمة.
+
+بروتوكول التعامل:
+1. إذا سأل المريض عن معلومة موجودة في "قاعدة المعرفة" أو "معلومات العيادة"، أجب مباشرة وبدقة.
+2. إذا أراد حجز موعد، اعرض عليه المواعيد المتاحة بذكاء (مثلاً: "لدينا موعد شاغر اليوم الساعة 2:30، هل يناسبك؟").
+3. إذا وافق على موعد، استخدم الصيغة البرمجية لتثبيته: \`[[APPOINTMENT: YYYY-MM-DD | HH:MM | Customer Name | Notes]]\`
+4. إذا سأل هل الطبيب موجود؟ أجب بناءً على ساعات العمل.
+
+تعليمات المالك (System Prompt Override):
+${getSetting('ai_system_instruction')}
+
+تذكر: هدفك هو راحة المريض وتنظيم جدول الطبيب.
+`;
+
+            // 5. Build History
             let historyStr = "";
             if (phone) {
-                const chat = await this.prisma.whatsAppChat.findUnique({ where: { phone } });
+                const chat = await this.prisma.whatsAppChat.findUnique({
+                    where: { userId_phone: { userId, phone } }
+                });
                 if (chat) {
                     const history = await this.prisma.whatsAppMessage.findMany({
                         where: { chatId: chat.id },
                         orderBy: { timestamp: 'desc' },
-                        take: 6,
+                        take: 10, // Increased context window
                     });
-                    historyStr = history.reverse().map(h => `${h.fromMe ? 'Assistant' : 'User'}: ${h.content}`).join('\n');
+                    historyStr = history.reverse().map(h => `${h.fromMe ? 'Secretary' : 'Patient'}: ${h.content}`).join('\n');
                 }
             }
 
-            const systemInstruction = `${systemInstructionBase}${servicesContext}
-      
-📌 **PROCOTOL FOR ACTIONS:**
-- If user wants to book: \`[[APPOINTMENT: YYYY-MM-DD | HH:MM | Customer Name | Notes]]\`
-- Dates in future.
-- Format strictly.
-- Ask if details missing.
-
-رد الآن باحترافية.`;
-
-            const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+            const models = ['gemini-flash-latest', 'gemini-pro-latest']; // Prioritize faster models
             for (const model of models) {
                 try {
                     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -70,11 +121,10 @@ export class AiService {
                     if (audioFilePath && fs.existsSync(audioFilePath)) {
                         const audioData = fs.readFileSync(audioFilePath).toString('base64');
                         parts.push({ inlineData: { mimeType: "audio/ogg", data: audioData } });
-                        parts.push({ text: "افهم هذه البصمة الصوتية ورد عليها بالعربية." });
+                        parts.push({ text: "استمع للرسالة الصوتية وأجب عليها." });
                     }
 
-                    const todayDate = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-                    parts.push({ text: `تاريخ اليوم: ${todayDate}\n${historyStr ? 'سياق:\n' + historyStr + '\n' : ''}الرسالة: ${userMessage || '(بصمة)'}` });
+                    parts.push({ text: `تاريخ اليوم: ${new Date().toLocaleString('ar-JO')}\n\nالسجل السابق:\n${historyStr}\n\nالرسالة الجديدة:\n${userMessage || '(صوت)'}` });
 
                     const response = await fetch(url, {
                         method: 'POST',
@@ -82,18 +132,22 @@ export class AiService {
                         body: JSON.stringify({
                             contents: [{ parts }],
                             system_instruction: { parts: [{ text: systemInstruction }] },
-                            generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                            generationConfig: { temperature: 0.3, maxOutputTokens: 1000 } // Lower temp for more factual adherence
                         })
                     });
 
                     const data: any = await response.json();
                     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (text) return text.trim();
+
+                    if (text) {
+                        return text.trim();
+                    } else {
+                        console.error(`[AI Error] ${model} returned empty. Data:`, JSON.stringify(data));
+                    }
                 } catch (e) {
-                    this.logger.error(`Error with model ${model}: ${e.message}`);
+                    console.error(`[AI Error] Model ${model} failed: ${e.message}`);
                 }
             }
-
             return null;
         } catch (err) {
             this.logger.error(`AI Fatal Error: ${err.message}`);

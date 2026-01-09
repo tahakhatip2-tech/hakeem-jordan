@@ -1,15 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, User, ChevronLeft } from "lucide-react";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
 
 interface Appointment {
     id: string;
     patientName: string;
     time: string;
-    date?: string; // Add optional date string
+    date?: string;
     type: string;
     status: "scheduled" | "confirmed" | "waiting";
 }
@@ -19,80 +16,76 @@ interface UpcomingAppointmentsProps {
     onViewAll?: () => void;
 }
 
-const statusConfig = {
-    scheduled: { label: "محجوز", color: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
-    confirmed: { label: "مؤكد", color: "bg-green-500/10 text-green-600 border-green-500/20" },
-    waiting: { label: "في الانتظار", color: "bg-orange-500/10 text-orange-600 border-orange-500/20" },
-};
-
 export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingAppointmentsProps) {
     const displayAppointments = appointments;
 
     return (
-        <Card className="p-6 border-border/50 bg-card/50 backdrop-blur-sm">
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                        <Calendar className="h-5 w-5 text-primary" />
+        <Card className="p-5 md:p-8 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl">
+            <div className="flex items-center justify-between mb-6 md:mb-8">
+                <div className="flex items-center gap-3 md:gap-4">
+                    <div className="p-2.5 md:p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-lg shadow-blue-500/20">
+                        <Calendar className="h-5 w-5 md:h-6 md:w-6" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold">المواعيد القادمة</h3>
-                        <p className="text-xs text-muted-foreground">جدول المواعيد المحجوزة</p>
+                        <h3 className="text-lg md:text-xl font-black text-blue-950 dark:text-blue-50">المواعيد القادمة</h3>
+                        <p className="text-[10px] md:text-xs font-black text-blue-600 dark:text-blue-400 opacity-60">تتبع جدول الزيارات المحجوزة</p>
                     </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={onViewAll} className="text-primary hover:text-primary/80">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onViewAll}
+                    className="text-blue-600 hover:text-white hover:bg-blue-600 rounded-xl px-4 font-black transition-all"
+                >
                     عرض الكل
                     <ChevronLeft className="h-4 w-4 mr-1" />
                 </Button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
                 {displayAppointments.map((appointment) => (
                     <div
                         key={appointment.id}
-                        className="group flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-muted/20 hover:bg-muted/50 transition-all duration-300 border border-border/30 hover:border-primary/20 hover:shadow-md cursor-pointer"
+                        className="group flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-white/50 dark:bg-black/20 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all duration-300 border border-blue-100 dark:border-blue-900/50 hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/10 cursor-pointer relative overflow-hidden"
                     >
-                        <div className="flex items-start gap-4 mb-3 sm:mb-0">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full opacity-0 group-hover:opacity-50 transition-opacity" />
-                                <div className="relative p-2.5 rounded-xl bg-background border border-border/50 shadow-sm">
-                                    <User className="h-5 w-5 text-primary/70" />
-                                </div>
+                        <div className="absolute top-0 right-0 w-1.5 h-full bg-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                        <div className="flex items-center gap-4 mb-3 sm:mb-0">
+                            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/40 dark:to-blue-800/20 border-2 border-white dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-md group-hover:scale-110 transition-transform">
+                                <User className="h-6 w-6 font-black" />
                             </div>
-                            <div className="flex flex-col gap-1">
-                                <p className="font-bold text-sm text-foreground group-hover:text-primary transition-colors">
+                            <div className="flex flex-col gap-1.5">
+                                <p className="font-black text-base text-blue-950 dark:text-blue-50 group-hover:text-blue-600 transition-colors leading-none">
                                     {appointment.patientName}
                                 </p>
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="secondary" className="text-[10px] h-5 px-1.5 font-normal bg-secondary/50">
-                                        {appointment.type}
-                                    </Badge>
+                                <div className="text-[10px] font-black px-2.5 py-0.5 rounded-lg bg-blue-600/10 text-blue-600 dark:text-blue-400 border border-blue-600/20 uppercase tracking-wider inline-block w-fit">
+                                    {appointment.type}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pl-1">
+                        <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
                             {appointment.date && (
-                                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-background/50 px-2.5 py-1 rounded-lg border border-border/20">
-                                    <Calendar className="h-3.5 w-3.5" />
+                                <div className="flex items-center gap-2 text-xs font-black text-blue-600/60 dark:text-blue-400/60">
+                                    <Calendar className="h-4 w-4" />
                                     <span>{appointment.date}</span>
                                 </div>
                             )}
-                            <div className="flex items-center gap-1.5 text-xs font-bold font-mono text-foreground/80 bg-primary/5 px-2.5 py-1 rounded-lg border border-primary/10">
-                                <Clock className="h-3.5 w-3.5 text-primary" />
+                            <div className="flex items-center gap-2 text-xs font-black text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-xl border border-blue-200 dark:border-blue-800 shadow-sm tabular-nums">
+                                <Clock className="h-4 w-4" />
                                 <span>{appointment.time}</span>
                             </div>
                         </div>
                     </div>
                 ))}
-            </div>
 
-            {displayAppointments.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-10 text-muted-foreground bg-muted/10 rounded-2xl border border-dashed border-border/30">
-                    <Calendar className="h-10 w-10 mb-3 opacity-20" />
-                    <p className="text-sm font-medium">لا توجد مواعيد قادمة</p>
-                </div>
-            )}
+                {displayAppointments.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-12 text-blue-300 dark:text-blue-700 bg-blue-50/30 dark:bg-blue-950/20 rounded-[2rem] border-2 border-dashed border-blue-100 dark:border-blue-900/50">
+                        <Calendar className="h-12 w-12 mb-4 opacity-50" />
+                        <p className="text-sm font-black">لا توجد مواعيد قادمة</p>
+                    </div>
+                )}
+            </div>
         </Card>
     );
 }

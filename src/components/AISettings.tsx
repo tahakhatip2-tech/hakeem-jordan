@@ -234,7 +234,7 @@ export default function AISettings() {
                                     <Button
                                         onClick={handleSave}
                                         disabled={saving}
-                                        className="w-full h-12 gap-2 text-lg font-bold gradient-primary shadow-glow transition-all hover:scale-[1.01]"
+                                        className="w-full h-12 gap-2 text-lg font-bold transition-all hover:scale-[1.01]"
                                     >
                                         {saving ? (
                                             <span className="animate-pulse">جاري الحفظ والبرمجة...</span>
@@ -319,7 +319,7 @@ export default function AISettings() {
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-3">
                                                         <span className="font-bold text-primary">{s.name}</span>
-                                                        {s.price && <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 font-bold">{s.price}</span>}
+                                                        {s.price && <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">{s.price}</span>}
                                                     </div>
                                                     <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{s.description}</p>
                                                 </div>

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useContacts } from "@/hooks/useContacts";
-import { 
+import {
   Facebook,
   Instagram,
   Twitter,
@@ -20,7 +20,7 @@ const platformConfig: Record<string, { icon: any; name: string; color: string; b
   tiktok: { icon: Camera, name: 'تيك توك', color: 'text-foreground', bg: 'bg-foreground/10' },
   youtube: { icon: Youtube, name: 'يوتيوب', color: 'text-red-600', bg: 'bg-red-600/10' },
   telegram: { icon: Send, name: 'تيليجرام', color: 'text-sky-500', bg: 'bg-sky-500/10' },
-  whatsapp: { icon: MessageCircle, name: 'واتساب', color: 'text-green-600', bg: 'bg-green-600/10' },
+  whatsapp: { icon: MessageCircle, name: 'واتساب', color: 'text-primary', bg: 'bg-primary/10' },
 };
 
 const PlatformStats = () => {
@@ -34,7 +34,7 @@ const PlatformStats = () => {
   }, {} as Record<string, number>);
 
   const sortedPlatforms = Object.entries(platformCounts)
-    .sort(([, a], [, b]) => b - a);
+    .sort(([, a], [, b]) => (b as any) - (a as any));
 
   if (sortedPlatforms.length === 0) {
     return null;
@@ -55,7 +55,7 @@ const PlatformStats = () => {
               bg: 'bg-muted',
             };
             const Icon = config.icon;
-            const percentage = Math.round((count / contacts.length) * 100);
+            const percentage = Math.round(((count as any) / contacts.length) * 100);
 
             return (
               <div key={platform} className="flex items-center gap-3">
@@ -65,10 +65,10 @@ const PlatformStats = () => {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-medium">{config.name}</span>
-                    <span className="text-sm text-muted-foreground">{count}</span>
+                    <span className="text-sm text-muted-foreground">{(count as any)}</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full ${config.bg.replace('/10', '')} opacity-50`}
                       style={{ width: `${percentage}%` }}
                     />

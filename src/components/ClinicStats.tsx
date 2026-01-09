@@ -10,7 +10,7 @@ import {
     Activity, Clock, AlertCircle, Loader2
 } from "lucide-react";
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const COLORS = ['#1d4ed8', '#f97316', '#3b82f6', '#ef4444', '#8b5cf6']; // Blue, Orange, Light Blue, Red, Purple
 
 export const ClinicStats = () => {
     const { data: stats, isLoading } = useQuery({
@@ -30,7 +30,7 @@ export const ClinicStats = () => {
     const summaryCards = [
         { title: "إجمالي المرضى", value: stats?.total_patients || 0, icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
         { title: "مواعيد اليوم", value: stats?.today_total || 0, icon: Calendar, color: "text-purple-600", bg: "bg-purple-100" },
-        { title: "حالات مكتملة", value: stats?.today_completed || 0, icon: CheckCircle, color: "text-green-600", bg: "bg-green-100" },
+        { title: "حالات مكتملة", value: stats?.today_completed || 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10" },
         { title: "مواعيد الشهر", value: stats?.this_month || 0, icon: TrendingUp, color: "text-orange-600", bg: "bg-orange-100" },
     ];
 
@@ -112,7 +112,7 @@ export const ClinicStats = () => {
                                     dataKey="value"
                                 >
                                     {(stats?.statusDistribution || []).map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} cornerRadius={4} />
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
                                 <Tooltip />

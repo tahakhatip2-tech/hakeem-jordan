@@ -67,6 +67,14 @@ export const dataApi = {
     getStats: () => apiFetch('/stats'),
 };
 
+export const contactsApi = {
+    getAll: () => apiFetch('/contacts'),
+    sync: () => apiFetch('/contacts/sync', { method: 'POST' }),
+    findByNationalId: (id: string) => apiFetch(`/contacts/search/national-id/${id}`),
+    updateStatus: (id: number, status: string) => apiFetch(`/contacts/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+    delete: (id: number) => apiFetch(`/contacts/${id}`, { method: 'DELETE' }),
+};
+
 export const groupsApi = {
     getAll: () => apiFetch('/groups'),
     create: (data: any) => apiFetch('/groups', { method: 'POST', body: JSON.stringify(data) }),
@@ -82,6 +90,7 @@ export const whatsappApi = {
     getStatus: () => apiFetch('/whatsapp/status'),
     connect: () => apiFetch('/whatsapp/connect', { method: 'POST' }),
     logout: () => apiFetch('/whatsapp/logout', { method: 'DELETE' }),
+    disconnect: () => apiFetch('/whatsapp/logout', { method: 'DELETE' }),
     // Chats & Messages
     getChats: () => apiFetch('/whatsapp/chats'),
     getMessages: (id: string | number) => apiFetch(`/whatsapp/chats/${id}/messages`),
@@ -91,6 +100,9 @@ export const whatsappApi = {
     createTemplate: (data: any) => apiFetch('/whatsapp/templates', { method: 'POST', body: JSON.stringify(data) }),
     updateTemplate: (id: number, data: any) => apiFetch(`/whatsapp/templates/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     deleteTemplate: (id: number) => apiFetch(`/whatsapp/templates/${id}`, { method: 'DELETE' }),
+    // Settings
+    getSettings: () => apiFetch('/whatsapp/settings'),
+    updateSettings: (data: any) => apiFetch('/whatsapp/settings', { method: 'POST', body: JSON.stringify(data) }),
 };
 
 export const appointmentsApi = {
@@ -99,6 +111,15 @@ export const appointmentsApi = {
     create: (data: any) => apiFetch('/appointments', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: number, data: any) => apiFetch(`/appointments/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
     delete: (id: number) => apiFetch(`/appointments/${id}`, { method: 'DELETE' }),
+    generatePrescription: (id: number) => apiFetch(`/appointments/${id}/prescription`, { method: 'POST' }),
+    sendPrescription: (id: number, data: any) => apiFetch(`/appointments/${id}/prescription/send`, { method: 'POST', body: JSON.stringify(data) }),
+    saveMedicalRecord: (id: number, data: any) => {
+        const isFormData = data instanceof FormData;
+        return apiFetch(`/appointments/${id}/medical-record`, {
+            method: 'POST',
+            body: isFormData ? data : JSON.stringify(data)
+        });
+    }
 };
 
 export const notificationsApi = {

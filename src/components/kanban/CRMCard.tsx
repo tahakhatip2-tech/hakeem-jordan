@@ -126,7 +126,7 @@ export function CRMCard({ contact, onDelete, onUpdateStatus, onOpenChat }: CRMCa
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 rounded-full bg-green-500/10 text-green-600 hover:bg-green-500 hover:text-white shadow-sm border border-green-500/20"
+                            className="h-8 w-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white shadow-sm border border-primary/20"
                             onClick={handleWhatsApp}
                             title="مراسلة عبر واتساب"
                         >
@@ -158,7 +158,7 @@ function getStatusColor(status: string) {
     switch (status) {
         case 'new': return '#3b82f6';
         case 'interested': return '#eab308';
-        case 'customer': return '#22c55e';
+        case 'customer': return '#1d4ed8';
         case 'junk': return '#ef4444';
         default: return '#9ca3af';
     }
@@ -167,7 +167,7 @@ function getStatusColor(status: string) {
 function getPlatformColor(platform: string = '') {
     const p = platform.toLowerCase();
     if (p.includes('facebook')) return 'bg-blue-600 text-white shadow-blue-500/20';
-    if (p.includes('whatsapp')) return 'bg-green-600 text-white shadow-green-500/20';
+    if (p.includes('whatsapp')) return 'bg-primary text-white shadow-primary/20';
     if (p.includes('google')) return 'bg-emerald-600 text-white shadow-emerald-500/20';
     if (p.includes('instagram')) return 'bg-pink-600 text-white shadow-pink-500/20';
     return 'bg-secondary text-secondary-foreground';

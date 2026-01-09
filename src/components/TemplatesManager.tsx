@@ -58,14 +58,14 @@ export const TemplatesManager = () => {
         <div className="space-y-6 animate-fade-in p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+                    <h2 className="text-3xl font-display font-black text-foreground">
                         إدارة الردود الآلية
                     </h2>
-                    <p className="text-muted-foreground mt-1">قم ببرمجة الكلمات المفتاحية والردود التي سيقوم البوت بإرسالها تلقائياً</p>
+                    <p className="text-muted-foreground/80 font-medium mt-1">قم ببرمجة الكلمات المفتاحية والردود التي سيقوم البوت بإرسالها تلقائياً</p>
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button onClick={() => handleOpenDialog()} className="gap-2 gradient-primary shadow-lg shadow-primary/20 rounded-xl px-6 h-11">
+                        <Button onClick={() => handleOpenDialog()} className="gap-2 rounded-xl px-6 h-11">
                             <Plus className="h-5 w-5" />
                             رد آلي جديد
                         </Button>
@@ -103,7 +103,7 @@ export const TemplatesManager = () => {
                         </div>
                         <DialogFooter className="gap-2 sm:gap-0">
                             <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-xl flex-1 sm:flex-none">إلغاء</Button>
-                            <Button onClick={handleSave} className="gradient-primary rounded-xl px-8 flex-1 sm:flex-none">
+                            <Button onClick={handleSave} className="rounded-xl px-8 flex-1 sm:flex-none">
                                 {currentTemplate ? "حفظ التعديلات" : "إضافة الرد"}
                             </Button>
                         </DialogFooter>
@@ -111,11 +111,11 @@ export const TemplatesManager = () => {
                 </Dialog>
             </div>
 
-            <Card className="border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl shadow-black/5 overflow-hidden rounded-3xl">
+            <Card className="border border-border/50 bg-card/40 backdrop-blur-sm shadow-sm overflow-hidden rounded-3xl">
                 <CardHeader className="border-b border-border/50 bg-muted/20">
-                    <CardTitle className="flex items-center gap-2.5 text-lg">
-                        <div className="p-2 rounded-lg bg-primary/10">
-                            <MessageSquare className="h-5 w-5 text-primary" />
+                    <CardTitle className="flex items-center gap-2.5 text-lg text-foreground">
+                        <div className="p-2 rounded-2xl border-2 border-primary/10 bg-primary/5 text-primary/70">
+                            <MessageSquare className="h-5 w-5" />
                         </div>
                         القواعد النشطة ({templateList.length})
                     </CardTitle>
@@ -128,7 +128,7 @@ export const TemplatesManager = () => {
                             </div>
                             <p className="text-muted-foreground font-medium mb-1">لا توجد قواعد رد آلي حتى الآن</p>
                             <p className="text-xs text-muted-foreground/50 mb-6">ابدأ ببرمجة الكلمات المفتاحية لتسهيل الرد على العملاء</p>
-                            <Button onClick={() => handleOpenDialog()} variant="outline" className="rounded-xl gap-2 hover:bg-primary hover:text-white transition-all">
+                            <Button onClick={() => handleOpenDialog()} variant="default" className="rounded-xl gap-2">
                                 <Plus className="h-4 w-4" />
                                 أضف أول قاعدة
                             </Button>
@@ -147,7 +147,7 @@ export const TemplatesManager = () => {
                                     {templateList.map((template) => (
                                         <TableRow key={template.id} className="border-border/50 hover:bg-muted/10 transition-colors">
                                             <TableCell className="font-bold">
-                                                <span className="px-3 py-1 rounded-full bg-primary/5 text-primary text-xs border border-primary/10">
+                                                <span className="px-3 py-1 rounded-xl font-black text-[11px] text-primary border-2 border-primary/20 bg-primary/5 shadow-inner">
                                                     {template.trigger}
                                                 </span>
                                             </TableCell>

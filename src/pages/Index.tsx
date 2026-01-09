@@ -12,6 +12,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { TemplatesManager } from "@/components/TemplatesManager";
 import AppointmentsCalendar from "@/components/AppointmentsCalendar";
 import { PatientCard } from "@/components/PatientCard";
+import PatientInquiry from "./PatientInquiry";
 import WhatsAppBot from "./WhatsAppBot";
 import { MedicalStatsCard } from "@/components/MedicalStatsCard";
 import { AutoReplyToggle } from "@/components/AutoReplyToggle";
@@ -38,6 +39,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
+import { BottomNav } from "@/components/BottomNav";
+
 const Index = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
@@ -62,7 +65,8 @@ const Index = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         const [statsData, settingsData, upcomingData] = await Promise.all([
           appointmentsApi.getStats(),
           whatsappApi.getSettings(),
@@ -120,42 +124,25 @@ const Index = () => {
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden" dir="rtl">
+    <div className="flex min-h-screen bg-background" dir="rtl">
       {/* Sidebar Area (Desktop) */}
-      <aside className="hidden md:block w-80 flex-shrink-0 border-l border-border/50 bg-card/50 backdrop-blur-xl z-50">
+      <aside className="hidden md:block w-80 flex-shrink-0 border-l border-border/50 bg-card/50 backdrop-blur-xl z-50 sticky top-0 h-screen">
         <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen pb-24 md:pb-0">
         <Header
           onNavigate={(path) => navigate(path)}
           onTabChange={(tab) => setActiveTab(tab)}
-          mobileNav={
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-6 w-6 text-primary" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="p-0 w-80 border-l border-border/50">
-                <Sidebar
-                  activeTab={activeTab}
-                  setActiveTab={(tab) => {
-                    setActiveTab(tab);
-                    setIsMobileMenuOpen(false);
-                  }}
-                />
-              </SheetContent>
-            </Sheet>
-          }
+          activeTab={activeTab}
         />
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 scrollbar-hide">
+        <main className="flex-1 p-3 md:p-8">
           {activeTab === 'dashboard' && (
-            <div className="space-y-6 animate-fade-in pb-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="space-y-4 md:space-y-6 animate-fade-in pb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 <div style={{ animationDelay: '0s' }}>
                   <MedicalStatsCard
                     title="مرضى اليوم"
@@ -163,6 +150,7 @@ const Index = () => {
                     subtitle="إجمالي المواعيد"
                     icon={Users}
                     color="blue"
+                    backgroundImage="/stats-bg-1.png"
                   />
                 </div>
                 <div style={{ animationDelay: '0.1s' }}>
@@ -171,7 +159,8 @@ const Index = () => {
                     value={stats?.today_completed || 0}
                     subtitle="مريض حضر"
                     icon={CheckCircle2}
-                    color="green"
+                    color="blue"
+                    backgroundImage="/stats-bg-1.png"
                   />
                 </div>
                 <div style={{ animationDelay: '0.2s' }}>
@@ -181,6 +170,7 @@ const Index = () => {
                     subtitle="مريض منتظر"
                     icon={Clock}
                     color="orange"
+                    backgroundImage="/stats-bg-1.png"
                   />
                 </div>
                 <div style={{ animationDelay: '0.3s' }}>
@@ -190,13 +180,13 @@ const Index = () => {
                     subtitle={stats?.today_total > 0 ? "بناءً على مواعيد اليوم" : "النظام جديد"}
                     icon={TrendingUp}
                     color="purple"
+                    backgroundImage="/stats-bg-1.png"
                   />
                 </div>
               </div>
 
               <AutoReplyToggle
-                isActive={aiSettings?.ai_enabled === '1'}
-                onToggle={handleToggleAutoReply}
+                isActive={true}
               />
 
               <UpcomingAppointments
@@ -204,42 +194,44 @@ const Index = () => {
                   .filter(apt => apt.status === 'scheduled' || apt.status === 'confirmed')
                   .map(apt => ({
                     id: apt.id.toString(),
-                    patientName: apt.patient_name || apt.customer_name,
-                    time: new Date(apt.appointment_date).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }),
-                    date: new Date(apt.appointment_date).toLocaleDateString('ar-EG', { weekday: 'short', day: 'numeric', month: 'short' }),
-                    type: apt.appointment_type === 'consultation' ? 'استشارة' : apt.appointment_type,
+                    patientName: apt.customerName || apt.patient_name || apt.customer_name || 'بدون اسم',
+                    time: new Date(apt.appointmentDate || apt.appointment_date || "").toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }),
+                    date: new Date(apt.appointmentDate || apt.appointment_date || "").toLocaleDateString('ar-EG', { weekday: 'short', day: 'numeric', month: 'short' }),
+                    type: (apt.type || apt.appointment_type) === 'consultation' ? 'استشارة' : (apt.type || apt.appointment_type),
                     status: apt.status === 'scheduled' ? 'scheduled' : 'confirmed'
                   }))}
                 onViewAll={() => setActiveTab('appointments')}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                <Card className="p-6 border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all cursor-pointer" onClick={() => setActiveTab('whatsapp-bot')}>
+                <Card className="p-6 border border-border/50 bg-card/40 backdrop-blur-sm hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group" onClick={() => setActiveTab('whatsapp-bot')}>
                   <div className="flex items-center gap-4">
-                    <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20">
-                      <MessageCircle className="h-8 w-8 text-green-600" />
+                    <div className="p-3 rounded-2xl border-2 border-primary/10 bg-primary/5 text-primary/70 transition-all duration-300 group-hover:scale-110 group-hover:border-primary/30 group-hover:text-primary">
+                      <MessageCircle className="h-7 w-7" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold mb-1">عرض المحادثات</h3>
-                      <p className="text-sm text-muted-foreground">تحدث مع المرضى عبر واتساب</p>
+                      <h3 className="text-lg font-bold mb-1 text-foreground">عرض المحادثات</h3>
+                      <p className="text-sm text-muted-foreground/80 font-medium">تحدث مع المرضى عبر واتساب</p>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="p-6 border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all cursor-pointer" onClick={() => setActiveTab('appointments')}>
+                <Card className="p-6 border border-border/50 bg-card/40 backdrop-blur-sm hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group" onClick={() => setActiveTab('appointments')}>
                   <div className="flex items-center gap-4">
-                    <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                      <Calendar className="h-8 w-8 text-blue-600" />
+                    <div className="p-3 rounded-2xl border-2 border-primary/10 bg-primary/5 text-primary/70 transition-all duration-300 group-hover:scale-110 group-hover:border-primary/30 group-hover:text-primary">
+                      <Calendar className="h-7 w-7" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold mb-1">التقويم الكامل</h3>
-                      <p className="text-sm text-muted-foreground">عرض جميع المواعيد</p>
+                      <h3 className="text-lg font-bold mb-1 text-foreground">التقويم الكامل</h3>
+                      <p className="text-sm text-muted-foreground/80 font-medium">عرض جميع المواعيد</p>
                     </div>
                   </div>
                 </Card>
               </div>
             </div>
           )}
+
+          {activeTab === 'patient-inquiry' && <PatientInquiry />}
 
           {activeTab === 'contacts' && (
             <div className="space-y-6 animate-fade-in pb-10">
@@ -250,15 +242,17 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <Button
-                    variant="outline"
                     size="sm"
-                    className="gap-2 border-primary/20 hover:bg-primary/5 hidden md:flex"
+                    className="gap-2 hidden md:flex bg-white text-primary shadow-sm font-black border-r-4 border-primary rounded-l-xl rounded-r-none translate-x-1 h-10 px-5 hover:bg-primary/5 transition-all"
                     onClick={() => syncContacts.mutate()}
                   >
                     <RefreshCw className={cn("h-4 w-4", syncContacts.isPending && "animate-spin")} />
                     مزامنة من واتساب
                   </Button>
-                  <Button className="gradient-primary w-full md:w-auto" onClick={exportContacts}>
+                  <Button
+                    className="w-full md:w-auto bg-white text-primary shadow-sm font-black border-r-4 border-primary rounded-l-xl rounded-r-none translate-x-1 h-10 px-6 hover:bg-primary/5 transition-all"
+                    onClick={exportContacts}
+                  >
                     تصدير البيانات
                   </Button>
                 </div>
@@ -345,6 +339,12 @@ const Index = () => {
           <Footer />
         </main>
       </div>
+
+      <BottomNav
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onSearchClick={() => setActiveTab('contacts')}
+      />
     </div>
   );
 };

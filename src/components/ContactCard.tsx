@@ -39,19 +39,18 @@ export const ContactCard = ({ id, name, phone, source, platform, extractedFrom, 
   const statusConfig: any = {
     new: { label: 'جديد', color: 'bg-blue-500/10 text-blue-500', icon: Clock },
     contacted: { label: 'تم التواصل', color: 'bg-amber-500/10 text-amber-500', icon: MessageCircle },
-    interested: { label: 'مهتم جداً', color: 'bg-green-500/10 text-green-500', icon: Star },
+    interested: { label: 'مهتم جداً', color: 'bg-primary/10 text-primary', icon: Star },
   };
 
   return (
     <Card className={cn(
       "p-5 border-border/50 transition-all duration-300 shadow-card hover:shadow-elevated relative overflow-hidden group flex flex-col min-h-[320px]",
-      status === 'interested' ? "border-green-500/30 bg-green-500/5" : "bg-card"
+      status === 'interested' ? "border-primary/30 bg-primary/5" : "bg-card"
     )}>
       {/* Platform background accent */}
       <div className={cn(
         "absolute top-0 right-0 w-1 h-full",
-        platform?.toLowerCase() === 'facebook' ? 'bg-blue-600' :
-          platform?.toLowerCase() === 'whatsapp' ? 'bg-green-600' : 'bg-primary'
+        platform?.toLowerCase() === 'facebook' ? 'bg-blue-600' : 'bg-primary'
       )} />
 
       <div className="flex items-start justify-between mb-4">
@@ -79,7 +78,7 @@ export const ContactCard = ({ id, name, phone, source, platform, extractedFrom, 
       </div>
 
       <div className="flex items-center gap-2 mb-4 p-3 rounded-xl bg-muted/20 border border-border/50">
-        <Phone className="h-4 w-4 text-success" />
+        <Phone className="h-4 w-4 text-primary" />
         {hasPhone ? (
           <>
             <span className="font-mono font-bold flex-1 text-center text-sm" dir="ltr">{phone}</span>
@@ -117,7 +116,7 @@ export const ContactCard = ({ id, name, phone, source, platform, extractedFrom, 
         {hasPhone && (
           <div className="flex flex-1 gap-0.5">
             <Button
-              className="flex-1 gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white shadow-sm h-9 rounded-l-none"
+              className="flex-1 gap-2 bg-primary hover:bg-primary/90 text-white shadow-sm h-9 rounded-l-none"
               size="sm"
               onClick={() => {
                 if (onOpenChat) {
@@ -132,7 +131,7 @@ export const ContactCard = ({ id, name, phone, source, platform, extractedFrom, 
             </Button>
             <Popover>
               <PopoverTrigger asChild>
-                <Button className="w-8 shrink-0 bg-[#25D366] hover:bg-[#20ba59] text-white h-9 p-0 rounded-r-none border-l border-white/20" size="sm">
+                <Button className="w-8 shrink-0 bg-primary hover:bg-primary/90 text-white h-9 p-0 rounded-r-none border-l border-white/20" size="sm">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>

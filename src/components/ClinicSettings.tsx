@@ -116,14 +116,22 @@ export default function ClinicSettings() {
     };
 
     return (
-        <div className="space-y-6 animate-fade-in pb-10">
+        <div className="space-y-6 animate-fade-in pb-10 relative">
+            {/* Background Image - Absolute to cover the container if we want a dedicated background, 
+                 but since this is likely inside a dashboard that already has a background, 
+                 we will focus on making the Content Glassy. 
+                 However, to match Auth perfectly, we might want that specific gradient/image.
+                 Let's add a subtle gradient background to the container to distinguish it. 
+             */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-white/50 to-blue-100/50 dark:from-blue-950/20 dark:via-background/50 dark:to-blue-900/20 -z-10 rounded-3xl" />
+
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-1">
                 <div>
-                    <h2 className="text-2xl font-display font-bold">الإعدادات</h2>
-                    <p className="text-sm text-muted-foreground">إعدادات العيادة والهوية البصرية</p>
+                    <h2 className="text-2xl font-display font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">الإعدادات</h2>
+                    <p className="text-sm text-blue-600/80 font-medium">إعدادات العيادة والهوية البصرية</p>
                 </div>
-                <Button onClick={handleSave} disabled={loading} className="gap-2 gradient-primary">
+                <Button onClick={handleSave} disabled={loading} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20 transition-all hover:scale-105 active:scale-95">
                     <Save className="h-4 w-4" />
                     {loading ? 'جاري الحفظ...' : 'حفظ التغييرات'}
                 </Button>
@@ -131,56 +139,58 @@ export default function ClinicSettings() {
 
             {/* Visual Branding Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="lg:col-span-2 p-6">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 rounded-lg bg-orange-500/10">
-                            <ImageIcon className="h-5 w-5 text-orange-600" />
+                <Card className="lg:col-span-2 p-6 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
+                            <ImageIcon className="h-6 w-6" />
                         </div>
-                        <h3 className="text-lg font-bold">الهوية البصرية</h3>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">الهوية البصرية</h3>
                     </div>
 
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <Label htmlFor="clinic_name">اسم العيادة</Label>
+                                <Label htmlFor="clinic_name" className="text-blue-900 dark:text-blue-100 font-semibold">اسم العيادة</Label>
                                 <Input
                                     id="clinic_name"
                                     value={settings.clinic_name}
                                     onChange={(e) => updateSetting('clinic_name', e.target.value)}
                                     placeholder="مثلاً: عيادة الأمل"
+                                    className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="clinic_description">وصف العيادة (المجال)</Label>
+                                <Label htmlFor="clinic_description" className="text-blue-900 dark:text-blue-100 font-semibold">وصف العيادة (المجال)</Label>
                                 <Input
                                     id="clinic_description"
                                     value={settings.clinic_description}
                                     onChange={(e) => updateSetting('clinic_description', e.target.value)}
                                     placeholder="مثلاً: طب الأسنان وصحة الفم"
+                                    className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                                 />
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-border/50">
-                            <Label className="block mb-2">شعار العيادة</Label>
-                            <div className="flex items-center gap-6">
-                                <div className="h-24 w-24 rounded-2xl border-2 border-dashed border-border flex items-center justify-center bg-muted/30 overflow-hidden relative group">
+                        <div className="pt-6 border-t border-blue-100 dark:border-blue-800/50">
+                            <Label className="block mb-3 text-blue-900 dark:text-blue-100 font-semibold">شعار العيادة</Label>
+                            <div className="flex items-center gap-6 bg-white/40 dark:bg-black/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800/50">
+                                <div className="h-28 w-28 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-700 flex items-center justify-center bg-blue-50/50 dark:bg-blue-900/20 overflow-hidden relative group/img shadow-inner">
                                     {settings.clinic_logo ? (
-                                        <img src={settings.clinic_logo.startsWith('http') ? settings.clinic_logo : `${BASE_URL}${settings.clinic_logo}`} alt="Logo Preview" className="h-full w-full object-cover" />
+                                        <img src={settings.clinic_logo.startsWith('http') ? settings.clinic_logo : `${BASE_URL}${settings.clinic_logo}`} alt="Logo Preview" className="h-full w-full object-cover transition-transform duration-700 group-hover/img:scale-110" />
                                     ) : (
-                                        <Building2 className="h-10 w-10 text-muted-foreground/30" />
+                                        <Building2 className="h-10 w-10 text-blue-400/50" />
                                     )}
                                     {uploading && (
                                         <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center">
-                                            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                                            <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
                                         </div>
                                     )}
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-3">
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="gap-2"
+                                        className="gap-2 border-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/40 text-blue-700 dark:text-blue-300"
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={uploading}
                                     >
@@ -201,66 +211,75 @@ export default function ClinicSettings() {
                     </div>
                 </Card>
 
-                <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/10">
-                    <h3 className="text-md font-bold mb-4 flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                        نصيحة احترافية
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                        تخصيص اسم وشعار عيادتك يعزز من ثقة المرضى ويجعل النظام يبدو كجزء متكامل من علامتك التجارية. سيتغير هذا الشعار في القائمة الجانبية وفي كافة التقارير الصادرة عن النظام.
-                    </p>
+                <Card className="p-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-3xl shadow-xl shadow-blue-600/20 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                        <ImageIcon className="w-32 h-32" />
+                    </div>
+                    <div className="relative z-10">
+                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-white animate-pulse shadow-[0_0_10px_white]" />
+                            نصيحة احترافية
+                        </h3>
+                        <p className="text-sm text-blue-100 leading-relaxed font-medium">
+                            تخصيص اسم وشعار عيادتك يعزز من ثقة المرضى ويجعل النظام يبدو كجزء متكامل من علامتك التجارية. سيتغير هذا الشعار في القائمة الجانبية وفي كافة التقارير الصادرة عن النظام.
+                        </p>
+                    </div>
                 </Card>
             </div>
 
             {/* Clinic Information */}
-            <Card className="p-6">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                        <Building2 className="h-5 w-5 text-primary" />
+            <Card className="p-6 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
+                        <Building2 className="h-6 w-6" />
                     </div>
-                    <h3 className="text-lg font-bold">معلومات التواصل</h3>
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">معلومات التواصل</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <Label htmlFor="doctor_name">اسم الطبيب المسئول</Label>
+                        <Label htmlFor="doctor_name" className="text-blue-900 dark:text-blue-100 font-semibold">اسم الطبيب المسئول</Label>
                         <Input
                             id="doctor_name"
                             value={settings.doctor_name}
                             onChange={(e) => updateSetting('doctor_name', e.target.value)}
                             placeholder="د. محمد أحمد"
+                            className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="phone">رقم الهاتف الرسمي</Label>
+                        <Label htmlFor="phone" className="text-blue-900 dark:text-blue-100 font-semibold">رقم الهاتف الرسمي</Label>
                         <Input
                             id="phone"
                             value={settings.phone}
                             onChange={(e) => updateSetting('phone', e.target.value)}
                             placeholder="0791234567"
                             dir="ltr"
+                            className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="emergency_phone">رقم للطوارئ (اختياري)</Label>
+                        <Label htmlFor="emergency_phone" className="text-blue-900 dark:text-blue-100 font-semibold">رقم للطوارئ (اختياري)</Label>
                         <Input
                             id="emergency_phone"
                             value={settings.emergency_phone}
                             onChange={(e) => updateSetting('emergency_phone', e.target.value)}
                             placeholder="0791234567"
                             dir="ltr"
+                            className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="address">العنوان الفعلي</Label>
+                        <Label htmlFor="address" className="text-blue-900 dark:text-blue-100 font-semibold">العنوان الفعلي</Label>
                         <Input
                             id="address"
                             value={settings.address}
                             onChange={(e) => updateSetting('address', e.target.value)}
                             placeholder="عمان، شارع المدينة المنورة..."
+                            className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                         />
                     </div>
                 </div>
@@ -268,60 +287,64 @@ export default function ClinicSettings() {
 
             {/* Working Hours & Appointments */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="p-6">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 rounded-lg bg-blue-500/10">
-                            <Clock className="h-5 w-5 text-blue-500" />
+                <Card className="p-6 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
+                            <Clock className="h-6 w-6" />
                         </div>
-                        <h3 className="text-lg font-bold">ساعات العمل</h3>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">ساعات العمل</h3>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="working_hours_start">بداية الدوام</Label>
+                            <Label htmlFor="working_hours_start" className="text-blue-900 dark:text-blue-100 font-semibold">بداية الدوام</Label>
                             <Input
                                 id="working_hours_start"
                                 type="time"
                                 value={settings.working_hours_start}
                                 onChange={(e) => updateSetting('working_hours_start', e.target.value)}
+                                className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="working_hours_end">نهاية الدوام</Label>
+                            <Label htmlFor="working_hours_end" className="text-blue-900 dark:text-blue-100 font-semibold">نهاية الدوام</Label>
                             <Input
                                 id="working_hours_end"
                                 type="time"
                                 value={settings.working_hours_end}
                                 onChange={(e) => updateSetting('working_hours_end', e.target.value)}
+                                className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                             />
                         </div>
                     </div>
                 </Card>
 
-                <Card className="p-6">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 rounded-lg bg-green-500/10">
-                            <Calendar className="h-5 w-5 text-green-500" />
+                <Card className="p-6 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
+                            <Calendar className="h-6 w-6" />
                         </div>
-                        <h3 className="text-lg font-bold">إعدادات المواعيد</h3>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">إعدادات المواعيد</h3>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="space-y-1">
-                            <Label htmlFor="appointment_duration">مدة الموعد (دقيقة)</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="appointment_duration" className="text-blue-900 dark:text-blue-100 font-semibold">مدة الموعد (دقيقة)</Label>
                             <Input
                                 id="appointment_duration"
                                 type="number"
                                 value={settings.appointment_duration}
                                 onChange={(e) => updateSetting('appointment_duration', parseInt(e.target.value))}
+                                className="bg-white/50 dark:bg-black/20 border-blue-200 dark:border-blue-800 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-11 transition-all"
                             />
                         </div>
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                            <Label htmlFor="reminder_enabled">تفعيل التذكير (WhatsApp)</Label>
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800">
+                            <Label htmlFor="reminder_enabled" className="text-blue-900 dark:text-blue-100 font-semibold">تفعيل التذكير (WhatsApp)</Label>
                             <Switch
                                 id="reminder_enabled"
                                 checked={settings.reminder_enabled}
                                 onCheckedChange={(checked) => updateSetting('reminder_enabled', checked)}
+                                className="data-[state=checked]:bg-blue-600"
                             />
                         </div>
                     </div>
@@ -329,27 +352,27 @@ export default function ClinicSettings() {
             </div>
 
             {/* Auto-Reply Settings */}
-            <Card className="p-6">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 rounded-lg bg-purple-500/10">
-                        <MessageCircle className="h-5 w-5 text-purple-500" />
+            <Card className="p-6 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group bg-gradient-to-r from-white/60 to-blue-50/60 dark:from-black/60 dark:to-blue-900/20">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-500">
+                        <MessageCircle className="h-6 w-6" />
                     </div>
                     <div className="flex-1">
-                        <h3 className="text-lg font-bold">المساعد الذكي (AI)</h3>
-                        <p className="text-sm text-muted-foreground">تفعيل الرد الآلي وحجز المواعيد عبر واتساب</p>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">المساعد الذكي (AI)</h3>
+                        <p className="text-sm text-blue-600/80 font-medium">تفعيل الرد الآلي وحجز المواعيد عبر واتساب</p>
                     </div>
                     <Switch
                         id="auto_reply_enabled"
                         checked={settings.auto_reply_enabled}
                         onCheckedChange={(checked) => updateSetting('auto_reply_enabled', checked)}
-                        className="data-[state=checked]:bg-purple-500"
+                        className="data-[state=checked]:bg-blue-600 scale-110"
                     />
                 </div>
             </Card>
 
             {/* Save Button (Bottom) */}
-            <div className="flex justify-end pt-4">
-                <Button onClick={handleSave} disabled={loading} size="lg" className="gap-2 gradient-primary px-8">
+            <div className="flex justify-end pt-6">
+                <Button onClick={handleSave} disabled={loading} size="lg" className="gap-2 px-10 h-12 rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-xl shadow-blue-600/20 transition-all hover:scale-105 active:scale-95 text-lg font-bold">
                     <Save className="h-5 w-5" />
                     {loading ? 'جاري الحفظ...' : 'حفظ كافة الإعدادات'}
                 </Button>

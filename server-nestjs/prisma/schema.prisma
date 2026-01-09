@@ -45,6 +45,14 @@ model User {
   groups             Group[]
   notifications      Notification[]
   payments           Payment[]
+  appointments       Appointment[]
+  whatsAppChats      WhatsAppChat[]
+  autoReplyTemplates AutoReplyTemplate[]
+  campaigns          Campaign[]
+  services           Service[]
+  settings           Setting[]
+  customerTags       CustomerTag[]
+  pipelines          Pipeline[]
 }
 
 model Plan {
@@ -68,6 +76,7 @@ model Payment {
   method        String   @default("cash") // cash, bank_transfer, etc.
   status        String   @default("pending") // pending, completed, rejected
   transactionId String?  @unique
+  receiptUrl    String?
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -125,6 +134,8 @@ model Contact {
   tags              CustomerTag[]  @relation("ContactTags")
   groups            Group[]        @relation("ContactGroups")
 
+  nationalId        String?        @unique
+
   @@unique([userId, phone])
 }
 
@@ -139,6 +150,8 @@ model Post {
 
 model Pipeline {
   id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
   name      String
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -157,7 +170,9 @@ model Stage {
 
 model WhatsAppChat {
   id              Int           @id @default(autoincrement())
-  phone           String        @unique
+  userId          Int?
+  user            User?         @relation(fields: [userId], references: [id])
+  phone           String
   name            String?
   lastMessage     String?
   lastMessageTime String?
@@ -166,6 +181,8 @@ model WhatsAppChat {
   currentAgent    String        @default("general")
   createdAt       DateTime      @default(now())
   messages        WhatsAppMessage[]
+
+  @@unique([userId, phone])
 }
 
 model WhatsAppMessage {
@@ -181,6 +198,8 @@ model WhatsAppMessage {
 
 model AutoReplyTemplate {
   id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
   trigger   String
   response  String
   isActive  Boolean  @default(true)
@@ -218,8 +237,12 @@ model WhatsAppLog {
 }
 
 model Setting {
-  key   String @id
-  value String
+  userId Int    @default(1)
+  user   User   @relation(fields: [userId], references: [id])
+  key    String
+  value  String
+
+  @@id([userId, key])
 }
 
 model SystemInfo {
@@ -229,13 +252,19 @@ model SystemInfo {
 
 model CustomerTag {
   id       Int       @id @default(autoincrement())
-  name     String    @unique
+  userId   Int?
+  user     User?     @relation(fields: [userId], references: [id])
+  name     String
   color    String?
   contacts Contact[] @relation("ContactTags")
+
+  @@unique([userId, name])
 }
 
 model Appointment {
   id              Int          @id @default(autoincrement())
+  userId          Int?
+  user            User?        @relation(fields: [userId], references: [id])
   phone           String
   customerName    String?
   appointmentDate DateTime
@@ -279,6 +308,8 @@ model TelegramMessage {
 
 model Campaign {
   id              Int                 @id @default(autoincrement())
+  userId          Int?
+  user            User?               @relation(fields: [userId], references: [id])
   name            String
   message         String
   platform        String
@@ -302,6 +333,8 @@ model CampaignRecipient {
 
 model Service {
   id          Int      @id @default(autoincrement())
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id])
   name        String
   description String?
   price       String?
@@ -318,7 +351,10 @@ model MedicalRecord {
   contact       Contact?    @relation(fields: [patientId], references: [id])
   diagnosis     String?
   treatment     String?
+  age           String?
   feeAmount     Decimal?    @db.Decimal(10, 2)
   feeDetails    String?
+  attachmentUrl String?
+  recordType    String      @default("prescription") // prescription, lab_report, sick_leave, referral
   createdAt     DateTime    @default(now())
 }

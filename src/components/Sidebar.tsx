@@ -32,8 +32,8 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     const navigate = useNavigate();
     const { signOut, user } = useAuth();
     const [branding, setBranding] = useState({
-        name: 'عيادتي',
-        description: 'نظام إدارة العيادات',
+        name: 'Hakeem Jo',
+        description: 'Clinic Management System',
         logo: './logo.png'
     });
 
@@ -65,6 +65,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
         { id: 'whatsapp-bot', label: 'المحادثات', icon: MessageCircle },
         { id: 'contacts', label: 'المرضى', icon: Users },
         { id: 'appointments', label: 'المواعيد', icon: Calendar },
+        { id: 'patient-inquiry', label: 'بوابة المرضى', icon: FileText },
         { id: 'bot-stats', label: 'الإحصائيات', icon: LineChart },
         { id: 'templates', label: 'الرسائل الجاهزة', icon: FileText },
     ];
@@ -101,8 +102,8 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                             className={cn(
                                 "w-full flex-row-reverse justify-start gap-3 transition-all duration-300 relative overflow-hidden group mb-1",
                                 activeTab === item.id
-                                    ? "bg-primary/10 text-primary shadow-sm font-bold border-r-4 border-primary rounded-l-lg rounded-r-none"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:translate-x-1"
+                                    ? "bg-white text-primary shadow-md font-black border-r-4 border-primary rounded-l-lg rounded-r-none translate-x-1"
+                                    : "text-primary/70 font-medium hover:text-primary hover:bg-white/50 hover:font-bold hover:translate-x-1"
                             )}
                             onClick={() => setActiveTab(item.id)}
                         >
@@ -129,39 +130,38 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
 
             {/* Sidebar Footer - Brand & Socials */}
             <div className="p-4 border-t border-border/50 bg-card/30 backdrop-blur-md">
-                <div className="flex flex-col items-start gap-3">
-                    {/* Brand (Line 1) */}
+                <div className="flex flex-col items-center gap-3">
+                    {/* Logo */}
                     <a
                         href="https://alkhatib-marketing.great-site.net/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex flex-row items-center gap-3 group cursor-pointer w-full"
+                        className="relative group cursor-pointer"
                     >
-                        <div className="relative flex-shrink-0">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-                            <img
-                                src="/logo.png"
-                                alt="Al-Khatib Logo"
-                                className="relative h-10 w-10 rounded-full border border-white/10 shadow-lg object-cover transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://alkhatib-marketing.great-site.net/favicon.ico';
-                                }}
-                            />
-                        </div>
-                        <div className="flex flex-col items-start text-right">
-                            <h2 className="text-[10px] font-black tracking-tighter bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent group-hover:from-orange-500 group-hover:to-amber-500 transition-all duration-500 flex items-center gap-1">
-                                AL-KHATIB-MARKETING
-                                <ExternalLink className="h-2 w-2 opacity-0 group-hover:opacity-100 transition-opacity text-orange-500" />
-                            </h2>
-                            <div className="flex items-center gap-1 text-[8px] font-bold text-muted-foreground uppercase tracking-wider">
-                                <Sparkles className="h-2 w-2 text-amber-500 animate-spin-slow" />
-                                Premium Digital Solutions
-                            </div>
-                        </div>
+                        <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-20 animate-pulse group-hover:animate-[pulse_0.5s_ease-in-out_infinite]"></div>
+                        <img
+                            src="/logo.png"
+                            alt="Al-Khatib Logo"
+                            className="relative h-10 w-10 rounded-full border-2 border-primary/20 shadow-lg object-cover transition-transform duration-300 group-hover:scale-110"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://alkhatib-marketing.great-site.net/favicon.ico';
+                            }}
+                        />
                     </a>
 
-                    {/* Social Icons (Line 2) */}
-                    <div className="flex items-center justify-start gap-2 w-full pr-1">
+                    {/* Brand Name */}
+                    <h2 className="text-xs font-black tracking-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent text-center leading-tight">
+                        AL-KHATIB-MARKETING&SOFTWARE
+                    </h2>
+
+                    {/* Tagline */}
+                    <div className="flex items-center gap-1.5 text-[9px] font-bold text-primary/70 uppercase tracking-wider">
+                        <Sparkles className="h-2 w-2 text-accent" />
+                        Premium Digital Solutions
+                    </div>
+
+                    {/* Social Icons */}
+                    <div className="flex items-center justify-center gap-2">
                         {[
                             { icon: Facebook, href: "https://www.facebook.com/alkhatib.marketing/" },
                             { icon: Instagram, href: "https://www.instagram.com/alkhatib.marketing/" },
@@ -173,11 +173,22 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                                 href={social.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1.5 rounded-full border border-orange-500/30 text-orange-500 transition-all duration-500 hover:scale-110 hover:border-orange-500 hover:bg-orange-500 hover:text-white hover:shadow-[0_0_10px_rgba(249,115,22,0.4)] group"
+                                className="p-1 rounded-full border border-primary/30 text-primary transition-all duration-300 hover:scale-110 hover:border-primary hover:bg-primary hover:text-white hover:shadow-lg group"
                             >
                                 <social.icon className="h-3 w-3 transition-transform duration-500 group-hover:rotate-[360deg]" />
                             </a>
                         ))}
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-center text-[9px] text-primary/60 leading-relaxed">
+                        نقدم حلولاً برمجية وتسويقية متكاملة، من تطوير الأنظمة وتطبيقات الويب إلى استراتيجيات التسويق الرقمي المتقدمة.
+                    </p>
+
+                    {/* Copyright */}
+                    <div className="text-[8px] text-primary/40 text-center space-y-0.5">
+                        <div>© 2026 Al-Khatib Software</div>
+                        <div>Hakeem Jo v1.0</div>
                     </div>
                 </div>
             </div>

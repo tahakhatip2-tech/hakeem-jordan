@@ -6,15 +6,24 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+service.log
 
+# Build & Vite
 node_modules
 dist
 dist-server
 dist-ssr
+.vite
+vite.config.ts.timestamp-*
+
+# App Data & Sensitive
 auth_info_baileys
 uploads
 sessions
 *.local
+.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*
@@ -31,5 +40,7 @@ sessions
 data.db
 *.sqlite
 *.sqlite3
+server-nestjs/data.db
 
+# Generated
 /generated/prisma

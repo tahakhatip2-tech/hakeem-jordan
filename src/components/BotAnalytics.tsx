@@ -14,7 +14,7 @@ import {
 } from 'recharts';
 import { MessageSquare, Zap, ArrowUpRight, TrendingUp, Users } from 'lucide-react';
 
-const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+const COLORS = ['#1d4ed8', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 export default function BotAnalytics() {
     const [data, setData] = useState<any>(null);
@@ -44,7 +44,7 @@ export default function BotAnalytics() {
     const stats = [
         { title: 'إجمالي الردود الآلية', value: data.stats.auto_replies, icon: Zap, color: 'text-yellow-500' },
         { title: 'الرسائل المستلمة', value: data.stats.incoming_messages, icon: MessageSquare, color: 'text-blue-500' },
-        { title: 'الرسائل المرسلة', value: data.stats.outgoing_messages, icon: ArrowUpRight, color: 'text-green-500' },
+        { title: 'الرسائل المرسلة', value: data.stats.outgoing_messages, icon: ArrowUpRight, color: 'text-primary' },
     ];
 
     return (

@@ -49,23 +49,22 @@ export class UsersService {
 
         // Auto-expire check
         if (user && user.expiryDate && new Date() > user.expiryDate && user.subscriptionStatus !== SubscriptionStatus.CANCELED) {
-            // If trial/plan expired, downgrade status
-            // But we don't save it here to avoid side-effects in GET requests, 
-            // usually done via cron or middleware. For now, we return the status as is 
-            // but the frontend/guards should check expiry.
-
-            // Optional: Auto-update to PAST_DUE if we want strict enforcement on read
-            /*
-            if (user.subscriptionStatus === SubscriptionStatus.TRIAL || user.subscriptionStatus === SubscriptionStatus.ACTIVE) {
-                 await this.prisma.user.update({
-                     where: { id: user.id },
-                     data: { subscriptionStatus: SubscriptionStatus.PAST_DUE }
-                 });
-                 user.subscriptionStatus = SubscriptionStatus.PAST_DUE;
-            }
-            */
+            // ... logic ...
         }
 
         return user;
+    }
+
+    async findAll(): Promise<User[]> {
+        return this.prisma.user.findMany({
+            include: { plan: true },
+        });
+    }
+
+    async update(id: number, data: any): Promise<User> {
+        return this.prisma.user.update({
+            where: { id },
+            data,
+        });
     }
 }
