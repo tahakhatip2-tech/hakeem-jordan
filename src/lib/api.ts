@@ -1,5 +1,10 @@
 // Use environment variables for the API URL in production, or default to localhost
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Ensure the API_URL includes the /api prefix for NestJS
+let baseApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+if (baseApiUrl && !baseApiUrl.endsWith('/api')) {
+    baseApiUrl = baseApiUrl.endsWith('/') ? `${baseApiUrl}api` : `${baseApiUrl}/api`;
+}
+const API_URL = baseApiUrl;
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 export { BASE_URL };
@@ -15,6 +20,7 @@ export const apiFetch = async (endpoint: string, options: any = {}) => {
     };
 
     const url = `${API_URL}${endpoint}`;
+    console.log(`[API] Fetching: ${url}`);
 
     try {
         const response = await fetch(url, { ...options, headers });
