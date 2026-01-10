@@ -14,9 +14,10 @@ async function bootstrap() {
   // }));
 
   app.enableCors({
-    origin: '*',
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: '*',
+    allowedHeaders: 'Content-Type, Accept, Authorization, Bypass-Tunnel-Reminder, ngrok-skip-browser-warning',
+    credentials: true,
   });
   app.setGlobalPrefix('api');
   const port = process.env.PORT ?? 3000;

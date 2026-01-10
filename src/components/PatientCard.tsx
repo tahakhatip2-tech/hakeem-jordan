@@ -88,7 +88,7 @@ export const PatientCard = ({
                 </div>
                 {hasPhone ? (
                     <>
-                        <span className="font-black tabular-nums flex-1 text-center text-sm text-blue-900 dark:text-blue-100" dir="ltr">{phone}</span>
+                        <span className="font-black tabular-nums flex-1 text-center text-sm text-blue-900 dark:text-blue-100" dir="ltr">{phone?.replace(/@.*/, '')}</span>
                         <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-blue-600 hover:text-white transition-all rounded-lg" onClick={copyToClipboard}>
                             <Copy className="h-4 w-4" />
                         </Button>

@@ -20,7 +20,7 @@ export class AiService {
         }
     }
 
-    async getAIResponse(userId: number, userMessage: string, phone?: string, audioFilePath?: string): Promise<string | null> {
+    async getAIResponse(userId: number, userMessage: string, phone?: string, contactName: string = 'غير معروف', audioFilePath?: string): Promise<string | null> {
         try {
             // 1. Fetch ALL Settings & Templates for deep context
             const [settings, templates, services] = await Promise.all([
@@ -68,6 +68,7 @@ export class AiService {
 - أنت تتحدث باسم "${clinicName}" التي يديرها "${doctorName}".
 - تخصص العيادة وهويتها: "${clinicDesc}".
 - أسلوبك: دافئ، مهني، مختصر، ومفيد جداً. تتحدث باللهجة البيضاء أو الفصحى المبسطة.
+- اسم المتصل الحالي (كما يظهر في واتساب): "${contactName}".
 
 معلومات العيادة (Facts):
 - العنوان: ${address}
@@ -84,16 +85,24 @@ ${knowledgeBase}
 - غداً (${tomorrowStr}): ${tomorrowSlots.length > 0 ? tomorrowSlots.join(', ') : 'ممتلئ بالكامل'}
 *ملاحظة هامة:* لا تقترح أبداً وقتاً غير موجود في هذه القائمة.
 
-بروتوكول التعامل:
+بروتوكول التعامل (Strict Protocol):
 1. إذا سأل المريض عن معلومة موجودة في "قاعدة المعرفة" أو "معلومات العيادة"، أجب مباشرة وبدقة.
-2. إذا أراد حجز موعد، اعرض عليه المواعيد المتاحة بذكاء (مثلاً: "لدينا موعد شاغر اليوم الساعة 2:30، هل يناسبك؟").
-3. إذا وافق على موعد، استخدم الصيغة البرمجية لتثبيته: \`[[APPOINTMENT: YYYY-MM-DD | HH:MM | Customer Name | Notes]]\`
-4. إذا سأل هل الطبيب موجود؟ أجب بناءً على ساعات العمل.
+2. بروتوكول حجز الموعد (هام جداً):
+   - الخطوة أ: الاتفاق على الوقت.
+   - الخطوة ب: معرفة اسم المريض.
+     - اسأل: "هل الحجز لك يا ${contactName} أم لشخص آخر؟"
+     - إذا قال "لي" -> استخدم الاسم "${contactName}".
+     - إذا قال "لشخص آخر" أو "لأخي/زوجتي/..." -> اسأل: "ما هو اسم المريض الثلاثي؟".
+   - الخطوة ج: التثبيت.
+     - بمجرد الحصول على الوقت والاسم، استخدم الصيغة: \`[[APPOINTMENT: YYYY-MM-DD | HH:MM | Patient Name | Notes]]\`
+     - لا تطلب التأكيد بعد إصدار الكود، الكود هو التأكيد.
+
+3. إذا سأل هل الطبيب موجود؟ أجب بناءً على ساعات العمل.
 
 تعليمات المالك (System Prompt Override):
 ${getSetting('ai_system_instruction')}
 
-تذكر: هدفك هو راحة المريض وتنظيم جدول الطبيب.
+تذكر: هدفك هو راحة المريض، وتنظيم جدول الطبيب، والحصول على اسم المريض الصحيح.
 `;
 
             // 5. Build History
@@ -137,6 +146,19 @@ ${getSetting('ai_system_instruction')}
                     });
 
                     const data: any = await response.json();
+
+                    // Check for Quota/Rate Limit Errors
+                    if (data.error) {
+                        const errorCode = data.error.code;
+                        const errorMessage = data.error.message || '';
+
+                        // 429: Resource Exhausted (Quota exceeded)
+                        if (errorCode === 429 || errorMessage.toLowerCase().includes('quota') || errorMessage.includes('Resource has been exhausted')) {
+                            console.warn(`[AI Warning] Quota exceeded for model ${model}`);
+                            return "شكراً، لقد انتهى رصيد الخدمة مؤقتاً.";
+                        }
+                    }
+
                     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
                     if (text) {

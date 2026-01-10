@@ -25,7 +25,7 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
     private readonly INDIVIDUAL_JID_SUFFIX = '@s.whatsapp.net';
 
     private isIndividualJid(jid: string): boolean {
-        return jid?.endsWith(this.INDIVIDUAL_JID_SUFFIX);
+        return jid?.endsWith(this.INDIVIDUAL_JID_SUFFIX) || jid?.endsWith('@lid');
     }
 
     constructor(
@@ -106,11 +106,16 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
         sock.ev.on('creds.update', saveCreds);
 
         sock.ev.on('messages.upsert', async ({ messages, type }) => {
-            if (type === 'notify') {
-                for (const msg of messages) {
-                    if (!msg.key.fromMe) {
-                        await this.handleMessage(userId, msg);
-                    }
+            console.log(`[WhatsApp Debug] Received 'messages.upsert' event. Type: ${type}, Count: ${messages.length}`);
+
+            for (const msg of messages) {
+                console.log(`[WhatsApp Debug] Raw Message:`, JSON.stringify(msg.key));
+
+                if (!msg.key.fromMe && type === 'notify') {
+                    console.log(`[WhatsApp Debug] Processing incoming message from ${msg.key.remoteJid}`);
+                    await this.handleMessage(userId, msg);
+                } else {
+                    console.log(`[WhatsApp Debug] Skipped message. fromMe: ${msg.key.fromMe}, type: ${type}`);
                 }
             }
         });
@@ -473,7 +478,8 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
         // 3. AI Reply (Conditional on settings)
         const settings = await this.getSettings(userId);
         if (settings.ai_enabled === '1') {
-            const aiResponseRaw = await this.aiService.getAIResponse(userId, messageContent, from);
+            const contactName = chat.name || msg.pushName || 'Client';
+            const aiResponseRaw = await this.aiService.getAIResponse(userId, messageContent, from, contactName);
             if (aiResponseRaw) {
                 // Process Actions (like Appointments)
                 const aiResponse = await this.extractAndProcessActions(userId, aiResponseRaw, from);

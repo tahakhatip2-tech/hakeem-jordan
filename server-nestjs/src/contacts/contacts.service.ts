@@ -22,9 +22,8 @@ export class ContactsService {
             orderBy: { createdAt: 'desc' },
         });
 
-        // Map to match frontend expectations and filter non-individual JIDs
+        // Map to match frontend expectations
         return contacts
-            .filter(contact => contact.phone.endsWith('@s.whatsapp.net'))
             .map(contact => ({
                 ...contact,
                 total_appointments: contact._count.appointment,
@@ -82,9 +81,8 @@ export class ContactsService {
 
         let syncCount = 0;
         for (const chat of chats) {
-            if (!chat.phone.endsWith('@s.whatsapp.net')) {
-                continue;
-            }
+            // Allow all chats (including @lid) to be synced as contacts
+            if (!chat.phone) continue;
             try {
                 await this.prisma.contact.upsert({
                     where: {
