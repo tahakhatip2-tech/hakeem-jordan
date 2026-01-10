@@ -1,6 +1,6 @@
 // Use environment variables for the API URL in production, or default to localhost
 // Ensure the API_URL includes the /api prefix for NestJS
-let baseApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+let baseApiUrl = import.meta.env.VITE_API_URL || 'https://mettled-postseason-bethanie.ngrok-free.de';
 if (baseApiUrl && !baseApiUrl.endsWith('/api')) {
     baseApiUrl = baseApiUrl.endsWith('/') ? `${baseApiUrl}api` : `${baseApiUrl}/api`;
 }
