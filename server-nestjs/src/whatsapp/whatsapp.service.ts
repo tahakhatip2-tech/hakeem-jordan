@@ -427,7 +427,14 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
         const sock = this.sockets.get(userId);
         if (!sock) return;
 
-        const from = msg.key.remoteJid;
+        let from = msg.key.remoteJid;
+        // Check for LID and use alternate JID (phone number) if available to avoid duplicates
+        const keyAny = msg.key as any;
+        if (from?.endsWith('@lid') && keyAny.remoteJidAlt) {
+            this.logger.log(`[WhatsApp] Normalizing LID ${from} to ${keyAny.remoteJidAlt}`);
+            from = keyAny.remoteJidAlt;
+        }
+
         if (!from || !this.isIndividualJid(from)) return;
 
         const messageContent = msg.message?.conversation || msg.message?.extendedTextMessage?.text || '';

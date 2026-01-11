@@ -1,14 +1,20 @@
-import { Controller, Get, Post, Put, Patch, Delete, Param, Body, Query, UseGuards, Request, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Param, Body, Query, UseGuards, Request, ParseIntPipe, UseInterceptors, UploadedFile, Inject, forwardRef } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { AppointmentsService } from './appointments.service';
+import { WhatsAppService } from '../whatsapp/whatsapp.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('appointments')
 @UseGuards(JwtAuthGuard)
 export class AppointmentsController {
-    constructor(private readonly appointmentsService: AppointmentsService) { }
+    constructor(
+        private readonly appointmentsService: AppointmentsService,
+        @Inject(forwardRef(() => WhatsAppService)) private readonly whatsAppService: WhatsAppService
+    ) { }
+
+    // ... (existing methods until sendPrescription)
 
     @Get()
     findAll(@Request() req, @Query() query: any) {
@@ -83,7 +89,26 @@ export class AppointmentsController {
     }
 
     @Post(':id/prescription/send')
-    sendPrescription(@Param('id', ParseIntPipe) id: number, @Request() req, @Body() data: any) {
-        return this.appointmentsService.sendPrescription(id, req.user.id, data);
+    async sendPrescription(@Param('id', ParseIntPipe) id: number, @Request() req, @Body() data: any) {
+        const { url, phone } = data;
+        // Construct absolute path. url is like '/uploads/prescriptions/...'
+        // Remove leading slash if exists to join correctly, or handle root
+        const relativePath = url.startsWith('/') ? url.substring(1) : url;
+        const absolutePath = join(process.cwd(), relativePath);
+
+        console.log(`[Prescription] Sending file: ${absolutePath} to ${phone}`);
+
+        const sent = await this.whatsAppService.sendMessage(req.user.id, {
+            phone,
+            message: 'إليك الوصفة الطبية / التقرير الطبي',
+            mediaUrl: absolutePath,
+            mediaType: 'document'
+        });
+
+        if (!sent) {
+            throw new Error('Failed to send message via WhatsApp');
+        }
+
+        return { success: true, message: 'Prescription sent successfully' };
     }
 }

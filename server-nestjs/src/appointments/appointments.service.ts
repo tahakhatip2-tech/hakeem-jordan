@@ -444,7 +444,7 @@ export class AppointmentsService {
         await page.pdf({ path: filePath, format: 'A4' });
         await browser.close();
 
-        return { url: `/ uploads / prescriptions / ${fileName} ` };
+        return { url: `/uploads/prescriptions/${fileName}` };
     }
 
     async sendPrescription(appointmentId: number, userId: number, data: { url: string, phone: string }) {
