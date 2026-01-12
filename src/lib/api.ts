@@ -1,5 +1,10 @@
 // Use current origin for API calls to work seamlessly with proxying and ngrok
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+let baseApiUrl = import.meta.env.VITE_API_URL || '/api';
+// Ensure absolute URLs (like ngrok) also get the /api suffix if missing
+if (baseApiUrl.startsWith('http') && !baseApiUrl.endsWith('/api')) {
+    baseApiUrl = baseApiUrl.endsWith('/') ? `${baseApiUrl}api` : `${baseApiUrl}/api`;
+}
+const API_URL = baseApiUrl;
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 export { BASE_URL };
