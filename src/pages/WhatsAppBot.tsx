@@ -6,14 +6,16 @@ import { toastWithSound } from '@/lib/toast-with-sound';
 import { cn } from '@/lib/utils';
 import WhatsAppChat from '@/components/WhatsAppChat';
 import { whatsappApi } from '@/lib/api';
+import HeroSection from '@/components/HeroSection';
 
 interface WhatsAppBotProps {
     initialPhone?: string | null;
     initialName?: string | null;
+    doctorName?: string;
     onBackCleanup?: () => void;
 }
 
-export default function WhatsAppBot({ initialPhone, initialName, onBackCleanup }: WhatsAppBotProps) {
+export default function WhatsAppBot({ initialPhone, initialName, doctorName, onBackCleanup }: WhatsAppBotProps) {
     const [status, setStatus] = useState<{ connected: boolean; qrCode: string | null }>({ connected: false, qrCode: null });
     const [loading, setLoading] = useState(false);
     const [chats, setChats] = useState<any[]>([]);
@@ -159,35 +161,33 @@ export default function WhatsAppBot({ initialPhone, initialName, onBackCleanup }
 
     return (
         <div className="space-y-6 animate-fade-in pb-10">
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h2 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent flex items-center gap-2">
-                        <MessageCircle className="h-7 w-7 text-blue-600" />
-                        تفعيل النظام عبر الواتس
-                    </h2>
-                    <p className="text-sm text-blue-600 dark:text-blue-400 font-bold opacity-80">تفعيل النظام والموظف الالي للرد على الرسائل</p>
-                </div>
-
+            <HeroSection
+                doctorName={doctorName}
+                pageTitle="مركز المحادثات المباشرة"
+                description="تفعيل النظام والموظف الالي للرد على الرسائل"
+                icon={MessageCircle}
+                className="mb-8"
+            >
                 {status.connected ? (
                     <Button
                         onClick={handleDisconnect}
                         variant="outline"
-                        className="gap-2 border-red-200 dark:border-red-900/30 text-red-600 hover:bg-red-500 hover:text-white rounded-2xl h-11 px-6 font-black transition-all"
+                        className="gap-2 border-red-200 dark:border-red-900/30 text-red-600 hover:bg-red-500 hover:text-white rounded-md h-9 px-4 font-bold transition-all text-xs uppercase tracking-wider"
                     >
-                        <PowerOff className="h-4 w-4" />
+                        <PowerOff className="h-3.5 w-3.5" />
                         قطع الاتصال
                     </Button>
                 ) : (
                     <Button
                         onClick={handleConnect}
                         disabled={loading}
-                        className="gap-2 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-xl shadow-blue-600/20 rounded-2xl h-11 px-6 font-black transition-all hover:scale-105"
+                        className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 rounded-md h-9 px-6 font-bold transition-all hover:scale-105 text-xs uppercase tracking-wider"
                     >
-                        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Power className="h-4 w-4" />}
+                        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Power className="h-3.5 w-3.5" />}
                         {loading ? 'جاري الاتصال...' : 'بدء الاتصال بالنظام'}
                     </Button>
                 )}
-            </div>
+            </HeroSection>
 
             {/* Connection Status Card */}
             <Card className="p-8 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-[2.5rem] shadow-2xl relative overflow-hidden">

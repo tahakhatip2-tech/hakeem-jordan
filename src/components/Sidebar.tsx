@@ -61,17 +61,16 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     };
 
     const mainNavItems = [
-        { id: 'dashboard', label: 'الرئيسية', icon: LayoutDashboard },
+        { id: 'dashboard', label: 'الواجهات', icon: LayoutDashboard },
         { id: 'whatsapp-bot', label: 'المحادثات', icon: MessageCircle },
         { id: 'contacts', label: 'المرضى', icon: Users },
         { id: 'appointments', label: 'المواعيد', icon: Calendar },
-        { id: 'patient-inquiry', label: 'بوابة المرضى', icon: FileText },
         { id: 'bot-stats', label: 'الإحصائيات', icon: LineChart },
-        { id: 'templates', label: 'الرسائل الجاهزة', icon: FileText },
+        { id: 'templates', label: 'النماذج', icon: FileText },
     ];
 
     return (
-        <div className="w-full h-full bg-white/10 dark:bg-black/20 backdrop-blur-[40px] border-l border-white/20 dark:border-white/10 flex flex-col overflow-hidden">
+        <div className="w-full h-full bg-white/5 dark:bg-black/10 backdrop-blur-[120px] border-l border-white/5 flex flex-col overflow-hidden">
             <div className="p-6 border-b border-white/10 flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <img
@@ -129,7 +128,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
             </ScrollArea>
 
             {/* Sidebar Footer - Brand & Socials */}
-            <div className="p-4 border-t border-border/50 bg-card/30 backdrop-blur-md">
+            <div className="p-4 border-t border-white/5 bg-card/10 backdrop-blur-2xl">
                 <div className="flex flex-col items-center gap-3">
                     {/* Logo */}
                     <a

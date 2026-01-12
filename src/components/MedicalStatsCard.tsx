@@ -12,14 +12,9 @@ interface MedicalStatsCardProps {
     backgroundImage?: string;
 }
 
-const colorClasses = {
-    blue: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-    green: "bg-primary/10 text-primary border-primary/20",
-    orange: "bg-orange-500/10 text-orange-600 border-orange-500/20",
-    purple: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-};
+import { motion } from "framer-motion";
 
-export function MedicalStatsCard({
+const MedicalStatsCard = ({
     title,
     value,
     subtitle,
@@ -27,56 +22,99 @@ export function MedicalStatsCard({
     color = "blue",
     trend = "neutral",
     backgroundImage
-}: MedicalStatsCardProps) {
+}: MedicalStatsCardProps) => {
     return (
-        <Card className="relative overflow-hidden p-4 md:p-8 transition-all duration-300 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.25rem] md:rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:shadow-2xl hover:shadow-blue-500/10 group h-full">
-            {/* Background Image Layer */}
-            {backgroundImage && (
-                <div
-                    className="absolute inset-0 z-0 transition-transform duration-700 group-hover:scale-110"
-                    style={{
-                        backgroundImage: `url(${backgroundImage})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }}
-                />
-            )}
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 25,
+            }}
+            className="h-full px-4"
+        >
+            <Card className="relative overflow-hidden p-4 md:p-6 transition-all duration-700 border-y border-white/5 bg-blue-950/5 backdrop-blur-[80px] rounded-none shadow-2xl group h-full cursor-pointer hover:shadow-primary/20">
+                {/* 1. Content Layer */}
+                <div className="h-full flex flex-col justify-between relative z-20">
+                    <div className="light-sweep" />
 
-            {/* White/Black Glass Overlay */}
-            <div className={cn(
-                "absolute inset-0 z-10 backdrop-blur-[2px] transition-all duration-300",
-                backgroundImage ? "bg-white/80 dark:bg-black/70" : "bg-gradient-to-br from-white/40 to-white/10 dark:from-white/5 dark:to-transparent"
-            )} />
+                    {/* 2. Architectural Accent (Top Right) */}
+                    <motion.div
+                        whileHover={{ rotate: 0, scale: 1.25 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        className="absolute top-0 right-0 w-16 h-16 flex items-center justify-center -mr-4 -mt-4 opacity-5 group-hover:opacity-15 transition-all duration-700 rotate-12"
+                    >
+                        <Icon className="h-12 w-12 text-primary" />
+                    </motion.div>
 
-            {/* Content Layer */}
-            <div className="relative z-20 flex flex-row-reverse md:flex-col items-center justify-between md:justify-center gap-4 h-full">
-                {/* Icon Container */}
-                <div className={cn(
-                    "p-3 md:p-6 rounded-xl md:rounded-[2rem] border transition-all duration-300 group-hover:scale-110 shadow-lg shrink-0",
-                    color === "blue" ? "bg-blue-500/10 dark:bg-blue-500/20 border-blue-500/20 text-blue-600 dark:text-blue-400" :
-                        color === "green" ? "bg-emerald-500/10 dark:bg-emerald-500/20 border-emerald-500/20 text-emerald-600 dark:text-emerald-400" :
-                            color === "orange" ? "bg-orange-500/10 dark:bg-orange-500/20 border-orange-500/20 text-orange-600 dark:text-orange-400" :
-                                "bg-purple-500/10 dark:bg-purple-500/20 border-purple-500/20 text-purple-600 dark:text-purple-400"
-                )}>
-                    <Icon className="h-6 w-6 md:h-10 md:w-10 font-black" />
-                </div>
+                    {/* 3. Content Layer */}
+                    <div className="relative z-20 flex items-start gap-3 md:gap-5 pt-2">
+                        {/* Vertical Flagship Ribbon */}
+                        <motion.div
+                            initial={{ height: 0 }}
+                            animate={{ height: 64 }}
+                            transition={{ duration: 1, delay: 0.5 }}
+                            className="w-1.5 bg-gradient-to-b from-primary via-primary/50 to-transparent self-start rounded-full opacity-60 group-hover:opacity-100 transition-opacity"
+                        />
 
-                {/* Text Content */}
-                <div className="flex flex-col items-start md:items-center text-right md:text-center flex-1 min-w-0 space-y-0.5 md:space-y-1">
-                    <p className="text-[10px] md:text-sm font-black text-muted-foreground/80 uppercase tracking-[0.1em] truncate w-full">{title}</p>
-                    <div className="flex items-center">
-                        <span className={cn(
-                            "text-xl md:text-4xl font-black tracking-tight",
-                            color === "blue" ? "text-blue-900 dark:text-blue-50" :
-                                color === "green" ? "text-emerald-900 dark:text-emerald-50" :
-                                    color === "orange" ? "text-orange-900 dark:text-orange-50" :
-                                        "text-purple-900 dark:text-purple-50"
-                        )}>
-                            {value}
-                        </span>
+                        <div className="flex flex-col items-start text-right flex-1 min-w-0 gap-1.5">
+                            {/* Badge Style Label (Small/High Detail) */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.6 }}
+                                className="flex items-center gap-2 mb-1.5"
+                            >
+                                <div className="p-1 rounded-sm bg-primary/20 text-primary">
+                                    <Icon className="h-3 w-3" strokeWidth={3} />
+                                </div>
+                                <p className="text-[9px] md:text-[10px] font-black text-primary/80 uppercase tracking-[0.25em]">{title}</p>
+                            </motion.div>
+
+                            <div className="space-y-0.5">
+                                <motion.div
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ type: "spring", stiffness: 200, delay: 0.7 }}
+                                    className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-foreground italic uppercase leading-none"
+                                >
+                                    {value}
+                                </motion.div>
+                                {subtitle && (
+                                    <motion.p
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.9 }}
+                                        className="text-[9px] md:text-[11px] font-black text-muted-foreground/30 mt-1.5 uppercase tracking-widest pl-1 border-l border-white/5 italic"
+                                    >
+                                        {subtitle}
+                                    </motion.p>
+                                )}
+                            </div>
+                        </div>
                     </div>
+
+                    {/* 4. Bottom Professional "Power Line" */}
+                    <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 1.2, delay: 0.3 }}
+                        className="absolute bottom-0 left-0 flex opacity-40 group-hover:opacity-100 transition-opacity duration-1000"
+                    >
+                        <div className="h-[3px] w-2/5 bg-primary shadow-[0_0_15px_rgba(var(--primary),0.6)]" />
+                        <div className="h-[3px] flex-1 bg-white/5" />
+                    </motion.div>
+
+                    {/* 5. Inner Glass Edge Shine (Double Border Feel) */}
+                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
-            </div>
-        </Card>
+
+                <div className="absolute inset-0 pointer-events-none border-x border-white/5" />
+            </Card>
+        </motion.div>
     );
 }
+
+export { MedicalStatsCard };

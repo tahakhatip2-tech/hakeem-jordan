@@ -1,49 +1,107 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MessageCircle, Power, UserCog } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface AutoReplyToggleProps {
     isActive?: boolean;
     onToggle?: (active: boolean) => void;
 }
 
-export function AutoReplyToggle({ isActive = true }: AutoReplyToggleProps) {
-    const active = true; // Hardcoded to always active as per user request
+export function AutoReplyToggle({ isActive = true, onToggle }: AutoReplyToggleProps) {
+    // In a real scenario, this would use the prop. For now, we keep the visual active.
 
     return (
-        <Card className={cn(
-            "p-5 md:p-6 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.25rem] md:rounded-[2rem] shadow-xl hover:shadow-primary/10 transition-all duration-500 hover:border-primary/30"
-        )}>
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <div className={cn(
-                        "p-3 rounded-xl border transition-colors duration-500",
-                        "bg-primary/10 border-primary/20"
-                    )}>
-                        <MessageCircle className={cn(
-                            "h-6 w-6",
-                            "text-primary"
-                        )} />
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5, scale: 1.01 }}
+            transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 25,
+            }}
+            className="w-full px-4"
+        >
+            <Card className="relative overflow-hidden p-6 transition-all duration-700 border-y border-white/5 bg-blue-950/5 backdrop-blur-[80px] rounded-none shadow-2xl group hover:shadow-primary/20">
+                <div className="">
+
+                    {/* 1. Ultra-Premium Light Sweep */}
+                    <div className="light-sweep" />
+
+                    {/* 2. Architectural Accent (Top Right) */}
+                    <motion.div
+                        whileHover={{ rotate: 0, scale: 1.25 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                        className="absolute top-0 right-0 w-24 h-24 flex items-center justify-center -mr-6 -mt-6 opacity-5 group-hover:opacity-15 transition-all duration-700 rotate-12"
+                    >
+                        <UserCog className="h-16 w-16 text-primary" />
+                    </motion.div>
+
+                    <div className="relative z-20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-0">
+
+                        {/* Left Side: Icon & Info */}
+                        <div className="flex items-center gap-5">
+                            {/* Vertical Flagship Ribbon */}
+                            <motion.div
+                                initial={{ height: 0 }}
+                                animate={{ height: 48 }}
+                                transition={{ duration: 1, delay: 0.5 }}
+                                className="w-1.5 bg-gradient-to-b from-primary via-primary/50 to-transparent rounded-full opacity-60 group-hover:opacity-100 transition-opacity"
+                            />
+
+                            <div className="flex flex-col gap-1">
+                                <motion.div
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.6 }}
+                                    className="flex items-center gap-2"
+                                >
+                                    <div className="p-1.5 rounded-sm bg-primary/20 text-primary">
+                                        <MessageCircle className="h-4 w-4" strokeWidth={3} />
+                                    </div>
+                                    <p className="text-[10px] md:text-xs font-black text-primary/80 uppercase tracking-[0.25em]">SYST_AUTO_REPLY</p>
+                                </motion.div>
+
+                                <h3 className="text-2xl md:text-3xl font-black tracking-tighter text-foreground italic uppercase">سكرتير العيادة</h3>
+                                <p className="text-[10px] md:text-xs font-bold text-muted-foreground/60 uppercase tracking-wider pl-1 border-l border-white/5 line-clamp-1">
+                                    نشط - يعمل على خدمة المرضى وتنظيم المواعيد على مدار الساعة
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Right Side: Ultra-Premium Action Button */}
+                        <div className="flex items-center gap-4 self-end md:self-auto">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => onToggle && onToggle(!isActive)}
+                                className="h-10 px-6 font-black text-primary hover:bg-primary/10 transition-all text-[10px] uppercase tracking-[0.2em] border border-primary/20 backdrop-blur-md gap-2 group/btn"
+                            >
+                                <span className="relative z-10">إعدادات النظام</span>
+                                <Power className="h-4 w-4 group-hover/btn:text-primary transition-colors" />
+                            </Button>
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="text-lg font-bold mb-1">سكرتير العيادة</h3>
-                        <p className="text-sm text-muted-foreground">
-                            نشط - يعمل على خدمة المرضى وتنظيم المواعيد على مدار الساعة
-                        </p>
-                    </div>
+
+                    {/* 4. Bottom Professional "Power Line" */}
+                    <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 1.2, delay: 0.3 }}
+                        className="absolute bottom-0 left-0 flex opacity-40 group-hover:opacity-100 transition-opacity duration-1000"
+                    >
+                        <div className="h-[3px] w-2/5 bg-primary shadow-[0_0_15px_rgba(var(--primary),0.6)]" />
+                        <div className="h-[3px] flex-1 bg-white/5" />
+                    </motion.div>
+
+                    {/* 5. Inner Glass Edge Shine */}
+                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 </div>
-                <div className="flex items-center gap-3">
-                    <Badge variant="default" className={cn(
-                        "px-3 py-1 transition-all duration-500",
-                        "bg-primary hover:bg-primary/90 text-white"
-                    )}>
-                        🟢 نشط
-                    </Badge>
-                </div>
-            </div>
-        </Card>
+                <div className="absolute inset-0 pointer-events-none border-x border-white/5" />
+            </Card>
+        </motion.div>
     );
 }

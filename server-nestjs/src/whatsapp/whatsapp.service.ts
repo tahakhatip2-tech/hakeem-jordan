@@ -304,9 +304,15 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
             throw new Error('Template not found or access denied');
         }
 
+        const updateData = { ...data };
+        if (data.is_active !== undefined) {
+            updateData.isActive = data.is_active === 1 || data.is_active === true;
+            delete updateData.is_active;
+        }
+
         return this.prisma.autoReplyTemplate.update({
             where: { id },
-            data,
+            data: updateData,
         });
     }
 
@@ -491,18 +497,23 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
                 // Process Actions (like Appointments)
                 const aiResponse = await this.extractAndProcessActions(userId, aiResponseRaw, from);
 
-                await sock.sendMessage(from, { text: aiResponse });
+                try {
+                    await sock.sendMessage(from, { text: aiResponse });
 
-                // Save outgoing message
-                await this.prisma.whatsAppMessage.create({
-                    data: {
-                        chatId: chat.id,
-                        fromMe: true,
-                        content: aiResponse,
-                        timestamp: new Date(),
-                        status: 'sent',
-                    },
-                });
+                    // Save outgoing message
+                    await this.prisma.whatsAppMessage.create({
+                        data: {
+                            chatId: chat.id,
+                            fromMe: true,
+                            content: aiResponse,
+                            timestamp: new Date(),
+                            status: 'sent',
+                        },
+                    });
+                } catch (error) {
+                    this.logger.error(`Failed to send AI response to ${from}: ${error.message}`);
+                    // Optionally try to reconnect or just log
+                }
             }
         }
     }

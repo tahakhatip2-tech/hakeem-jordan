@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { BASE_URL } from "@/lib/api";
 import Footer from "@/components/Footer";
+import HeroSection from "@/components/HeroSection";
 
 interface UserProfile {
     id: number;
@@ -66,8 +67,16 @@ const Profile = () => {
             });
 
             if (res.ok) {
+                const updatedData = await res.json();
                 toastWithSound.success("Profile updated successfully");
-                fetchProfile();
+
+                // Update local storage and dispatch event to sync Header
+                localStorage.setItem('user', JSON.stringify(updatedData));
+                window.dispatchEvent(new Event('user-updated'));
+
+                setProfile(updatedData);
+                setName(updatedData.name || "");
+                setEmail(updatedData.email || "");
                 setPassword("");
             } else {
                 const err = await res.json();
@@ -96,16 +105,14 @@ const Profile = () => {
             });
 
             if (res.ok) {
-                const data = await res.json();
+                const updatedUser = await res.json();
                 toastWithSound.success("Avatar updated!");
 
                 // Update local storage and dispatch event to sync Header
-                const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-                const updatedUser = { ...storedUser, avatar: data.avatar };
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 window.dispatchEvent(new Event('user-updated'));
 
-                fetchProfile();
+                setProfile(updatedUser);
             } else {
                 toastWithSound.error("Failed to upload avatar");
             }
@@ -131,36 +138,29 @@ const Profile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background relative overflow-hidden" dir="rtl">
-            {/* Background Image with Overlay */}
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 resize-bg-animation"
-                style={{ backgroundImage: 'url(/auth-bg-pro.png?v=5)' }}
-            >
-                <div className="absolute inset-0 bg-blue-900/60 backdrop-blur-[2px]"></div>
-            </div>
+        <div className="min-h-screen bg-background" dir="rtl">
 
             {/* Header */}
-            <header className="border-b border-white/10 bg-white/10 backdrop-blur-xl sticky top-0 z-50 relative">
+            <header className="border-b border-border bg-background/50 backdrop-blur-xl sticky top-0 z-50">
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="hover:bg-white/10 text-white">
+                        <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="hover:bg-primary/10 text-primary rounded-full">
                             <ArrowRight className="h-5 w-5" />
                         </Button>
 
                         <div className="flex items-center gap-3">
-                            <img src="./logo.png" alt="Logo" className="h-10 w-10 rounded-xl shadow-lg object-contain drop-shadow-md" />
+                            <img src="./logo.png" alt="Logo" className="h-10 w-10 rounded-xl shadow-lg object-contain" />
                             <div>
-                                <h1 className="text-xl font-black leading-tight text-white drop-shadow-md">
-                                    AL-Khatib
+                                <h1 className="text-xl font-black leading-tight text-foreground">
+                                    حكيم
                                 </h1>
-                                <p className="text-[10px] text-blue-200 uppercase tracking-wider font-bold">Marketing & Software</p>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">AL-Khatib Software</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <Button variant="ghost" className="text-blue-100 hover:text-white hover:bg-white/10 gap-2" onClick={handleSignOut}>
+                    <div className="flex items-center gap-5">
+                        <Button variant="outline" className="text-muted-foreground border-primary/20 hover:text-primary hover:bg-primary/5 gap-2 rounded-full font-bold px-6" onClick={handleSignOut}>
                             <LogOut className="h-4 w-4" />
                             <span className="hidden sm:inline">تسجيل الخروج</span>
                         </Button>
@@ -168,35 +168,37 @@ const Profile = () => {
                 </div>
             </header>
 
-            <main className="container mx-auto p-8 max-w-5xl animate-fade-in-up relative z-10">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-black tracking-tight text-white drop-shadow-md">إعدادات الحساب</h1>
-                    <p className="text-blue-200 mt-2 font-medium">قم بإدارة ملفك الشخصي وتفضيلات الحساب</p>
-                </div>
+            <main className="container mx-auto p-4 md:p-10 max-w-7xl animate-fade-in relative z-10">
+                <HeroSection
+                    pageTitle="الملف الشخصي"
+                    doctorName={profile?.name ? `د. ${profile.name}` : 'د. حكيم'}
+                    description="إدارة معلوماتك الشخصية وإعدادات الحساب"
+                    icon={User}
+                />
 
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
                     {/* Profile Card */}
-                    <Card className="md:col-span-1 border-white/20 shadow-2xl bg-white/10 backdrop-blur-xl">
+                    <Card className="md:col-span-1 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl">
                         <CardHeader>
-                            <CardTitle className="text-white">الصورة الشخصية</CardTitle>
+                            <CardTitle className="text-foreground font-black">الصورة الشخصية</CardTitle>
                         </CardHeader>
-                        <CardContent className="flex flex-col items-center gap-4">
+                        <CardContent className="flex flex-col items-center gap-6">
                             <div className="relative group cursor-pointer">
-                                <Avatar className="w-32 h-32 border-4 border-white/20 shadow-lg">
-                                    <AvatarImage src={profile?.avatar?.startsWith('http') ? profile.avatar : `${BASE_URL}${profile?.avatar}`} />
-                                    <AvatarFallback className="text-4xl bg-white/20 text-white">{profile?.name?.charAt(0) || <User />}</AvatarFallback>
+                                <Avatar className="w-32 h-32 md:w-40 md:h-40 border-4 border-white dark:border-white/10 shadow-2xl transition-transform duration-500 group-hover:scale-105">
+                                    <AvatarImage src={profile?.avatar?.startsWith('http') ? profile.avatar : `${BASE_URL}${profile?.avatar}`} className="object-cover" />
+                                    <AvatarFallback className="text-4xl bg-primary text-white font-black">{profile?.name?.charAt(0) || <User />}</AvatarFallback>
                                 </Avatar>
-                                <label htmlFor="avatar-upload" className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white">
-                                    <Upload className="w-8 h-8" />
+                                <label htmlFor="avatar-upload" className="absolute inset-0 bg-primary/40 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer text-white">
+                                    <Upload className="w-10 h-10" />
                                 </label>
                                 <input type="file" id="avatar-upload" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={uploading} />
                             </div>
-                            <div className="text-center">
-                                <h3 className="font-bold text-lg text-white">{profile?.name || "مستخدم"}</h3>
-                                <p className="text-sm text-blue-200">{profile?.email}</p>
-                                <div className="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/10">
+                            <div className="text-center space-y-1">
+                                <h3 className="font-black text-xl text-foreground">{profile?.name || "مستخدم"}</h3>
+                                <p className="text-sm text-muted-foreground font-bold">{profile?.email}</p>
+                                <div className="mt-4 inline-flex items-center px-4 py-1 rounded-full text-[10px] font-black bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest">
                                     {profile?.role}
                                 </div>
                             </div>
@@ -204,53 +206,53 @@ const Profile = () => {
                     </Card>
 
                     {/* Details Edit */}
-                    <Card className="md:col-span-2 border-white/20 shadow-2xl bg-white/10 backdrop-blur-xl">
+                    <Card className="md:col-span-2 border border-white/40 dark:border-white/10 bg-white/20 dark:bg-black/40 backdrop-blur-2xl rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl">
                         <CardHeader>
-                            <CardTitle className="text-white">تعديل المعلومات</CardTitle>
-                            <CardDescription className="text-blue-200">قم بتحديث معلوماتك الشخصية وكلمة المرور</CardDescription>
+                            <CardTitle className="text-foreground font-black">تعديل المعلومات</CardTitle>
+                            <CardDescription className="text-muted-foreground font-bold">قم بتحديث معلوماتك الشخصية وكلمة المرور</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="name" className="text-blue-100">الاسم الكامل</Label>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-3">
+                                <Label htmlFor="name" className="text-foreground font-bold">الاسم الكامل</Label>
                                 <Input
                                     id="name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="أدخل اسمك"
-                                    className="bg-white/10 border-white/20 focus:border-orange-400 text-white placeholder:text-blue-200/50 rounded-xl"
+                                    className="bg-white/50 dark:bg-white/5 border-border focus:border-primary text-foreground rounded-2xl h-12"
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="text-blue-100">البريد الإلكتروني</Label>
+                            <div className="space-y-3">
+                                <Label htmlFor="email" className="text-foreground font-bold">البريد الإلكتروني</Label>
                                 <Input
                                     id="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="example@email.com"
-                                    className="bg-white/10 border-white/20 focus:border-orange-400 text-white placeholder:text-blue-200/50 rounded-xl"
+                                    className="bg-white/50 dark:bg-white/5 border-border focus:border-primary text-foreground rounded-2xl h-12"
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="password" className="text-blue-100">كلمة المرور الجديدة (اختياري)</Label>
+                            <div className="space-y-3">
+                                <Label htmlFor="password" className="text-foreground font-bold">كلمة المرور الجديدة (اختياري)</Label>
                                 <Input
                                     id="password"
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="اتركه فارغاً إذا لم ترد التغيير"
-                                    className="bg-white/10 border-white/20 focus:border-orange-400 text-white placeholder:text-blue-200/50 rounded-xl"
+                                    className="bg-white/50 dark:bg-white/5 border-border focus:border-primary text-foreground rounded-2xl h-12"
                                 />
                             </div>
 
-                            <div className="pt-4 flex justify-end">
+                            <div className="pt-6 flex justify-end">
                                 <Button
                                     onClick={handleUpdate}
                                     disabled={saving}
-                                    className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-lg hover:shadow-orange-500/25 border-none"
+                                    className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-black shadow-xl shadow-primary/20 rounded-2xl px-10 h-12 transition-all"
                                 >
-                                    {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                                    {saving ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
                                     حفظ التغييرات
                                 </Button>
                             </div>

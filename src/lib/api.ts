@@ -76,6 +76,7 @@ export const dataApi = {
 
 export const contactsApi = {
     getAll: () => apiFetch('/contacts'),
+    getById: (id: number | string) => apiFetch(`/contacts/${id}`),
     sync: () => apiFetch('/contacts/sync', { method: 'POST' }),
     findByNationalId: (id: string) => apiFetch(`/contacts/search/national-id/${id}`),
     updateStatus: (id: number, status: string) => apiFetch(`/contacts/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),

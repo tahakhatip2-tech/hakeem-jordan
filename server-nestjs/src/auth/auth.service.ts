@@ -28,7 +28,23 @@ export class AuthService {
                 email: user.email,
                 name: user.name,
                 role: user.role,
+                avatar: user.avatar,
             },
         };
+    }
+
+    async getProfile(userId: number) {
+        const user = await this.usersService.findById(userId);
+        if (!user) throw new UnauthorizedException('User not found');
+        const { password, ...result } = user;
+        return result;
+    }
+
+    async updateProfile(userId: number, data: any) {
+        return this.usersService.update(userId, data);
+    }
+
+    async updateAvatar(userId: number, avatarPath: string) {
+        return this.usersService.update(userId, { avatar: avatarPath });
     }
 }

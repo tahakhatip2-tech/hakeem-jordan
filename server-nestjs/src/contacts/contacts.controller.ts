@@ -17,9 +17,9 @@ export class ContactsController {
         return this.contactsService.findByNationalId(req.user.id, id);
     }
 
-    @Post('sync')
-    async sync(@Request() req) {
-        return this.contactsService.syncFromWhatsApp(req.user.id);
+    @Get(':id')
+    async findOne(@Param('id', ParseIntPipe) id: number, @Request() req) {
+        return this.contactsService.findOne(id, req.user.id);
     }
 
     @Patch(':id')

@@ -119,10 +119,10 @@ All colors MUST be HSL.
     /* overflow: hidden; -- Removed to allow body scroll */
   }
 
-  /* Custom Scrollbar Styling */
+  /* Custom Scrollbar Styling - Global & Utility */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
 
   ::-webkit-scrollbar-track {
@@ -130,12 +130,30 @@ All colors MUST be HSL.
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.3);
+    background: hsl(var(--primary) / 0.2);
     border-radius: 99px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: background 0.3s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.5);
+    background: hsl(var(--primary) / 0.5);
+    background-clip: padding-box;
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+    scroll-behavior: smooth;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.6);
   }
 
   body {
@@ -206,6 +224,28 @@ All colors MUST be HSL.
 
   .backdrop-blur-2xl {
     backdrop-filter: blur(40px);
+  }
+
+  .light-sweep {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right,
+        transparent,
+        rgba(255, 255, 255, 0.05) 20%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.05) 80%,
+        transparent);
+    transform: skewX(-25deg);
+    transition: 0.75s;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .group:hover .light-sweep {
+    left: 150%;
   }
 }
 

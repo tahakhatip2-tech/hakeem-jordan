@@ -48,6 +48,22 @@ export class ContactsService {
         });
     }
 
+    async findOne(id: number, userId: number): Promise<Contact | null> {
+        return this.prisma.contact.findFirst({
+            where: { id, userId },
+            include: {
+                appointment: {
+                    orderBy: { appointmentDate: 'desc' },
+                    include: {
+                        medicalRecords: true
+                    }
+                },
+                tags: true,
+                medicalRecords: true, // Also include direct medical records if any
+            }
+        });
+    }
+
     async findByNationalId(userId: number, nationalId: string): Promise<Contact | null> {
         return this.prisma.contact.findFirst({
             where: { userId, nationalId },
