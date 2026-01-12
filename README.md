@@ -71,7 +71,7 @@ npm run dev
 # في نافذة جديدة
 ngrok http 3000
 ```
-سيظهر لك رابط يشبه: `https://xxxx-xxxx.ngrok-free.app`. **هذا هو الرابط السحري!**
+سيظهر لك رابط يشبه: `https://tsunamic-unshameable-maricruz.ngrok-free.dev`. **هذا هو الرابط السحري!**
 
 ---
 
