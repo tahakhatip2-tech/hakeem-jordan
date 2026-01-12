@@ -1,10 +1,5 @@
-// Use environment variables for the API URL in production, or default to localhost
-// Ensure the API_URL includes the /api prefix for NestJS
-let baseApiUrl = import.meta.env.VITE_API_URL || 'https://tsunamic-unshameable-maricruz.ngrok-free.dev';
-if (baseApiUrl && !baseApiUrl.endsWith('/api')) {
-    baseApiUrl = baseApiUrl.endsWith('/') ? `${baseApiUrl}api` : `${baseApiUrl}/api`;
-}
-const API_URL = baseApiUrl;
+// Use current origin for API calls to work seamlessly with proxying and ngrok
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 export { BASE_URL };
