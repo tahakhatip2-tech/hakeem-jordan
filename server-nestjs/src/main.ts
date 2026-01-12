@@ -14,7 +14,13 @@ async function bootstrap() {
   // }));
 
   app.enableCors({
-    origin: true,
+    origin: [
+      'https://hakeem-jordan-five.vercel.app',
+      'http://localhost:8080',
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://tsunamic-unshameable-maricruz.ngrok-free.dev'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization, Bypass-Tunnel-Reminder, ngrok-skip-browser-warning',
     credentials: true,
