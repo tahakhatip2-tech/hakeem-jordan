@@ -16,6 +16,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://hakeem-jordan-five.vercel.app',
+      'https://hakeemjordanjo.vercel.app',
       'http://localhost:8080',
       'http://localhost:5173',
       'http://localhost:3000',
