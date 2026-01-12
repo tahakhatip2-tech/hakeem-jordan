@@ -4,7 +4,7 @@ let baseApiUrl = import.meta.env.VITE_API_URL || '/api';
 if (baseApiUrl.startsWith('http') && !baseApiUrl.endsWith('/api')) {
     baseApiUrl = baseApiUrl.endsWith('/') ? `${baseApiUrl}api` : `${baseApiUrl}/api`;
 }
-const API_URL = baseApiUrl;
+export const API_URL = baseApiUrl;
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 export { BASE_URL };
