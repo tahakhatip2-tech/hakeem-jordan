@@ -121,33 +121,43 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                 className="w-[calc(100vw-2rem)] sm:w-80 mt-4 p-2.5 rounded-[2rem] border-blue-200/50 dark:border-blue-800/50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-2xl shadow-[0_20px_60px_rgba(37,99,235,0.2)] animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto scrollbar-hide"
                                 sideOffset={8}
                             >
-                                {/* Profile Header */}
-                                <div className="p-4 bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl mb-3 flex items-center gap-4 border border-blue-400/20 shadow-lg shadow-blue-600/20">
-                                    <div className="h-12 w-12 rounded-2xl bg-white/20 backdrop-blur-lg flex items-center justify-center text-white font-black text-xl border border-white/30 shadow-inner">
-                                        {user?.name?.[0] || 'D'}
+                                {/* Hakeem Jordan Branding Section */}
+                                <div className="flex flex-col items-center p-6 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-900/20 mb-2 rounded-t-[2rem] border-b border-blue-100/20">
+                                    <div className="relative group mb-3">
+                                        <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 to-orange-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                                        <img
+                                            src="/hakeem-logo.png"
+                                            alt="Hakeem Jordan"
+                                            className="h-16 w-16 object-contain relative rounded-2xl transition-transform duration-500 group-hover:scale-110"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = '/logo.png';
+                                            }}
+                                        />
                                     </div>
-                                    <div className="overflow-hidden">
-                                        <p className="font-black text-base text-white truncate leading-tight">{user?.name || 'Doctor Store'}</p>
-                                        <p className="text-xs text-blue-100/80 font-bold uppercase tracking-widest">{user?.role === 'admin' ? 'مدير النظام' : 'طبيب'}</p>
-                                    </div>
+                                    <h2 className="text-xl font-black tracking-tighter bg-gradient-to-r from-blue-600 via-blue-700 to-orange-500 bg-clip-text text-transparent">
+                                        HAKEEM JORDAN
+                                    </h2>
+                                    <p className="text-[9px] font-bold uppercase tracking-[0.2em] bg-gradient-to-r from-orange-500 to-blue-600 bg-clip-text text-transparent opacity-80 mt-1">
+                                        Clinic Management System
+                                    </p>
                                 </div>
 
                                 {/* Counters Section */}
-                                <div className="grid grid-cols-3 gap-2 mb-4">
-                                    <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-2.5 border border-white/10 text-center flex flex-col items-center justify-center gap-0.5">
-                                        <Users className="h-3.5 w-3.5 text-blue-200" />
+                                <div className="grid grid-cols-3 gap-2 mb-4 px-1">
+                                    <div className="bg-blue-600 dark:bg-blue-600 rounded-2xl p-2.5 shadow-lg shadow-blue-600/20 text-center flex flex-col items-center justify-center gap-0.5 transform transition-transform active:scale-95">
+                                        <Users className="h-4 w-4 text-white" />
                                         <p className="text-[14px] font-black text-white">{stats?.today_total || 0}</p>
-                                        <p className="text-[8px] font-bold text-blue-100 opacity-60">مواعيد اليوم</p>
+                                        <p className="text-[8px] font-bold text-white/70">مواعيد اليوم</p>
                                     </div>
-                                    <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-2.5 border border-white/10 text-center flex flex-col items-center justify-center gap-0.5">
-                                        <Clock className="h-3.5 w-3.5 text-orange-200" />
+                                    <div className="bg-orange-500 dark:bg-orange-600 rounded-2xl p-2.5 shadow-lg shadow-orange-500/20 text-center flex flex-col items-center justify-center gap-0.5 transform transition-transform active:scale-95">
+                                        <Clock className="h-4 w-4 text-white" />
                                         <p className="text-[14px] font-black text-white">{stats?.today_waiting || 0}</p>
-                                        <p className="text-[8px] font-bold text-blue-100 opacity-60">في الانتظار</p>
+                                        <p className="text-[8px] font-bold text-white/70">في الانتظار</p>
                                     </div>
-                                    <div className="bg-white/10 dark:bg-white/5 backdrop-blur-md rounded-2xl p-2.5 border border-white/10 text-center flex flex-col items-center justify-center gap-0.5">
-                                        <CheckCircle2 className="h-3.5 w-3.5 text-green-200" />
+                                    <div className="bg-green-600 dark:bg-green-600 rounded-2xl p-2.5 shadow-lg shadow-green-600/20 text-center flex flex-col items-center justify-center gap-0.5 transform transition-transform active:scale-95">
+                                        <CheckCircle2 className="h-4 w-4 text-white" />
                                         <p className="text-[14px] font-black text-white">{stats?.today_completed || 0}</p>
-                                        <p className="text-[8px] font-bold text-blue-100 opacity-60">تم الفحص</p>
+                                        <p className="text-[8px] font-bold text-white/70">تم الفحص</p>
                                     </div>
                                 </div>
 
@@ -173,27 +183,34 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                 <DropdownMenuSeparator className="bg-blue-100/50 dark:bg-blue-900/50 my-2" />
 
                                 {/* Management Quick Actions */}
-                                <div className="grid grid-cols-3 gap-2 mb-2">
+                                <div className="grid grid-cols-4 gap-2 mb-2">
                                     <DropdownMenuItem
                                         onSelect={() => onNavigate ? onNavigate('/profile') : navigate('/profile')}
-                                        className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100"
+                                        className="flex flex-col items-center justify-center p-2 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100"
                                     >
                                         <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                                        <span className="text-[9px] font-black">حسابي</span>
+                                        <span className="text-[8px] font-black">حسابي</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={() => onNavigate ? onNavigate('/admin') : navigate('/admin')}
+                                        className="flex flex-col items-center justify-center p-2 rounded-2xl border border-orange-100 dark:border-orange-900/30 bg-orange-50/50 dark:bg-orange-900/10 text-orange-900 dark:text-orange-100 hover:bg-orange-100"
+                                    >
+                                        <LayoutDashboard className="h-5 w-5 text-orange-500" />
+                                        <span className="text-[8px] font-black">الأدمن</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         onSelect={() => onTabChange && onTabChange('clinic-settings')}
-                                        className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100"
+                                        className="flex flex-col items-center justify-center p-2 rounded-2xl border border-blue-100 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 text-blue-900 dark:text-blue-100 hover:bg-blue-100"
                                     >
                                         <Settings className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                                        <span className="text-[9px] font-black">الإعدادات</span>
+                                        <span className="text-[8px] font-black">الإعدادات</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         onSelect={() => signOut()}
-                                        className="flex flex-col items-center justify-center p-2.5 rounded-2xl border border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 text-red-900 dark:text-red-100 hover:bg-red-100"
+                                        className="flex flex-col items-center justify-center p-2 rounded-2xl border border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 text-red-900 dark:text-red-100 hover:bg-red-100"
                                     >
                                         <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
-                                        <span className="text-[9px] font-black">خروج</span>
+                                        <span className="text-[8px] font-black">خروج</span>
                                     </DropdownMenuItem>
                                 </div>
 
@@ -208,6 +225,13 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                     </div>
                                     {theme === 'dark' ? 'الوضع النهاري' : 'الوضع الليلي'}
                                 </Button>
+
+                                {/* Signature */}
+                                <div className="mt-4 pt-4 border-t border-blue-100/30 dark:border-blue-900/30 text-center">
+                                    <p className="text-[8px] font-bold text-blue-600/30 dark:text-blue-400/20 uppercase tracking-[0.3em]">
+                                        Powered by Al-Khatib
+                                    </p>
+                                </div>
                             </DropdownMenuContent>
                         </DropdownMenu>
 

@@ -121,11 +121,11 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                     >
                         <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full blur opacity-20 animate-pulse group-hover:animate-[pulse_0.5s_ease-in-out_infinite]"></div>
                         <img
-                            src="/logo.png"
-                            alt="Al-Khatib Logo"
-                            className="relative h-10 w-10 rounded-full border-2 border-blue-600/20 shadow-lg object-cover transition-transform duration-300 group-hover:scale-110"
+                            src="/hakeem-logo.png"
+                            alt="Hakeem Jordan Logo"
+                            className="relative h-10 w-10 rounded-xl shadow-lg object-contain transition-transform duration-300 group-hover:scale-110"
                             onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://alkhatib-marketing.great-site.net/favicon.ico';
+                                (e.target as HTMLImageElement).src = '/logo.png';
                             }}
                         />
                     </a>
