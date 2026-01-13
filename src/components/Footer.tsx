@@ -14,34 +14,45 @@ export default function Footer() {
                 <div className="flex flex-col items-center gap-3">
                     {/* Logo Section */}
                     <div className="flex flex-col items-center gap-2">
+                        {/* Hakeem Jordan Logo */}
                         <div className="relative group cursor-pointer">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-20 animate-pulse group-hover:animate-[pulse_0.5s_ease-in-out_infinite]"></div>
+                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-2xl blur opacity-30 animate-pulse group-hover:animate-[pulse_0.5s_ease-in-out_infinite]"></div>
                             <img
-                                src="/logo.png"
-                                alt="Al-Khatib Marketing Logo"
-                                className="relative h-12 w-12 rounded-full border-2 border-primary/20 shadow-lg object-cover transition-transform duration-300 group-hover:scale-110"
+                                src="/hakeem-logo.png"
+                                alt="Hakeem Jordan Logo"
+                                className="relative h-16 w-16 rounded-2xl shadow-2xl object-contain transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
                                 onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://alkhatib-marketing.great-site.net/favicon.ico';
+                                    (e.target as HTMLImageElement).src = '/logo.png';
                                 }}
                             />
                         </div>
 
+                        {/* Hakeem Jordan Brand Name */}
+                        <h2 className="text-lg font-black tracking-tight bg-gradient-to-r from-blue-600 via-blue-700 to-orange-500 bg-clip-text text-transparent">
+                            HAKEEM JORDAN
+                        </h2>
+                        <p className="text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-orange-500 to-blue-600 bg-clip-text text-transparent">
+                            Clinic Management System
+                        </p>
 
-                        {/* Brand Name */}
+                        {/* Divider */}
+                        <div className="w-32 h-px bg-gradient-to-r from-transparent via-blue-600/30 to-transparent my-2"></div>
+
+                        {/* Al-Khatib Signature */}
                         <a
                             href="https://alkhatib-marketing.great-site.net/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group"
                         >
-                            <h2 className="text-base font-black tracking-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent group-hover:from-accent group-hover:via-primary group-hover:to-accent transition-all duration-500">
+                            <h3 className="text-xs font-black tracking-tight bg-gradient-to-r from-blue-600 via-orange-500 to-blue-600 bg-clip-text text-transparent group-hover:from-orange-500 group-hover:via-blue-600 group-hover:to-orange-500 transition-all duration-500">
                                 AL-KHATIB-MARKETING&SOFTWARE
-                            </h2>
+                            </h3>
                         </a>
 
                         {/* Tagline */}
-                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary/70 uppercase tracking-wider">
-                            <Sparkles className="h-2.5 w-2.5 text-accent" />
+                        <div className="flex items-center gap-1.5 text-[9px] font-bold text-blue-600/70 uppercase tracking-wider">
+                            <Sparkles className="h-2 w-2 text-orange-500" />
                             Premium Digital Solutions
                         </div>
                     </div>
@@ -59,23 +70,13 @@ export default function Footer() {
                                 href={social.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1.5 rounded-full border border-primary/30 text-primary transition-all duration-300 hover:scale-110 hover:border-primary hover:bg-primary hover:text-white hover:shadow-lg group"
+                                className="p-1.5 rounded-full border border-blue-600/30 text-blue-600 transition-all duration-300 hover:scale-110 hover:border-orange-500 hover:bg-gradient-to-r hover:from-blue-600 hover:to-orange-500 hover:text-white hover:shadow-lg group"
                             >
                                 <social.icon className="h-3.5 w-3.5 transition-transform duration-500 group-hover:rotate-[360deg]" />
                             </a>
                         ))}
                     </div>
 
-                    {/* Description */}
-                    <p className="text-center text-xs text-primary/60 max-w-2xl leading-relaxed">
-                        نقدم حلولاً برمجية وتسويقية متكاملة، من تطوير الأنظمة وتطبيقات الويب إلى استراتيجيات التسويق الرقمي المتقدمة.
-                    </p>
-
-                    {/* Copyright */}
-                    <div className="text-[10px] text-primary/40 text-center space-y-0.5">
-                        <div>All Rights Reserved © 2026 Al-Khatib Software | Hakeem Jo v1.0</div>
-                        <div className="italic">Crafted with Love in Jordan ❤️</div>
-                    </div>
                 </div>
             </div>
         </footer>

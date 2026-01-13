@@ -235,20 +235,23 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                         </Button>
                     </div>
 
-                    {/* Left Side: Clinic Branding Section */}
+                    {/* Left Side: Hakeem Jordan Branding (Mobile) */}
                     <div className="flex items-center gap-2 min-w-0 flex-1 justify-end">
                         <div className="flex flex-col items-end leading-none min-w-0">
-                            <h1 className="text-xs font-black tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent truncate w-full text-right">
-                                {clinicName}
+                            <h1 className="text-xs font-black tracking-tight bg-gradient-to-r from-blue-600 via-blue-700 to-orange-500 bg-clip-text text-transparent truncate w-full text-right">
+                                HAKEEM JORDAN
                             </h1>
-                            <p className="text-[8px] text-blue-600 dark:text-blue-400 font-bold opacity-70 truncate w-full text-right">{clinicDesc}</p>
+                            <p className="text-[7px] font-bold uppercase tracking-wider bg-gradient-to-r from-orange-500 to-blue-600 bg-clip-text text-transparent truncate w-full text-right">Clinic Management System</p>
                         </div>
                         <div className="h-9 w-9 relative flex-shrink-0">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full blur opacity-20"></div>
+                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-2xl blur opacity-30"></div>
                             <img
-                                src={clinicLogo}
-                                alt="Logo"
-                                className="relative h-full w-full object-contain"
+                                src="/hakeem-logo.png"
+                                alt="Hakeem Jordan Logo"
+                                className="relative h-full w-full object-contain rounded-xl"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = './logo.png';
+                                }}
                             />
                         </div>
                     </div>

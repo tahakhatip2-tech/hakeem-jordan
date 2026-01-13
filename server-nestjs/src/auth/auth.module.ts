@@ -10,7 +10,17 @@ import { JwtStrategy } from './jwt.strategy';
 import { SupabaseService } from '../storage/supabase.service';
 
 @Module({
-  // ...
+  imports: [
+    UsersModule,
+    PassportModule,
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET', 'super-secret-key'),
+        signOptions: { expiresIn: '1d' },
+      }),
+    }),
+  ],
   providers: [AuthService, JwtStrategy, SupabaseService],
   controllers: [AuthController],
   exports: [AuthService],

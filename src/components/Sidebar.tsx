@@ -31,29 +31,7 @@ interface SidebarProps {
 const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     const navigate = useNavigate();
     const { signOut, user } = useAuth();
-    const [branding, setBranding] = useState({
-        name: 'Hakeem Jo',
-        description: 'Clinic Management System',
-        logo: './logo.png'
-    });
-
-    useEffect(() => {
-        const loadBranding = async () => {
-            try {
-                const settings = await whatsappApi.getSettings();
-                if (settings.clinic_name || settings.clinic_description || settings.clinic_logo) {
-                    setBranding({
-                        name: settings.clinic_name || 'عيادتي',
-                        description: settings.clinic_description || 'نظام إدارة العيادات',
-                        logo: settings.clinic_logo ? (settings.clinic_logo.startsWith('http') ? settings.clinic_logo : `${BASE_URL}${settings.clinic_logo}`) : './logo.png'
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading branding:', error);
-            }
-        };
-        loadBranding();
-    }, []);
+    // Fixed Hakeem Jordan branding - not dynamic
 
     const handleSignOut = async () => {
         await signOut();
@@ -73,20 +51,24 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
         <div className="w-full h-full bg-white/5 dark:bg-black/10 backdrop-blur-[120px] border-l border-white/5 flex flex-col overflow-hidden">
             <div className="p-6 border-b border-white/10 flex-shrink-0">
                 <div className="flex items-center gap-3">
-                    <img
-                        src={branding.logo}
-                        alt="Logo"
-                        className="h-10 w-10 rounded-xl shadow-glow object-cover transition-all duration-500 hover:scale-110"
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).src = './logo.png';
-                        }}
-                    />
+                    {/* 3D Professional Logo */}
+                    <div className="relative h-12 w-12 flex-shrink-0">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-2xl blur opacity-30 animate-pulse"></div>
+                        <img
+                            src="/hakeem-logo.png"
+                            alt="Hakeem Jordan Logo"
+                            className="relative h-full w-full rounded-2xl shadow-2xl object-contain transition-all duration-500 hover:scale-110 hover:rotate-3"
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = './logo.png';
+                            }}
+                        />
+                    </div>
                     <div className="overflow-hidden">
-                        <h1 className="text-xl font-display font-black leading-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate max-w-[150px]">
-                            {branding.name}
+                        <h1 className="text-lg font-display font-black leading-tight bg-gradient-to-r from-blue-600 via-blue-700 to-orange-500 bg-clip-text text-transparent tracking-tight">
+                            HAKEEM JORDAN
                         </h1>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-tighter truncate">
-                            {branding.description}
+                        <p className="text-[9px] font-bold uppercase tracking-wider bg-gradient-to-r from-orange-500 to-blue-600 bg-clip-text text-transparent">
+                            Clinic Management System
                         </p>
                     </div>
                 </div>
@@ -137,11 +119,11 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                         rel="noopener noreferrer"
                         className="relative group cursor-pointer"
                     >
-                        <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-20 animate-pulse group-hover:animate-[pulse_0.5s_ease-in-out_infinite]"></div>
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full blur opacity-20 animate-pulse group-hover:animate-[pulse_0.5s_ease-in-out_infinite]"></div>
                         <img
                             src="/logo.png"
                             alt="Al-Khatib Logo"
-                            className="relative h-10 w-10 rounded-full border-2 border-primary/20 shadow-lg object-cover transition-transform duration-300 group-hover:scale-110"
+                            className="relative h-10 w-10 rounded-full border-2 border-blue-600/20 shadow-lg object-cover transition-transform duration-300 group-hover:scale-110"
                             onError={(e) => {
                                 (e.target as HTMLImageElement).src = 'https://alkhatib-marketing.great-site.net/favicon.ico';
                             }}
@@ -149,13 +131,13 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                     </a>
 
                     {/* Brand Name */}
-                    <h2 className="text-xs font-black tracking-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent text-center leading-tight">
+                    <h2 className="text-xs font-black tracking-tight bg-gradient-to-r from-blue-600 via-orange-500 to-blue-600 bg-clip-text text-transparent text-center leading-tight">
                         AL-KHATIB-MARKETING&SOFTWARE
                     </h2>
 
                     {/* Tagline */}
-                    <div className="flex items-center gap-1.5 text-[9px] font-bold text-primary/70 uppercase tracking-wider">
-                        <Sparkles className="h-2 w-2 text-accent" />
+                    <div className="flex items-center gap-1.5 text-[9px] font-bold text-blue-600/70 uppercase tracking-wider">
+                        <Sparkles className="h-2 w-2 text-orange-500" />
                         Premium Digital Solutions
                     </div>
 
@@ -172,22 +154,17 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                                 href={social.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 rounded-full border border-primary/30 text-primary transition-all duration-300 hover:scale-110 hover:border-primary hover:bg-primary hover:text-white hover:shadow-lg group"
+                                className="p-1 rounded-full border border-blue-600/30 text-blue-600 transition-all duration-300 hover:scale-110 hover:border-orange-500 hover:bg-gradient-to-r hover:from-blue-600 hover:to-orange-500 hover:text-white hover:shadow-lg group"
                             >
                                 <social.icon className="h-3 w-3 transition-transform duration-500 group-hover:rotate-[360deg]" />
                             </a>
                         ))}
                     </div>
 
-                    {/* Description */}
-                    <p className="text-center text-[9px] text-primary/60 leading-relaxed">
-                        نقدم حلولاً برمجية وتسويقية متكاملة، من تطوير الأنظمة وتطبيقات الويب إلى استراتيجيات التسويق الرقمي المتقدمة.
-                    </p>
 
-                    {/* Copyright */}
-                    <div className="text-[8px] text-primary/40 text-center space-y-0.5">
-                        <div>© 2026 Al-Khatib Software</div>
-                        <div>Hakeem Jo v1.0</div>
+                    {/* Version */}
+                    <div className="text-[8px] text-blue-600/40 text-center">
+                        Hakeem Jordan v1.0
                     </div>
                 </div>
             </div>
