@@ -3,14 +3,18 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes, ApiBody
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { extname } from 'path';
 import { LoginDto, UpdateProfileDto, AuthResponseDto } from './dto/auth.dto';
+import { SupabaseService } from '../storage/supabase.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    constructor(
+        private authService: AuthService,
+        private supabaseService: SupabaseService
+    ) { }
 
     @Post('login')
     @HttpCode(HttpStatus.OK)
@@ -129,13 +133,7 @@ export class AuthController {
         description: 'غير مصرح - يجب تسجيل الدخول'
     })
     @UseInterceptors(FileInterceptor('avatar', {
-        storage: diskStorage({
-            destination: './uploads',
-            filename: (req, file, cb) => {
-                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
-                return cb(null, `${randomName}${extname(file.originalname)}`);
-            }
-        }),
+        storage: memoryStorage(),
         fileFilter: (req, file, cb) => {
             if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
                 return cb(new Error('Only image files are allowed!'), false);
@@ -144,8 +142,18 @@ export class AuthController {
         }
     }))
     async uploadAvatar(@Request() req, @UploadedFile() file: any) {
-        const avatarPath = `/uploads/${file.filename}`;
-        return this.authService.updateAvatar(req.user.id, avatarPath);
+        if (!file) {
+            throw new Error('لم يتم اختيار ملف');
+        }
+
+        try {
+            // Upload to 'avatars' folder (or 'clinic' if you prefer a single folder)
+            const avatarUrl = await this.supabaseService.uploadFile(file, 'avatars');
+            return this.authService.updateAvatar(req.user.id, avatarUrl);
+        } catch (error) {
+            console.error('Avatar Upload Error:', error);
+            throw new Error(`فشل رفع الصورة: ${error.message}`);
+        }
     }
 }
 

@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Put, Patch, Delete, UseGuards, Request, Body, Param, ParseIntPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { extname } from 'path';
 import { WhatsAppService } from './whatsapp.service';
+import { SupabaseService } from '../storage/supabase.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { WhatsAppSendMessageDto, WhatsAppSettingsDto, CreateTemplateDto, WhatsAppStatusResponseDto } from './dto/whatsapp.dto';
 
@@ -12,7 +13,10 @@ import { WhatsAppSendMessageDto, WhatsAppSettingsDto, CreateTemplateDto, WhatsAp
 @UseGuards(JwtAuthGuard)
 @Controller('whatsapp')
 export class WhatsAppController {
-    constructor(private whatsappService: WhatsAppService) { }
+    constructor(
+        private whatsappService: WhatsAppService,
+        private supabaseService: SupabaseService
+    ) { }
 
     @Get('status')
     @ApiOperation({ summary: 'حالة اتصال واتساب', description: 'التحقق مما إذا كان واتساب مرتبطاً أو يحتاج لمسح QR code' })
@@ -133,21 +137,14 @@ export class WhatsAppController {
     })
     @ApiResponse({ status: 200, description: 'تم رفع الشعار بنجاح' })
     @UseInterceptors(FileInterceptor('file', {
-        storage: diskStorage({
-            destination: './uploads/clinic',
-            filename: (req, file, cb) => {
-                const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
-                cb(null, `${randomName}${extname(file.originalname)}`);
-            }
-        })
+        storage: memoryStorage()
     }))
     async upload(@UploadedFile() file: Express.Multer.File) {
         if (!file) {
             throw new Error('لم يتم اختيار ملف');
         }
-        return {
-            url: `/uploads/clinic/${file.filename}`
-        };
+        const url = await this.supabaseService.uploadFile(file, 'clinic');
+        return { url };
     }
 
     @Get('tags')
