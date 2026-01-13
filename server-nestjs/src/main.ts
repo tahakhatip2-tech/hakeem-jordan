@@ -28,7 +28,8 @@ async function bootstrap() {
       'http://localhost:8080',
       'http://localhost:5173',
       'http://localhost:3000',
-      'https://tsunamic-unshameable-maricruz.ngrok-free.dev'
+      'https://tsunamic-unshameable-maricruz.ngrok-free.dev',
+      'https://hakeem-jordan-jordan.vercel.app/'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization, Bypass-Tunnel-Reminder, ngrok-skip-browser-warning',
