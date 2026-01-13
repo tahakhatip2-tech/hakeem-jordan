@@ -111,6 +111,7 @@ export const whatsappApi = {
     // Settings
     getSettings: () => apiFetch('/whatsapp/settings'),
     updateSettings: (data: any) => apiFetch('/whatsapp/settings', { method: 'POST', body: JSON.stringify(data) }),
+    upload: (formData: FormData) => apiFetch('/whatsapp/upload', { method: 'POST', body: formData }),
 };
 
 export const appointmentsApi = {

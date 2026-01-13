@@ -1,40 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { appointmentsApi } from "@/lib/api";
+import { API_URL } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, User, Clock, Calendar, Volume2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import useSound from 'use-sound'; // Or just native Audio
 // We'll use native SpeechSynthesis for simplicity
 
 const QueueDisplay = () => {
     const navigate = useNavigate();
     const [lastCalledId, setLastCalledId] = useState<number | null>(null);
-
-    // Fetch appointments every 5 seconds
-    const { data: appointments, isLoading, error } = useQuery({
-        queryKey: ['todayAppointmentsQueue'],
-        queryFn: appointmentsApi.getAll, // Wait, getAll searches. We want "today". 
-        // We might need to fetch today specifically. appointmentsApi.getAll takes headers but we need "today".
-        // Let's use appointmentsApi.getStats() maybe? No, that's counts.
-        // Let's modify logic or use custom fetch if needed. 
-        // Actually appointmentsApi.getAll usually fetches all provided by the controller @Get().
-        // The controller @Get('today') is available. Let's verify appointmentsApi has getToday.
-        // Checking lib/api.ts logic...
-        refetchInterval: 5000,
-    });
-
-    // api.ts check:
-    // export const appointmentsApi = { 
-    //    getAll: () => apiFetch('/appointments'), 
-    //    ... 
-    // } 
-    // It doesn't have getToday explicitly exported in the object I saw earlier.
-    // I should add `getToday: () => apiFetch('/appointments/today'),` to api.ts or use direct fetch here.
-    // I'll assume I'll add it or use direct fetch for now.
 
     const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -43,27 +20,40 @@ const QueueDisplay = () => {
         return () => clearInterval(timer);
     }, []);
 
-    const fetchToday = async () => {
-        // Manual fetch since api.ts update is better in a separate step or I'll just patch api.ts first.
-        // For now, I'll inline the fetch using the exported apiFetch or just import API_URL
-        // actually appointmentsApi is imported. I'll use a custom function here.
-        const { API_URL } = await import("@/lib/api");
+    // Fetch today's appointments
+    const fetchTodayAppointments = async () => {
         const token = localStorage.getItem("token");
         const res = await fetch(`${API_URL}/appointments/today`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
+            }
         });
+        if (!res.ok) throw new Error('Failed to fetch');
         return res.json();
     };
 
     // Re-bind query to custom fetch
     const { data: todayApps, isLoading: loadingApps } = useQuery({
         queryKey: ['queueToday'],
-        queryFn: fetchToday,
+        queryFn: fetchTodayAppointments,
         refetchInterval: 5000
     });
 
-    const currentPatient = todayApps?.find((a: any) => a.status === 'in-progress' || a.status === 'IN_PROGRESS');
-    const waitingPatients = todayApps?.filter((a: any) => a.status === 'scheduled' || a.status === 'confirmed').slice(0, 5) || [];
+    // Helper to normalize status for comparison
+    const normalizeStatus = (status: string | undefined | null) => {
+        return (status || '').toLowerCase().trim();
+    };
+
+    const currentPatient = todayApps?.find((a: any) => {
+        const s = normalizeStatus(a.status);
+        return s === 'in-progress' || s === 'in_progress';
+    });
+
+    const waitingPatients = todayApps?.filter((a: any) => {
+        const s = normalizeStatus(a.status);
+        return ['scheduled', 'confirmed', 'pending', 'new'].includes(s);
+    }).slice(0, 5) || [];
 
     // Speech Logic
     useEffect(() => {

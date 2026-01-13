@@ -36,6 +36,10 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
         if (!fs.existsSync(this.sessionPath)) {
             fs.mkdirSync(this.sessionPath, { recursive: true });
         }
+        const uploadsClinicPath = path.join(process.cwd(), 'uploads', 'clinic');
+        if (!fs.existsSync(uploadsClinicPath)) {
+            fs.mkdirSync(uploadsClinicPath, { recursive: true });
+        }
     }
 
     // ... (keep existing methods up to extractAndProcessActions)
@@ -146,40 +150,31 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
 
     async getSettings(userId: number) {
         const settings = await this.prisma.setting.findMany({
-            where: {
-                userId,
-                key: { in: ['ai_enabled', 'ai_api_key', 'ai_system_instruction'] }
-            }
+            where: { userId }
         });
-        return {
-            ai_enabled: settings.find(s => s.key === 'ai_enabled')?.value || '1',
-            ai_api_key: settings.find(s => s.key === 'ai_api_key')?.value || '',
-            ai_system_instruction: settings.find(s => s.key === 'ai_system_instruction')?.value || '',
-        };
+
+        // Convert array of settings to an object
+        const settingsMap = {};
+        settings.forEach(s => {
+            settingsMap[s.key] = s.value;
+        });
+
+        return settingsMap;
     }
 
     async updateSettings(userId: number, data: any) {
-        if (data.ai_enabled !== undefined) {
+        const entries = Object.entries(data);
+
+        for (const [key, value] of entries) {
+            if (value === undefined || value === null) continue;
+
             await this.prisma.setting.upsert({
-                where: { userId_key: { userId, key: 'ai_enabled' } },
-                update: { value: data.ai_enabled.toString() },
-                create: { userId, key: 'ai_enabled', value: data.ai_enabled.toString() },
+                where: { userId_key: { userId, key } },
+                update: { value: value.toString() },
+                create: { userId, key, value: value.toString() },
             });
         }
-        if (data.ai_api_key !== undefined) {
-            await this.prisma.setting.upsert({
-                where: { userId_key: { userId, key: 'ai_api_key' } },
-                update: { value: data.ai_api_key },
-                create: { userId, key: 'ai_api_key', value: data.ai_api_key },
-            });
-        }
-        if (data.ai_system_instruction !== undefined) {
-            await this.prisma.setting.upsert({
-                where: { userId_key: { userId, key: 'ai_system_instruction' } },
-                update: { value: data.ai_system_instruction },
-                create: { userId, key: 'ai_system_instruction', value: data.ai_system_instruction },
-            });
-        }
+
         return { success: true };
     }
 
@@ -490,7 +485,7 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
 
         // 3. AI Reply (Conditional on settings)
         const settings = await this.getSettings(userId);
-        if (settings.ai_enabled === '1') {
+        if (settings['ai_enabled'] === '1') {
             const contactName = chat.name || msg.pushName || 'Client';
             const aiResponseRaw = await this.aiService.getAIResponse(userId, messageContent, from, contactName);
             if (aiResponseRaw) {
