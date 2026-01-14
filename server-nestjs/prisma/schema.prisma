@@ -1,59 +1,40 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-enum UserRole {
-  ADMIN
-  USER
-  AGENT
-}
-
-enum SubscriptionStatus {
-  FREE
-  TRIAL
-  ACTIVE
-  PAST_DUE
-  CANCELED
-}
-
 model User {
-  id                 Int                @id @default(autoincrement())
-  email              String             @unique
+  id                 Int                 @id @default(autoincrement())
+  email              String              @unique
   password           String
   name               String?
   avatar             String?
-  role               UserRole           @default(USER)
-  status             String             @default("active")
+  role               UserRole            @default(USER)
+  status             String              @default("active")
   expiryDate         DateTime?
-  subscriptionStatus SubscriptionStatus @default(FREE)
-  stripeCustomerId   String?            @unique
+  subscriptionStatus SubscriptionStatus  @default(FREE)
+  stripeCustomerId   String?             @unique
   planId             Int?
-  plan               Plan?              @relation(fields: [planId], references: [id])
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-
-  // SaaS Relations
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  appointments       Appointment[]
+  autoReplyTemplates AutoReplyTemplate[]
+  campaigns          Campaign[]
   contacts           Contact[]
+  customerTags       CustomerTag[]
   groups             Group[]
   notifications      Notification[]
   payments           Payment[]
-  appointments       Appointment[]
-  whatsAppChats      WhatsAppChat[]
-  autoReplyTemplates AutoReplyTemplate[]
-  campaigns          Campaign[]
+  pipelines          Pipeline[]
   services           Service[]
   settings           Setting[]
-  customerTags       CustomerTag[]
-  pipelines          Pipeline[]
+  plan               Plan?               @relation(fields: [planId], references: [id])
+  whatsAppChats      WhatsAppChat[]
 }
 
 model Plan {
@@ -61,53 +42,51 @@ model Plan {
   name        String   @unique
   description String?
   price       Decimal  @db.Decimal(10, 2)
-  interval    String   @default("month") // month, year
+  interval    String   @default("month")
   stripeId    String?  @unique
-  features    String?  // JSON string of features/limits
-  users       User[]
+  features    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  users       User[]
 }
 
 model Payment {
   id            Int      @id @default(autoincrement())
   userId        Int
-  user          User     @relation(fields: [userId], references: [id])
   amount        Decimal  @db.Decimal(10, 2)
-  method        String   @default("cash") // cash, bank_transfer, etc.
-  status        String   @default("pending") // pending, completed, rejected
+  method        String   @default("cash")
+  status        String   @default("pending")
   transactionId String?  @unique
   receiptUrl    String?
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model Group {
   id           Int       @id @default(autoincrement())
   userId       Int
-  user         User      @relation(fields: [userId], references: [id])
   name         String
   platform     String
   status       String    @default("active")
   membersCount Int       @default(0)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-
+  user         User      @relation(fields: [userId], references: [id])
   posts        Post[]
   contacts     Contact[] @relation("ContactGroups")
 }
 
 model Contact {
-  id                Int       @id @default(autoincrement())
+  id                Int             @id @default(autoincrement())
   userId            Int
-  user              User      @relation(fields: [userId], references: [id])
   name              String?
   phone             String
   platform          String?
   source            String?
   extractedFrom     String?
-  status            String    @default("new")
+  status            String          @default("new")
   email             String?
   jobTitle          String?
   location          String?
@@ -116,26 +95,25 @@ model Contact {
   profileUrl        String?
   pipelineId        Int?
   stageId           Int?
-  dealValue         Decimal?  @db.Decimal(10, 2)
-  priority          String    @default("medium")
+  dealValue         Decimal?        @db.Decimal(10, 2)
+  priority          String          @default("medium")
   expectedCloseDate DateTime?
-  probability       Int       @default(0)
+  probability       Int             @default(0)
   lastVisit         DateTime?
   medicalNotes      String?
-  patientStatus     String    @default("new")
+  patientStatus     String          @default("new")
   bloodType         String?
   allergies         String?
   chronicDiseases   String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  notifications     Notification[]
-  medicalRecords    MedicalRecord[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  nationalId        String?         @unique
   appointment       Appointment[]
-  tags              CustomerTag[]  @relation("ContactTags")
-  groups            Group[]        @relation("ContactGroups")
-
-  nationalId        String?        @unique
+  user              User            @relation(fields: [userId], references: [id])
+  medicalRecords    MedicalRecord[]
+  notifications     Notification[]
+  groups            Group[]         @relation("ContactGroups")
+  tags              CustomerTag[]   @relation("ContactTags")
 
   @@unique([userId, phone])
 }
@@ -143,44 +121,44 @@ model Contact {
 model Post {
   id            Int      @id @default(autoincrement())
   groupId       Int
-  group         Group    @relation(fields: [groupId], references: [id])
   content       String?
   commentsCount Int      @default(0)
   createdAt     DateTime @default(now())
+  group         Group    @relation(fields: [groupId], references: [id])
 }
 
 model Pipeline {
   id        Int      @id @default(autoincrement())
   userId    Int?
-  user      User?    @relation(fields: [userId], references: [id])
   name      String
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
   stages    Stage[]
 }
 
 model Stage {
   id         Int      @id @default(autoincrement())
   pipelineId Int
-  pipeline   Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
   name       String
   color      String?
   position   Int
   createdAt  DateTime @default(now())
+  pipeline   Pipeline @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
 }
 
 model WhatsAppChat {
-  id              Int           @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   userId          Int?
-  user            User?         @relation(fields: [userId], references: [id])
   phone           String
   name            String?
   lastMessage     String?
   lastMessageTime String?
-  unreadCount     Int           @default(0)
-  status          String        @default("active")
-  currentAgent    String        @default("general")
-  createdAt       DateTime      @default(now())
+  unreadCount     Int               @default(0)
+  status          String            @default("active")
+  currentAgent    String            @default("general")
+  createdAt       DateTime          @default(now())
+  user            User?             @relation(fields: [userId], references: [id])
   messages        WhatsAppMessage[]
 
   @@unique([userId, phone])
@@ -189,59 +167,59 @@ model WhatsAppChat {
 model WhatsAppMessage {
   id        Int          @id @default(autoincrement())
   chatId    Int
-  chat      WhatsAppChat @relation(fields: [chatId], references: [id])
   messageId String?
   fromMe    Boolean
   content   String?
   timestamp DateTime     @default(now())
   status    String       @default("sent")
+  chat      WhatsAppChat @relation(fields: [chatId], references: [id])
 }
 
 model AutoReplyTemplate {
-  id        Int      @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   userId    Int?
-  user      User?    @relation(fields: [userId], references: [id])
   trigger   String
   response  String
-  isActive  Boolean  @default(true)
-  priority  Int      @default(0)
-  createdAt DateTime @default(now())
+  isActive  Boolean       @default(true)
+  priority  Int           @default(0)
+  createdAt DateTime      @default(now())
+  user      User?         @relation(fields: [userId], references: [id])
   logs      WhatsAppLog[]
 }
 
 model Notification {
-  id            Int      @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   userId        Int
-  user          User     @relation(fields: [userId], references: [id])
   type          String
   title         String
   message       String
-  priority      String   @default("MEDIUM")
-  isRead        Boolean  @default(false)
+  priority      String       @default("MEDIUM")
+  isRead        Boolean      @default(false)
   contactId     Int?
-  contact       Contact? @relation(fields: [contactId], references: [id])
   appointmentId Int?
-  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
   metadata      String?
-  createdAt     DateTime @default(now())
+  createdAt     DateTime     @default(now())
   readAt        DateTime?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  contact       Contact?     @relation(fields: [contactId], references: [id])
+  user          User         @relation(fields: [userId], references: [id])
 }
 
 model WhatsAppLog {
-  id         Int               @id @default(autoincrement())
-  type       String
-  triggerId  Int?
-  template   AutoReplyTemplate? @relation(fields: [triggerId], references: [id])
-  phone      String?
-  content    String?
-  timestamp  DateTime          @default(now())
+  id        Int                @id @default(autoincrement())
+  type      String
+  triggerId Int?
+  phone     String?
+  content   String?
+  timestamp DateTime           @default(now())
+  template  AutoReplyTemplate? @relation(fields: [triggerId], references: [id])
 }
 
 model Setting {
   userId Int    @default(1)
-  user   User   @relation(fields: [userId], references: [id])
   key    String
   value  String
+  user   User   @relation(fields: [userId], references: [id])
 
   @@id([userId, key])
 }
@@ -254,33 +232,33 @@ model SystemInfo {
 model CustomerTag {
   id       Int       @id @default(autoincrement())
   userId   Int?
-  user     User?     @relation(fields: [userId], references: [id])
   name     String
   color    String?
+  user     User?     @relation(fields: [userId], references: [id])
   contacts Contact[] @relation("ContactTags")
 
   @@unique([userId, name])
 }
 
 model Appointment {
-  id              Int          @id @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   userId          Int?
-  user            User?        @relation(fields: [userId], references: [id])
   phone           String
   customerName    String?
   appointmentDate DateTime
-  status          String       @default("confirmed")
+  status          String          @default("confirmed")
   notes           String?
   patientId       Int?
-  contact         Contact?     @relation(fields: [patientId], references: [id])
   doctorId        Int?
-  duration        Int          @default(30)
-  type            String       @default("consultation")
-  reminderSent    Boolean      @default(false)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  notifications   Notification[]
+  duration        Int             @default(30)
+  type            String          @default("consultation")
+  reminderSent    Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  contact         Contact?        @relation(fields: [patientId], references: [id])
+  user            User?           @relation(fields: [userId], references: [id])
   medicalRecords  MedicalRecord[]
+  notifications   Notification[]
 }
 
 model TelegramChat {
@@ -299,18 +277,17 @@ model TelegramChat {
 model TelegramMessage {
   id        Int          @id @default(autoincrement())
   chatId    Int
-  chat      TelegramChat @relation(fields: [chatId], references: [id])
   messageId Int?
   fromMe    Boolean?
   content   String?
   type      String       @default("text")
   timestamp DateTime     @default(now())
+  chat      TelegramChat @relation(fields: [chatId], references: [id])
 }
 
 model Campaign {
   id              Int                 @id @default(autoincrement())
   userId          Int?
-  user            User?               @relation(fields: [userId], references: [id])
   name            String
   message         String
   platform        String
@@ -319,43 +296,58 @@ model Campaign {
   sentCount       Int                 @default(0)
   failedCount     Int                 @default(0)
   createdAt       DateTime            @default(now())
+  user            User?               @relation(fields: [userId], references: [id])
   recipients      CampaignRecipient[]
 }
 
 model CampaignRecipient {
   id           Int      @id @default(autoincrement())
   campaignId   Int
-  campaign     Campaign @relation(fields: [campaignId], references: [id])
   phone        String?
   name         String?
   status       String   @default("pending")
   errorMessage String?
+  campaign     Campaign @relation(fields: [campaignId], references: [id])
 }
 
 model Service {
   id          Int      @id @default(autoincrement())
   userId      Int?
-  user        User?    @relation(fields: [userId], references: [id])
   name        String
   description String?
   price       String?
   category    String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
+  user        User?    @relation(fields: [userId], references: [id])
 }
 
 model MedicalRecord {
   id            Int         @id @default(autoincrement())
   appointmentId Int
-  appointment   Appointment @relation(fields: [appointmentId], references: [id])
   patientId     Int?
-  contact       Contact?    @relation(fields: [patientId], references: [id])
   diagnosis     String?
   treatment     String?
   age           String?
   feeAmount     Decimal?    @db.Decimal(10, 2)
   feeDetails    String?
   attachmentUrl String?
-  recordType    String      @default("prescription") // prescription, lab_report, sick_leave, referral
+  recordType    String      @default("prescription")
   createdAt     DateTime    @default(now())
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  contact       Contact?    @relation(fields: [patientId], references: [id])
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  AGENT
+}
+
+enum SubscriptionStatus {
+  FREE
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
 }

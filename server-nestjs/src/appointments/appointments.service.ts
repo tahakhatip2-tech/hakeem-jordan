@@ -196,97 +196,109 @@ export class AppointmentsService {
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
 
-        const todayTotal = await this.prisma.appointment.count({
-            where: {
-                userId,
-                appointmentDate: {
-                    gte: today,
-                    lt: tomorrow,
-                },
-            },
-        });
-
-        const todayCompleted = await this.prisma.appointment.count({
-            where: {
-                userId,
-                appointmentDate: {
-                    gte: today,
-                    lt: tomorrow,
-                },
-                status: 'completed',
-            },
-        });
-
-        const todayWaiting = await this.prisma.appointment.count({
-            where: {
-                userId,
-                appointmentDate: {
-                    gte: today,
-                    lt: tomorrow,
-                },
-                status: { in: ['scheduled', 'confirmed'] },
-            },
-        });
-
         const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
         const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
-        const thisMonth = await this.prisma.appointment.count({
-            where: {
-                userId,
-                appointmentDate: {
-                    gte: thisMonthStart,
-                    lt: nextMonthStart,
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+        // Execute all independent queries in parallel
+        const [
+            todayTotal,
+            todayCompleted,
+            todayWaiting,
+            thisMonth,
+            totalPatients,
+            statusCounts,
+            typeCounts,
+            last7DaysAppointments
+        ] = await Promise.all([
+            // 1. Today Total
+            this.prisma.appointment.count({
+                where: {
+                    userId,
+                    appointmentDate: { gte: today, lt: tomorrow },
                 },
-            },
-        });
-
-        const totalPatients = await this.prisma.contact.count({
-            where: { userId }
-        });
-
-        const statusCounts = await this.prisma.appointment.groupBy({
-            by: ['status'],
-            where: { userId },
-            _count: { _all: true },
-        });
+            }),
+            // 2. Today Completed
+            this.prisma.appointment.count({
+                where: {
+                    userId,
+                    appointmentDate: { gte: today, lt: tomorrow },
+                    status: 'completed',
+                },
+            }),
+            // 3. Today Waiting
+            this.prisma.appointment.count({
+                where: {
+                    userId,
+                    appointmentDate: { gte: today, lt: tomorrow },
+                    status: { in: ['scheduled', 'confirmed'] },
+                },
+            }),
+            // 4. This Month
+            this.prisma.appointment.count({
+                where: {
+                    userId,
+                    appointmentDate: { gte: thisMonthStart, lt: nextMonthStart },
+                },
+            }),
+            // 5. Total Patients
+            this.prisma.contact.count({
+                where: { userId }
+            }),
+            // 6. Status Distribution
+            this.prisma.appointment.groupBy({
+                by: ['status'],
+                where: { userId },
+                _count: { _all: true },
+            }),
+            // 7. Type Distribution
+            this.prisma.appointment.groupBy({
+                by: ['type'],
+                where: { userId },
+                _count: { _all: true },
+            }),
+            // 8. Last 7 Days (Raw fetch)
+            this.prisma.appointment.findMany({
+                where: {
+                    userId,
+                    appointmentDate: {
+                        gte: sevenDaysAgo,
+                        lt: tomorrow, // Include today
+                    },
+                },
+                select: {
+                    appointmentDate: true,
+                },
+            })
+        ]);
 
         const statusDistribution = statusCounts.map((s) => ({
             name: s.status,
             value: s._count._all,
         }));
 
-        const typeCounts = await this.prisma.appointment.groupBy({
-            by: ['type'],
-            where: { userId },
-            _count: { _all: true },
-        });
-
         const typeDistribution = typeCounts.map((t) => ({
             name: t.type,
             value: t._count._all,
         }));
 
-        // Last 7 days distribution
+        // Processing Last 7 Days in Memory to avoid 7 separate DB calls
         const last7Days: { date: string; visits: number }[] = [];
         for (let i = 6; i >= 0; i--) {
             const d = new Date(today);
             d.setDate(d.getDate() - i);
-            const nextD = new Date(d);
-            nextD.setDate(nextD.getDate() + 1);
+            const dateStr = d.toISOString().split('T')[0];
 
-            const count = await this.prisma.appointment.count({
-                where: {
-                    userId,
-                    appointmentDate: {
-                        gte: d,
-                        lt: nextD,
-                    },
-                },
-            });
+            // Filter in-memory
+            const count = last7DaysAppointments.filter(apt => {
+                const aptDate = apt.appointmentDate.toISOString().split('T')[0];
+                return aptDate === dateStr;
+            }).length;
 
             last7Days.push({
-                date: d.toISOString().split('T')[0],
+                date: dateStr,
                 visits: count,
             });
         }

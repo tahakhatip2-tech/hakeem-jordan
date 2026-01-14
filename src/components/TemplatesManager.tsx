@@ -55,55 +55,78 @@ export const TemplatesManager = () => {
     const templateList = Array.isArray(templates) ? templates : [];
 
     return (
-        <div className="space-y-6 animate-fade-in p-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-8 animate-fade-in pb-20">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-display font-black text-foreground">
-                        إدارة الردود الآلية
+                    <h2 className="text-3xl font-black text-foreground flex items-center gap-2">
+                        <MessageSquare className="h-8 w-8 text-blue-500" />
+                        النماذج والردود الآلية
                     </h2>
-                    <p className="text-muted-foreground/80 font-medium mt-1">قم ببرمجة الكلمات المفتاحية والردود التي سيقوم البوت بإرسالها تلقائياً</p>
+                    <p className="text-xs font-bold text-muted-foreground mt-1 uppercase tracking-wider pl-1 border-l-2 border-blue-500/30">
+                        إدارة الكلمات المفتاحية والردود الذكية للمجيب الآلي
+                    </p>
                 </div>
+
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button onClick={() => handleOpenDialog()} className="gap-2 rounded-xl px-6 h-11">
-                            <Plus className="h-5 w-5" />
-                            رد آلي جديد
+                        <Button
+                            onClick={() => handleOpenDialog()}
+                            className="gap-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-500 border border-blue-500/20 backdrop-blur-md shadow-[0_0_20px_rgba(37,99,235,0.1)] hover:shadow-[0_0_30px_rgba(37,99,235,0.2)] rounded-none h-10 px-6 font-bold transition-all hover:scale-105 text-xs uppercase tracking-wider group relative overflow-hidden"
+                        >
+                            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                            <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
+                            <span className="relative z-10">رد آلي جديد</span>
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-xl rounded-3xl">
+                    <DialogContent className="sm:max-w-xl rounded-none border border-blue-500/20 bg-background/95 backdrop-blur-xl">
                         <DialogHeader>
-                            <DialogTitle className="text-xl font-bold">{currentTemplate ? "تعديل الرد الآلي" : "إضافة رد آلي جديد"}</DialogTitle>
+                            <DialogTitle className="text-xl font-black flex items-center gap-2">
+                                {currentTemplate ? (
+                                    <>
+                                        <Pencil className="h-5 w-5 text-blue-500" />
+                                        تعديل الرد الآلي
+                                    </>
+                                ) : (
+                                    <>
+                                        <Plus className="h-5 w-5 text-blue-500" />
+                                        إضافة رد آلي جديد
+                                    </>
+                                )}
+                            </DialogTitle>
                         </DialogHeader>
-                        <div className="space-y-5 py-4">
+                        <div className="space-y-6 py-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                <label className="text-xs font-black uppercase tracking-wider flex items-center gap-2 text-foreground/80">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                                     الكلمة المفتاحية (Trigger)
                                 </label>
                                 <Input
                                     placeholder="مثال: السعر، الموعد، العنوان"
-                                    className="h-12 rounded-xl border-border/50 focus:ring-primary/20"
+                                    className="h-12 rounded-none border-blue-500/20 bg-blue-500/5 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all font-bold"
                                     value={trigger}
                                     onChange={(e) => setTrigger(e.target.value)}
                                 />
-                                <p className="text-[11px] text-muted-foreground bg-muted/30 p-2 rounded-lg border border-border/5">عندما يرسل العميل هذه الكلمة، سيقوم البوت بالرد تلقائياً</p>
+                                <p className="text-[10px] font-bold text-muted-foreground bg-blue-500/5 p-2 border-r-2 border-blue-500/20">
+                                    عندما يرسل العميل هذه الكلمة، سيقوم البوت بالرد تلقائياً
+                                </p>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-bold flex items-center gap-2">
+                                <label className="text-xs font-black uppercase tracking-wider flex items-center gap-2 text-foreground/80">
                                     <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                                     نص الرد الآلي (Response)
                                 </label>
                                 <Textarea
                                     placeholder="اكتب نص الرد هنا..."
-                                    className="min-h-[150px] rounded-xl border-border/50 focus:ring-primary/20 py-3 leading-relaxed"
+                                    className="min-h-[150px] rounded-none border-blue-500/20 bg-blue-500/5 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all leading-relaxed font-medium"
                                     value={response}
                                     onChange={(e) => setResponse(e.target.value)}
                                 />
                             </div>
                         </div>
                         <DialogFooter className="gap-2 sm:gap-0">
-                            <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-xl flex-1 sm:flex-none">إلغاء</Button>
-                            <Button onClick={handleSave} className="rounded-xl px-8 flex-1 sm:flex-none">
+                            <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-none font-bold">إلغاء</Button>
+                            <Button onClick={handleSave} className="rounded-none bg-blue-600 hover:bg-blue-700 font-bold px-8">
                                 {currentTemplate ? "حفظ التعديلات" : "إضافة الرد"}
                             </Button>
                         </DialogFooter>
@@ -111,24 +134,28 @@ export const TemplatesManager = () => {
                 </Dialog>
             </div>
 
-            <Card className="border border-border/50 bg-card/40 backdrop-blur-sm shadow-sm overflow-hidden rounded-3xl">
-                <CardHeader className="border-b border-border/50 bg-muted/20">
-                    <CardTitle className="flex items-center gap-2.5 text-lg text-foreground">
-                        <div className="p-2 rounded-2xl border-2 border-primary/10 bg-primary/5 text-primary/70">
-                            <MessageSquare className="h-5 w-5" />
+            {/* Content Table Card */}
+            <Card className="border border-white/10 bg-blue-950/5 backdrop-blur-md shadow-sm overflow-hidden rounded-none relative group">
+                <div className="absolute top-0 right-0 w-1 h-full bg-blue-500/20 group-hover:bg-blue-500/40 transition-colors" />
+
+                <CardHeader className="border-b border-white/5 bg-white/5 py-4">
+                    <CardTitle className="flex items-center gap-3 text-sm font-black text-foreground uppercase tracking-wider">
+                        <div className="p-1.5 rounded-none bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                            <MessageSquare className="h-4 w-4" />
                         </div>
-                        القواعد النشطة ({templateList.length})
+                        القواعد النشطة <span className="text-blue-500">({templateList.length})</span>
                     </CardTitle>
                 </CardHeader>
+
                 <CardContent className="p-0">
                     {templateList.length === 0 ? (
                         <div className="text-center py-20 px-6">
-                            <div className="w-20 h-20 bg-muted/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-dashed border-border">
-                                <MessageSquare className="h-10 w-10 text-muted-foreground/40" />
+                            <div className="w-16 h-16 bg-blue-500/5 rounded-none flex items-center justify-center mx-auto mb-6 border border-dashed border-blue-500/20">
+                                <MessageSquare className="h-8 w-8 text-blue-500/40" />
                             </div>
-                            <p className="text-muted-foreground font-medium mb-1">لا توجد قواعد رد آلي حتى الآن</p>
-                            <p className="text-xs text-muted-foreground/50 mb-6">ابدأ ببرمجة الكلمات المفتاحية لتسهيل الرد على العملاء</p>
-                            <Button onClick={() => handleOpenDialog()} variant="default" className="rounded-xl gap-2">
+                            <p className="text-foreground font-bold mb-1">لا توجد قواعد رد آلي حتى الآن</p>
+                            <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide mb-6">ابدأ ببرمجة الكلمات المفتاحية لتسهيل الرد على العملاء</p>
+                            <Button onClick={() => handleOpenDialog()} variant="outline" className="rounded-none gap-2 border-blue-500/20 hover:bg-blue-500/5 text-blue-500 font-bold">
                                 <Plus className="h-4 w-4" />
                                 أضف أول قاعدة
                             </Button>
@@ -136,33 +163,33 @@ export const TemplatesManager = () => {
                     ) : (
                         <div className="overflow-x-auto">
                             <Table>
-                                <TableHeader className="bg-muted/30">
-                                    <TableRow className="hover:bg-transparent border-border/50">
-                                        <TableHead className="text-right font-bold h-12">الكلمة المفتاحية</TableHead>
-                                        <TableHead className="text-right font-bold h-12">نص الرد</TableHead>
-                                        <TableHead className="w-[120px] text-left font-bold h-12">إجراءات</TableHead>
+                                <TableHeader className="bg-white/5">
+                                    <TableRow className="hover:bg-transparent border-white/5">
+                                        <TableHead className="text-right font-black text-[10px] uppercase text-muted-foreground h-10 w-[200px]">الكلمة المفتاحية</TableHead>
+                                        <TableHead className="text-right font-black text-[10px] uppercase text-muted-foreground h-10">نص الرد</TableHead>
+                                        <TableHead className="w-[100px] text-left font-black text-[10px] uppercase text-muted-foreground h-10">إجراءات</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {templateList.map((template) => (
-                                        <TableRow key={template.id} className="border-border/50 hover:bg-muted/10 transition-colors">
-                                            <TableCell className="font-bold">
-                                                <span className="px-3 py-1 rounded-xl font-black text-[11px] text-primary border-2 border-primary/20 bg-primary/5 shadow-inner">
+                                        <TableRow key={template.id} className="border-white/5 hover:bg-blue-500/5 transition-colors group/row">
+                                            <TableCell className="font-bold py-4 align-top">
+                                                <span className="inline-flex px-3 py-1 rounded-none font-black text-[11px] text-blue-500 border border-blue-500/20 bg-blue-500/5 shadow-sm">
                                                     {template.trigger}
                                                 </span>
                                             </TableCell>
-                                            <TableCell className="text-muted-foreground max-w-md" dir="auto">
-                                                <div className="line-clamp-2 text-sm leading-relaxed">
+                                            <TableCell className="text-foreground/80 max-w-xl py-4 align-top" dir="auto">
+                                                <div className="text-xs leading-relaxed font-medium whitespace-pre-wrap pl-4 border-l-2 border-white/5">
                                                     {template.response}
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-1">
-                                                    <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(template)} className="h-9 w-9 rounded-lg hover:bg-blue-500/10 hover:text-blue-600 transition-colors">
-                                                        <Pencil className="h-4 w-4" />
+                                            <TableCell className="py-4 align-top">
+                                                <div className="flex items-center justify-end gap-1 opacity-50 group-hover/row:opacity-100 transition-opacity">
+                                                    <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(template)} className="h-8 w-8 rounded-none hover:bg-blue-500/10 hover:text-blue-500 transition-colors">
+                                                        <Pencil className="h-3.5 w-3.5" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" onClick={() => deleteTemplate(template.id)} className="h-9 w-9 rounded-lg hover:bg-destructive/10 hover:text-destructive transition-colors">
-                                                        <Trash2 className="h-4 w-4" />
+                                                    <Button variant="ghost" size="icon" onClick={() => deleteTemplate(template.id)} className="h-8 w-8 rounded-none hover:bg-red-500/10 hover:text-red-500 transition-colors">
+                                                        <Trash2 className="h-3.5 w-3.5" />
                                                     </Button>
                                                 </div>
                                             </TableCell>

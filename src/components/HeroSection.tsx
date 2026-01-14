@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { LucideIcon, Sparkles, Clock, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useClinicContext } from '@/context/ClinicContext';
 
@@ -55,12 +56,12 @@ export function HeroSection({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className={cn(
-                "relative w-full mb-8 md:mb-12 overflow-hidden border-y border-white/5 group bg-slate-950",
+                "relative w-full mb-6 md:mb-12 overflow-hidden border-y border-white/5 group bg-slate-950",
                 className
             )}
         >
             {/* 1. Ultra-Luxury Background Layering (Refined for Transparency) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-blue-950/5 via-blue-900/5 to-transparent backdrop-blur-[6px]">
+            <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-white/10 to-transparent backdrop-blur-[6px]">
                 {/* Image Base */}
                 <motion.div
                     initial={{ scale: 1.1 }}
@@ -82,12 +83,12 @@ export function HeroSection({
                         opacity: [0.2, 0.4, 0.2],
                     }}
                     transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-blue-500/5"
+                    className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5"
                 />
             </div>
 
             {/* 2. Content Layer (Refactored & Compressed) */}
-            <div className="relative z-10 px-4 py-6 md:px-12 md:py-8 flex flex-col items-center md:items-start md:flex-row md:justify-between text-right overflow-hidden gap-6">
+            <div className="relative z-10 px-4 py-3 md:px-12 md:py-8 flex flex-col items-center md:items-start md:flex-row md:justify-between text-right overflow-hidden gap-4 md:gap-6">
 
                 {/* BRANDING SECTION (Fixed) */}
                 <div className="flex flex-col items-center md:items-start gap-1 relative flex-1 order-2 md:order-1 w-full">
@@ -106,7 +107,7 @@ export function HeroSection({
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2 w-fit mb-4 group/token hover:bg-white/10 transition-colors"
+                        className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2 w-fit mb-2 md:mb-4 group/token hover:bg-white/10 transition-colors"
                     >
                         <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
                         <span className="text-[10px] font-bold text-blue-200 tracking-wider uppercase group-hover/token:text-blue-100 transition-colors">
@@ -160,8 +161,10 @@ export function HeroSection({
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="flex order-1 md:order-2 self-center md:self-auto"
+                    className="flex order-1 md:order-2 self-center md:self-auto gap-3 items-center"
                 >
+                    {/* Patient Portal Button Removed as per request */}
+
                     <div className="relative p-3 md:p-5 bg-white/[0.02] backdrop-blur-md border border-white/10 rounded-none shadow-2xl flex flex-col items-center justify-center gap-1 group/clock overflow-hidden min-w-[140px] md:min-w-[180px]">
                         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover/clock:opacity-100 transition-opacity duration-1000" />
 
@@ -185,7 +188,7 @@ export function HeroSection({
             </div>
 
             {/* 3. NEW PAGE TITLE STRIP (Glass-Transparent) */}
-            <div className="relative z-10 w-full border-t border-white/5 bg-gradient-to-r from-black/20 to-transparent backdrop-blur-[10px]">
+            <div className="relative z-10 w-full border-t border-white/10 bg-gradient-to-r from-white/10 to-transparent backdrop-blur-[10px]">
                 <div className="px-4 py-3 md:px-12 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <div className="h-6 w-1 bg-primary shadow-[0_0_10px_rgba(var(--primary),0.6)]" />
@@ -196,9 +199,14 @@ export function HeroSection({
                                 animate={{ opacity: 1, x: 0 }}
                                 className="text-sm md:text-lg font-black text-white uppercase tracking-tight leading-none"
                             >
-                                {pageTitle}
+                                {pageTitle === 'الرؤية الوطنية' ? 'رؤيتنا' : pageTitle}
                             </motion.h2>
-                            <p className="text-[10px] text-muted-foreground hidden md:block leading-none mt-1 line-clamp-1 max-w-md">{description}</p>
+                            {/* Modern Artistic Panel for Description */}
+                            <div className="hidden md:flex mt-1 relative overflow-hidden group/desc">
+                                <p className="text-[10px] font-bold text-muted-foreground/80 leading-none pl-2 border-l-2 border-primary/20 transition-all group-hover/desc:border-primary/60 group-hover/desc:text-primary/80 group-hover/desc:pl-3">
+                                    {description || "نبدة لتطوير القطاع الصحي العام لتكون لوحة فنية عصرية"}
+                                </p>
+                            </div>
                         </div>
                     </div>
 

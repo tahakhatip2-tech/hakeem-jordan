@@ -111,6 +111,12 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                             <div className="w-2.5 h-[1.5px] bg-blue-600 dark:bg-blue-400 rounded-full"></div>
                                             <div className="w-1.5 h-[1.5px] bg-blue-600 dark:bg-blue-400 rounded-full"></div>
                                             <div className="w-2.5 h-[1.5px] bg-blue-600 dark:bg-blue-400 rounded-full"></div>
+
+                                            {/* Green Status Dot (Glow) */}
+                                            <div className="absolute -top-0.5 -left-0.5 h-2 w-2">
+                                                <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
+                                                <div className="relative h-2 w-2 bg-green-500 rounded-full border border-white dark:border-blue-950"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </button>
@@ -304,6 +310,12 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                             <div className="w-2 h-[1px] bg-muted-foreground group-hover:bg-primary transition-colors"></div>
                                             <div className="w-1.5 h-[1px] bg-muted-foreground group-hover:bg-primary transition-colors"></div>
                                             <div className="w-2 h-[1px] bg-muted-foreground group-hover:bg-primary transition-colors"></div>
+
+                                            {/* Green Status Dot (Glow) */}
+                                            <div className="absolute -top-0.5 -left-0.5 h-1.5 w-1.5">
+                                                <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
+                                                <div className="relative h-1.5 w-1.5 bg-green-500 rounded-full border border-white dark:border-background"></div>
+                                            </div>
                                         </div>
                                     </div>
 

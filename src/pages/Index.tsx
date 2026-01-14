@@ -47,7 +47,8 @@ import {
     FileText,
     Settings,
     LineChart,
-    Sparkles
+    Sparkles,
+    Download
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -240,7 +241,7 @@ const Index = () => {
                                     }}
                                     className="space-y-8 md:space-y-12 pb-12"
                                 >
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                                         <motion.div
                                             variants={{
                                                 hidden: { y: 30, opacity: 0, scale: 0.95 },
@@ -356,7 +357,7 @@ const Index = () => {
                                                 visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 25 } }
                                             }}
                                             whileHover={{ y: -5, scale: 1.01 }}
-                                            className="p-6 md:p-8 border-y border-white/5 bg-blue-950/5 backdrop-blur-[100px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-4"
+                                            className="p-4 border-y border-white/10 bg-blue-950/5 backdrop-blur-[100px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-2 md:mx-4"
                                             onClick={() => setActiveTab('whatsapp-bot')}
                                         >
                                             <div className="">
@@ -404,7 +405,7 @@ const Index = () => {
                                                 visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 25 } }
                                             }}
                                             whileHover={{ y: -5, scale: 1.01 }}
-                                            className="p-6 md:p-8 border-y border-white/5 bg-blue-950/5 backdrop-blur-[100px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-4"
+                                            className="p-4 border-y border-white/10 bg-blue-950/5 backdrop-blur-[100px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-2 md:mx-4"
                                             onClick={() => setActiveTab('appointments')}
                                         >
                                             <div className="">
@@ -471,45 +472,53 @@ const Index = () => {
 
                             {activeTab === 'contacts' && (
                                 <div className="space-y-6 animate-fade-in pb-10">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                                    {/* Control Bar & Search Section */}
+                                    <div className="mb-8 space-y-4">
+                                        {/* Blue Glass Control Bar */}
+                                        <Card className="p-2 bg-blue-600/5 border border-blue-500/10 backdrop-blur-md rounded-none shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
 
-                                        <div className="flex items-center flex-wrap gap-2.5">
-                                            <span className="inline-flex items-center px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-xs font-bold text-primary shadow-sm h-9">
-                                                إجمالي المرضى: {(contacts || []).length}
-                                            </span>
+                                            <div className="flex items-center gap-2 w-full md:w-auto px-2">
+                                                <div className="h-8 px-4 flex items-center justify-center bg-blue-500/10 text-blue-500 text-[10px] font-black uppercase tracking-wider border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.1)]">
+                                                    إجمالي المرضى: {(contacts || []).length}
+                                                </div>
+                                            </div>
 
-                                            <div className="h-4 w-[1px] bg-border mx-1 hidden md:block" />
+                                            <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 px-2 justify-end">
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    className="h-8 gap-2 rounded-none font-bold text-xs uppercase tracking-wide bg-white/5 hover:bg-white/10 text-foreground/80 hover:text-primary border border-white/5 hover:border-white/10 transition-all"
+                                                    onClick={() => syncContacts.mutate()}
+                                                >
+                                                    <RefreshCw className={cn("h-3 w-3", syncContacts.isPending && "animate-spin")} />
+                                                    <span>مزامنة</span>
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    className="h-8 gap-2 rounded-none font-bold text-xs uppercase tracking-wide bg-white/5 hover:bg-white/10 text-foreground/80 hover:text-primary border border-white/5 hover:border-white/10 transition-all"
+                                                    onClick={exportContacts}
+                                                >
+                                                    <Download className="h-3 w-3" />
+                                                    <span>تصدير</span>
+                                                </Button>
+                                            </div>
+                                        </Card>
 
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="gap-2 rounded-full font-semibold border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 shadow-none h-9 px-5 transition-all text-primary"
-                                                onClick={() => syncContacts.mutate()}
-                                            >
-                                                <RefreshCw className={cn("h-3.5 w-3.5", syncContacts.isPending && "animate-spin")} />
-                                                <span>مزامنة من واتساب</span>
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="gap-2 rounded-full font-semibold border-black/5 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 shadow-none h-9 px-5 transition-all text-primary"
-                                                onClick={exportContacts}
-                                            >
-                                                <span>تصدير البيانات</span>
-                                            </Button>
+                                        {/* Search Input - Sharp & Professional */}
+                                        <div className="relative group max-w-2xl mx-auto">
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none group-focus-within:text-primary transition-colors z-10">
+                                                <Search className="h-4 w-4 text-muted-foreground/50 transition-colors group-focus-within:text-primary" />
+                                            </div>
+                                            <Input
+                                                className="w-full h-12 pr-12 rounded-none border-x-0 border-t-0 border-b border-border/50 bg-transparent shadow-none focus-visible:ring-0 focus-visible:border-primary/50 transition-all text-sm font-medium placeholder:text-muted-foreground/30 text-center focus:text-right hover:bg-blue-500/[0.02] focus:bg-blue-500/[0.02]"
+                                                placeholder="ابحث عن مريض بالاسم أو رقم الهاتف..."
+                                                value={patientSearchTerm}
+                                                onChange={(e) => setPatientSearchTerm(e.target.value)}
+                                            />
+                                            {/* Bottom Active Line Animation */}
+                                            <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary group-focus-within:w-full transition-all duration-700 mx-auto right-0" />
                                         </div>
-                                    </div>
-
-                                    <div className="relative group max-w-2xl mx-auto mb-10">
-                                        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none group-focus-within:text-primary transition-colors">
-                                            <Search className="h-5 w-5 text-muted-foreground" />
-                                        </div>
-                                        <Input
-                                            className="w-full h-14 pr-12 rounded-2xl border-border/50 bg-card/50 backdrop-blur-sm shadow-sm focus:ring-2 focus:ring-primary/20 transition-all text-lg"
-                                            placeholder="ابحث عن مريض بالاسم أو رقم الهاتف..."
-                                            value={patientSearchTerm}
-                                            onChange={(e) => setPatientSearchTerm(e.target.value)}
-                                        />
                                     </div>
 
                                     {contactsLoading ? (

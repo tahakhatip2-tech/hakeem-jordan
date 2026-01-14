@@ -46,7 +46,7 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
             transition={{ duration: 0.8 }}
             className="px-4"
         >
-            <Card className="p-4 md:p-10 border-y border-white/5 bg-blue-950/5 backdrop-blur-[100px] rounded-none shadow-2xl overflow-hidden relative group transition-all duration-700">
+            <Card className="p-4 md:p-6 border-y border-white/10 bg-blue-950/5 backdrop-blur-[100px] rounded-none shadow-2xl overflow-hidden relative group transition-all duration-700">
                 <div className="">
                     {/* 1. Ultra-Premium Light Sweep */}
                     <div className="light-sweep" />
@@ -93,7 +93,7 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
                                 key={appointment.id}
                                 variants={itemVariants}
                                 whileHover={{ scale: 1.01, x: 5 }}
-                                className="group/item flex flex-col sm:flex-row sm:items-center justify-between p-5 md:p-7 bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-primary/40 transition-all duration-700 cursor-pointer relative overflow-hidden"
+                                className="group/item flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-primary/40 transition-all duration-700 cursor-pointer relative overflow-hidden"
                             >
                                 <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between">
                                     {/* Item Hover Light Sweep */}

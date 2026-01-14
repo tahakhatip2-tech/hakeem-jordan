@@ -25,7 +25,7 @@ export function AutoReplyToggle({ isActive = true, onToggle }: AutoReplyTogglePr
             }}
             className="w-full px-4"
         >
-            <Card className="relative overflow-hidden p-6 transition-all duration-700 border-y border-white/5 bg-blue-950/5 backdrop-blur-[80px] rounded-none shadow-2xl group hover:shadow-primary/20">
+            <Card className="relative overflow-hidden p-4 md:p-6 transition-all duration-700 border-y border-white/10 bg-blue-950/5 backdrop-blur-[80px] rounded-none shadow-2xl group hover:shadow-primary/20">
                 <div className="">
 
                     {/* 1. Ultra-Premium Light Sweep */}
@@ -35,38 +35,38 @@ export function AutoReplyToggle({ isActive = true, onToggle }: AutoReplyTogglePr
                     <motion.div
                         whileHover={{ rotate: 0, scale: 1.25 }}
                         transition={{ type: "spring", stiffness: 300 }}
-                        className="absolute top-0 right-0 w-24 h-24 flex items-center justify-center -mr-6 -mt-6 opacity-5 group-hover:opacity-15 transition-all duration-700 rotate-12"
+                        className="absolute top-0 right-0 w-20 h-20 flex items-center justify-center -mr-4 -mt-4 opacity-5 group-hover:opacity-15 transition-all duration-700 rotate-12"
                     >
-                        <UserCog className="h-16 w-16 text-primary" />
+                        <UserCog className="h-12 w-12 text-primary" />
                     </motion.div>
 
-                    <div className="relative z-20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-0">
+                    <div className="relative z-20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
 
                         {/* Left Side: Icon & Info */}
-                        <div className="flex items-center gap-5">
+                        <div className="flex items-center gap-4">
                             {/* Vertical Flagship Ribbon */}
                             <motion.div
                                 initial={{ height: 0 }}
-                                animate={{ height: 48 }}
+                                animate={{ height: 40 }}
                                 transition={{ duration: 1, delay: 0.5 }}
                                 className="w-1.5 bg-gradient-to-b from-primary via-primary/50 to-transparent rounded-full opacity-60 group-hover:opacity-100 transition-opacity"
                             />
 
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-0.5">
                                 <motion.div
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.6 }}
                                     className="flex items-center gap-2"
                                 >
-                                    <div className="p-1.5 rounded-sm bg-primary/20 text-primary">
-                                        <MessageCircle className="h-4 w-4" strokeWidth={3} />
+                                    <div className="p-1 rounded-sm bg-primary/20 text-primary">
+                                        <MessageCircle className="h-3.5 w-3.5" strokeWidth={3} />
                                     </div>
-                                    <p className="text-[10px] md:text-xs font-black text-primary/80 uppercase tracking-[0.25em]">SYST_AUTO_REPLY</p>
+                                    <p className="text-[9px] md:text-[10px] font-black text-primary/80 uppercase tracking-[0.25em]">SYST_AUTO_REPLY</p>
                                 </motion.div>
 
-                                <h3 className="text-2xl md:text-3xl font-black tracking-tighter text-foreground italic uppercase">سكرتير العيادة</h3>
-                                <p className="text-[10px] md:text-xs font-bold text-muted-foreground/60 uppercase tracking-wider pl-1 border-l border-white/5 line-clamp-1">
+                                <h3 className="text-xl md:text-2xl font-black tracking-tighter text-foreground italic uppercase">سكرتير العيادة</h3>
+                                <p className="text-[9px] md:text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider pl-1 border-l border-white/5 line-clamp-1">
                                     نشط - يعمل على خدمة المرضى وتنظيم المواعيد على مدار الساعة
                                 </p>
                             </div>
