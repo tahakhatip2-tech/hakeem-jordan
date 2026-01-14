@@ -46,32 +46,32 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
             transition={{ duration: 0.8 }}
             className="px-4"
         >
-            <Card className="p-4 md:p-6 border border-white/10 bg-white/[0.08] backdrop-blur-[80px] rounded-none shadow-2xl overflow-hidden relative group transition-all duration-700">
+            <Card className="p-3 md:p-6 border border-white/10 bg-white/[0.08] backdrop-blur-[80px] rounded-none shadow-2xl overflow-hidden relative group transition-all duration-700">
                 <div className="">
                     {/* 1. Ultra-Premium Light Sweep */}
                     <div className="light-sweep" />
 
-                    <div className="flex items-center justify-between mb-8 md:mb-12 relative z-10">
-                        <div className="flex items-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-12 relative z-10 gap-4 sm:gap-0">
+                        <div className="flex items-center gap-3 md:gap-4">
                             <motion.div
                                 initial={{ scaleY: 0 }}
                                 animate={{ scaleY: 1 }}
                                 transition={{ duration: 1, delay: 0.5 }}
-                                className="h-12 w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(var(--primary),0.5)] origin-top"
+                                className="h-10 md:h-12 w-1 md:w-1.5 bg-primary rounded-full shadow-[0_0_15px_rgba(var(--primary),0.5)] origin-top"
                             />
                             <div>
-                                <h3 className="text-xl md:text-3xl font-black text-foreground tracking-tighter italic uppercase leading-none">المواعيد القادمة</h3>
-                                <p className="text-[9px] md:text-[11px] font-black text-primary uppercase tracking-[0.3em] mt-2 opacity-70">Visit Schedule Analytics</p>
+                                <h3 className="text-lg md:text-3xl font-black text-foreground tracking-tighter italic uppercase leading-none">المواعيد القادمة</h3>
+                                <p className="text-[8px] md:text-[11px] font-black text-primary uppercase tracking-[0.2em] md:tracking-[0.3em] mt-1 md:mt-2 opacity-70">Visit Schedule Analytics</p>
                             </div>
                         </div>
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={onViewAll}
-                            className="h-10 px-8 font-black text-primary hover:bg-primary/10 transition-all text-[10px] uppercase tracking-[0.2em] border border-primary/20 backdrop-blur-md"
+                            className="h-8 md:h-10 px-4 md:px-8 font-black text-primary hover:bg-primary/10 transition-all text-[9px] md:text-[10px] uppercase tracking-[0.15em] md:tracking-[0.2em] border border-primary/20 backdrop-blur-md self-end sm:self-auto"
                         >
                             عرض الكل
-                            <ChevronLeft className="h-4 w-4 mr-1" />
+                            <ChevronLeft className="h-3 w-3 md:h-4 md:w-4 mr-1" />
                         </Button>
                     </div>
 
@@ -93,48 +93,84 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
                                 key={appointment.id}
                                 variants={itemVariants}
                                 whileHover={{ scale: 1.01, x: 5 }}
-                                className="group/item flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-primary/40 transition-all duration-700 cursor-pointer relative overflow-hidden"
+                                className="group/item flex flex-col md:flex-row items-start md:items-center gap-4 p-3 md:p-4 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 hover:border-primary/40 transition-all duration-700 cursor-pointer relative overflow-hidden"
                             >
-                                <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between">
+                                {/* Refactored Mobile Layout - Vertical Stack */}
+                                <div className="w-full flex md:hidden flex-col gap-3">
+                                    <div className="flex items-center gap-3 w-full">
+                                        <div className="h-10 w-1 bg-primary/20 group-hover/item:bg-primary group-hover/item:h-full transition-all duration-700 rounded-full" />
+                                        <div className="h-10 w-10 bg-blue-950/40 flex items-center justify-center text-primary border border-white/10 shadow-lg group-hover/item:scale-105 transition-transform shrink-0 rounded-lg">
+                                            <User className="h-5 w-5" strokeWidth={2} />
+                                        </div>
+                                        <div className="flex flex-col gap-1 min-w-0 flex-1">
+                                            <div className="flex items-center justify-between">
+                                                <p className="font-black text-sm text-foreground group-hover/item:text-primary transition-colors italic uppercase tracking-tighter leading-none truncate pl-2">
+                                                    {appointment.patientName}
+                                                </p>
+                                                <div className="text-[8px] font-black px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary uppercase tracking-[0.1em] inline-block w-fit rounded-sm shrink-0">
+                                                    {appointment.type}
+                                                </div>
+                                            </div>
+                                            {appointment.date && (
+                                                <div className="flex items-center gap-1.5 text-[9px] font-black text-foreground/50 uppercase tracking-widest pl-2">
+                                                    <Calendar className="h-3 w-3 text-primary opacity-70" />
+                                                    <span>{appointment.date}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="w-full pl-1">
+                                        <div className="flex items-center justify-center gap-2 text-xs font-black text-primary bg-primary/10 w-full py-2 border border-primary/30 tabular-nums italic shadow-[0_0_20px_rgba(var(--primary),0.1)] rounded-sm">
+                                            <Clock className="h-3.5 w-3.5" strokeWidth={3} />
+                                            <span>{appointment.time}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Desktop Layout - Hidden on Mobile */}
+                                <div className="hidden md:flex w-full items-center justify-between">
                                     {/* Item Hover Light Sweep */}
                                     <div className="light-sweep opacity-30" />
 
-                                    <div className="flex items-center gap-6 mb-4 sm:mb-0 relative z-10">
-                                        <div className="h-14 w-1 flex bg-primary/20 group-hover/item:bg-primary group-hover/item:h-full transition-all duration-700 self-stretch" />
-                                        <div className="h-14 w-14 bg-blue-950/40 flex items-center justify-center text-primary border border-white/10 shadow-lg group-hover/item:scale-105 transition-transform">
-                                            <User className="h-7 w-7" strokeWidth={2} />
+                                    <div className="flex items-center gap-3 md:gap-6 relative z-10 flex-1 min-w-0">
+                                        <div className="h-10 w-1 md:h-14 md:w-1 bg-primary/20 group-hover/item:bg-primary group-hover/item:h-full transition-all duration-700 self-stretch" />
+                                        <div className="h-10 w-10 md:h-14 md:w-14 bg-blue-950/40 flex items-center justify-center text-primary border border-white/10 shadow-lg group-hover/item:scale-105 transition-transform shrink-0">
+                                            <User className="h-5 w-5 md:h-7 md:w-7" strokeWidth={2} />
                                         </div>
-                                        <div className="flex flex-col gap-1.5 text-right">
-                                            <p className="font-black text-lg md:text-xl text-foreground group-hover/item:text-primary transition-colors italic uppercase tracking-tighter leading-none">
+                                        <div className="flex flex-col gap-1 text-right min-w-0">
+                                            <p className="font-black text-sm md:text-xl text-foreground group-hover/item:text-primary transition-colors italic uppercase tracking-tighter leading-none truncate block">
                                                 {appointment.patientName}
                                             </p>
-                                            <div className="text-[9px] font-black px-2.5 py-1 bg-primary/10 border border-primary/20 text-primary uppercase tracking-[0.15em] inline-block w-fit">
+                                            <div className="text-[8px] md:text-[9px] font-black px-2 py-0.5 md:px-2.5 md:py-1 bg-primary/10 border border-primary/20 text-primary uppercase tracking-[0.1em] md:tracking-[0.15em] inline-block w-fit">
                                                 {appointment.type}
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between sm:justify-end gap-10 w-full sm:w-auto relative z-10">
-                                        {appointment.date && (
-                                            <div className="flex flex-col items-end gap-0.5">
-                                                <span className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">Scheduled Date</span>
-                                                <div className="flex items-center gap-2 text-[10px] font-black text-foreground/60 uppercase tracking-widest">
-                                                    <Calendar className="h-3.5 w-3.5 text-primary opacity-50" />
-                                                    <span>{appointment.date}</span>
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div className="flex items-center gap-4 text-base font-black text-primary bg-primary/10 px-6 py-3 border border-primary/30 tabular-nums italic shadow-[0_0_20px_rgba(var(--primary),0.1)]">
-                                            <motion.div
-                                                animate={{ rotate: [0, 10, 0] }}
-                                                transition={{ duration: 2, repeat: Infinity }}
-                                            >
-                                                <Clock className="h-5 w-5" strokeWidth={3} />
-                                            </motion.div>
-                                            <span>{appointment.time}</span>
-                                        </div>
+                                    {/* Time Badge - Always Visible */}
+                                    <div className="flex items-center gap-2 text-xs md:text-base font-black text-primary bg-primary/10 px-3 md:px-6 py-2 md:py-3 border border-primary/30 tabular-nums italic shadow-[0_0_20px_rgba(var(--primary),0.1)] shrink-0 ml-2">
+                                        <motion.div
+                                            animate={{ rotate: [0, 10, 0] }}
+                                            transition={{ duration: 2, repeat: Infinity }}
+                                        >
+                                            <Clock className="h-3.5 w-3.5 md:h-5 md:w-5" strokeWidth={3} />
+                                        </motion.div>
+                                        <span>{appointment.time}</span>
                                     </div>
                                 </div>
+
+                                {appointment.date && (
+                                    <div className="hidden md:block absolute left-24 top-1/2 -translate-y-1/2">
+                                        <div className="flex flex-col items-end gap-0.5">
+                                            <span className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">Scheduled Date</span>
+                                            <div className="flex items-center gap-2 text-[10px] font-black text-foreground/60 uppercase tracking-widest">
+                                                <Calendar className="h-3.5 w-3.5 text-primary opacity-50" />
+                                                <span>{appointment.date}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Architectural Bottom Glow Line */}
                                 <div className="absolute bottom-0 left-0 w-full flex scale-x-0 group-hover/item:scale-x-100 transition-transform duration-700 origin-right">

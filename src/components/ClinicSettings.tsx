@@ -228,6 +228,13 @@ export default function ClinicSettings() {
                 </Card>
             </div>
 
+            {/* Professional Divider */}
+            <div className="w-full flex items-center justify-center gap-4 my-4 opacity-60">
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent flex-1" />
+                <div className="h-1 w-1 rounded-full bg-orange-500/50" />
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent flex-1" />
+            </div>
+
             {/* Clinic Information */}
             <Card className="p-4 sm:p-6 border-white/40 dark:border-white/10 bg-white/60 dark:bg-black/40 backdrop-blur-xl rounded-[1.5rem] sm:rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group">
                 <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -285,6 +292,13 @@ export default function ClinicSettings() {
                     </div>
                 </div>
             </Card>
+
+            {/* Professional Divider */}
+            <div className="w-full flex items-center justify-center gap-4 my-4 opacity-60">
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent flex-1" />
+                <div className="h-1 w-1 rounded-full bg-orange-500/50" />
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent flex-1" />
+            </div>
 
             {/* Working Hours & Appointments */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">

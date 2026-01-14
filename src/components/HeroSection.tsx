@@ -110,7 +110,7 @@ export function HeroSection({
                         </span>
                     </motion.div>
 
-                    {/* Typewriter Doctor Name Title - Professional Gradient */}
+                    {/* Typewriter Doctor Name Title - Professional White */}
                     <div className="relative inline-block" key={`${doctorName}-${pageTitle}`}>
                         <div className="flex items-center">
                             <motion.h1
@@ -120,7 +120,7 @@ export function HeroSection({
                                     width: { duration: 1.2, ease: "easeOut" },
                                     opacity: { duration: 0.3 }
                                 }}
-                                className="text-2xl md:text-5xl font-black tracking-tight leading-none bg-gradient-to-r from-blue-400 via-blue-500 to-orange-500 bg-clip-text text-transparent drop-shadow-md whitespace-nowrap overflow-hidden pr-2 py-1"
+                                className="text-2xl md:text-5xl font-black tracking-tight leading-none text-white drop-shadow-md whitespace-nowrap overflow-hidden pr-2 py-1"
                             >
                                 {doctorName}
                             </motion.h1>
@@ -137,7 +137,7 @@ export function HeroSection({
                             />
                         </div>
 
-                        {/* Reflection Layer */}
+                        {/* Reflection Layer - Adjusted for White Text */}
                         <div className="absolute inset-0 pointer-events-none select-none flex items-center translate-y-[2px] opacity-10 overflow-hidden">
                             <motion.span
                                 initial={{ width: 0 }}
@@ -196,8 +196,8 @@ export function HeroSection({
 
             {/* 3. PAGE TITLE STRIP (Matching Auth Panel) */}
             <div className="relative z-10 w-full border-t border-white/10 bg-blue-950/20 backdrop-blur-md">
-                <div className="px-4 py-4 md:px-12 flex items-center justify-between">
-                    <div className="flex items-center gap-5">
+                <div className="px-4 py-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+                    <div className="flex items-center gap-5 w-full md:w-auto">
                         <div className="h-8 w-1.5 bg-gradient-to-b from-blue-600 to-orange-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
                         <div className="flex flex-col">
                             <motion.h2
@@ -217,8 +217,8 @@ export function HeroSection({
                         </div>
                     </div>
 
-                    {/* Action Slot */}
-                    <div className="flex items-center gap-4 relative z-20">
+                    {/* Action Slot - Responsive Width */}
+                    <div className="flex items-center gap-4 relative z-20 w-full md:w-auto justify-end">
                         {children}
                     </div>
                 </div>

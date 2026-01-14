@@ -134,6 +134,13 @@ export const TemplatesManager = () => {
                 </Dialog>
             </div>
 
+            {/* Professional Divider */}
+            <div className="w-full flex items-center justify-center gap-4 my-2 opacity-80">
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+            </div>
+
             {/* Content Table Card */}
             <Card className="border border-white/10 bg-blue-950/5 backdrop-blur-md shadow-sm overflow-hidden rounded-none relative group">
                 <div className="absolute top-0 right-0 w-1 h-full bg-blue-500/20 group-hover:bg-blue-500/40 transition-colors" />

@@ -11,7 +11,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { AddPatientDialog } from "@/components/AddPatientDialog";
+
+import AddAppointmentDialog from "@/components/AddAppointmentDialog";
 
 interface BottomNavProps {
     activeTab: string;
@@ -95,10 +96,10 @@ export function BottomNav({ activeTab, setActiveTab, onSearchClick }: BottomNavP
                 })}
             </Card>
 
-            <AddPatientDialog
-                isOpen={isAddPatientOpen}
-                onClose={() => setIsAddPatientOpen(false)}
-                onSuccess={() => setActiveTab('contacts')}
+            <AddAppointmentDialog
+                open={isAddPatientOpen}
+                onOpenChange={setIsAddPatientOpen}
+                onSuccess={() => setActiveTab('appointments')}
             />
         </>
     );

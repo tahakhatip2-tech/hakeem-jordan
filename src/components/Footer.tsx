@@ -11,6 +11,13 @@ export default function Footer() {
     return (
         <footer className="border-t border-border/50 bg-card/30 backdrop-blur-md py-8">
             <div className="container mx-auto px-4">
+                {/* Professional Divider */}
+                <div className="w-full flex items-center justify-center gap-4 mb-8 opacity-80">
+                    <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                    <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                </div>
+
                 {/* Desktop: Two Columns | Mobile: Single Column */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 

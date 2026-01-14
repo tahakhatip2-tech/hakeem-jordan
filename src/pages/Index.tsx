@@ -347,9 +347,23 @@ const Index = () => {
                                         </motion.div>
                                     </div>
 
+                                    {/* Professional Divider */}
+                                    <div className="w-full flex items-center justify-center gap-4 my-6 opacity-80">
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                                    </div>
+
                                     <AutoReplyToggle
                                         isActive={true}
                                     />
+
+                                    {/* Professional Divider */}
+                                    <div className="w-full flex items-center justify-center gap-4 my-6 opacity-80">
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                                    </div>
 
                                     <UpcomingAppointments
                                         appointments={upcomingAppointmentsList
@@ -364,6 +378,13 @@ const Index = () => {
                                             }))}
                                         onViewAll={() => setActiveTab('appointments')}
                                     />
+
+                                    {/* Professional Divider */}
+                                    <div className="w-full flex items-center justify-center gap-4 my-6 opacity-80">
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                                    </div>
 
                                     <motion.div
                                         variants={{
@@ -542,6 +563,13 @@ const Index = () => {
                                             {/* Bottom Active Line Animation */}
                                             <div className="absolute bottom-0 left-0 w-0 h-[1px] bg-primary group-focus-within:w-full transition-all duration-700 mx-auto right-0" />
                                         </div>
+                                    </div>
+
+                                    {/* Professional Divider */}
+                                    <div className="w-full flex items-center justify-center gap-4 my-6 opacity-80">
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                                        <div className="h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                                        <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
                                     </div>
 
                                     {contactsLoading ? (

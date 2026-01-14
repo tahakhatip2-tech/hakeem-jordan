@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import {
     Dialog,
     DialogContent,
@@ -8,6 +8,14 @@ import {
     DialogFooter,
     DialogDescription,
 } from "@/components/ui/dialog";
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerFooter,
+    DrawerDescription,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +39,7 @@ interface AddAppointmentDialogProps {
 }
 
 export default function AddAppointmentDialog({ open, onOpenChange, onSuccess }: AddAppointmentDialogProps) {
+    const isDesktop = useMediaQuery("(min-width: 768px)");
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         customer_name: '',
@@ -91,127 +100,153 @@ export default function AddAppointmentDialog({ open, onOpenChange, onSuccess }: 
         }
     };
 
+    const AppointmentForm = (
+        <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4 md:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                <div className="space-y-2">
+                    <Label className="text-sm font-bold flex items-center gap-2">
+                        <User className="h-4 w-4 text-primary" />
+                        اسم المريض
+                    </Label>
+                    <Input
+                        placeholder="مثلاً: محمد أحمد"
+                        value={formData.customer_name}
+                        onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+                        className="bg-background/50 border-border/50 h-10 md:h-11"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label className="text-sm font-bold flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-primary" />
+                        رقم الهاتف
+                    </Label>
+                    <Input
+                        placeholder="9627XXXXXXXX"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="bg-background/50 border-border/50 h-10 md:h-11"
+                        dir="ltr"
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+                <div className="space-y-2">
+                    <Label className="text-sm font-bold flex items-center gap-2">
+                        <CalendarIcon className="h-4 w-4 text-primary" />
+                        تاريخ الموعد
+                    </Label>
+                    <Input
+                        type="date"
+                        value={formData.appointment_date}
+                        onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value })}
+                        className="bg-background/50 border-border/50 h-10 md:h-11"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label className="text-sm font-bold flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-primary" />
+                        وقت الموعد
+                    </Label>
+                    <Input
+                        type="time"
+                        value={formData.appointment_time}
+                        onChange={(e) => setFormData({ ...formData, appointment_time: e.target.value })}
+                        className="bg-background/50 border-border/50 h-10 md:h-11"
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <Label className="text-sm font-bold">نوع الموعد</Label>
+                <Select
+                    value={formData.appointment_type}
+                    onValueChange={(value) => setFormData({ ...formData, appointment_type: value })}
+                >
+                    <SelectTrigger className="bg-background/50 border-border/50 h-10 md:h-11">
+                        <SelectValue placeholder="اختر نوع الموعد" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-border/50">
+                        <SelectItem value="consultation">استشارة مطولة</SelectItem>
+                        <SelectItem value="checkup">فحص دوري</SelectItem>
+                        <SelectItem value="followup">مراجعة نتيحة</SelectItem>
+                        <SelectItem value="emergency">حظر طارئ</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <div className="space-y-2">
+                <Label className="text-sm font-bold flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-primary" />
+                    ملاحظات إضافية
+                </Label>
+                <Textarea
+                    placeholder="أي تفاصيل أخرى حول حالة المريض..."
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    className="bg-background/50 border-border/50 min-h-[80px] md:min-h-[100px] resize-none"
+                />
+            </div>
+
+            <div className="pt-2 md:pt-4 flex gap-3">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => onOpenChange(false)}
+                    className="h-10 md:h-12 flex-1 font-bold rounded-2xl"
+                >
+                    إلغاء
+                </Button>
+                <Button
+                    type="submit"
+                    disabled={loading}
+                    className="h-10 md:h-12 flex-[2] font-bold rounded-2xl transition-all duration-300"
+                >
+                    {loading ? "جاري الحفظ..." : "تأكيد وحفظ الموعد"}
+                </Button>
+            </div>
+        </form>
+    );
+
+    if (isDesktop) {
+        return (
+            <Dialog open={open} onOpenChange={onOpenChange}>
+                <DialogContent className="sm:max-w-[500px] border-none shadow-2xl rounded-3xl overflow-hidden bg-card/95 backdrop-blur-xl">
+                    <DialogHeader className="bg-primary/5 p-6 border-b border-primary/10">
+                        <DialogTitle className="text-2xl font-display font-black flex items-center gap-3">
+                            <div className="p-2 rounded-xl bg-primary/20 text-primary">
+                                <CalendarIcon className="h-6 w-6" />
+                            </div>
+                            إضافة موعد جديد
+                        </DialogTitle>
+                        <DialogDescription className="text-muted-foreground">
+                            قم بإدخال بيانات المريض وتفاصيل الحجز يدوياً.
+                        </DialogDescription>
+                    </DialogHeader>
+                    {AppointmentForm}
+                </DialogContent>
+            </Dialog>
+        );
+    }
+
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[500px] border-none shadow-2xl rounded-3xl overflow-hidden bg-card/95 backdrop-blur-xl">
-                <DialogHeader className="bg-primary/5 p-6 border-b border-primary/10">
-                    <DialogTitle className="text-2xl font-display font-black flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-primary/20 text-primary">
-                            <CalendarIcon className="h-6 w-6" />
+        <Drawer open={open} onOpenChange={onOpenChange}>
+            <DrawerContent className="bg-card/95 backdrop-blur-xl border-t border-primary/10">
+                <DrawerHeader className="text-right">
+                    <DrawerTitle className="text-xl font-display font-black flex items-center gap-2">
+                        <div className="p-1.5 rounded-lg bg-primary/20 text-primary">
+                            <CalendarIcon className="h-5 w-5" />
                         </div>
                         إضافة موعد جديد
-                    </DialogTitle>
-                    <DialogDescription className="text-muted-foreground">
-                        قم بإدخال بيانات المريض وتفاصيل الحجز يدوياً.
-                    </DialogDescription>
-                </DialogHeader>
-
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-2">
-                            <Label className="text-sm font-bold flex items-center gap-2">
-                                <User className="h-4 w-4 text-primary" />
-                                اسم المريض
-                            </Label>
-                            <Input
-                                placeholder="مثلاً: محمد أحمد"
-                                value={formData.customer_name}
-                                onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
-                                className="bg-background/50 border-border/50 h-11"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm font-bold flex items-center gap-2">
-                                <Phone className="h-4 w-4 text-primary" />
-                                رقم الهاتف
-                            </Label>
-                            <Input
-                                placeholder="9627XXXXXXXX"
-                                value={formData.phone}
-                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                className="bg-background/50 border-border/50 h-11"
-                                dir="ltr"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="space-y-2">
-                            <Label className="text-sm font-bold flex items-center gap-2">
-                                <CalendarIcon className="h-4 w-4 text-primary" />
-                                تاريخ الموعد
-                            </Label>
-                            <Input
-                                type="date"
-                                value={formData.appointment_date}
-                                onChange={(e) => setFormData({ ...formData, appointment_date: e.target.value })}
-                                className="bg-background/50 border-border/50 h-11"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label className="text-sm font-bold flex items-center gap-2">
-                                <Clock className="h-4 w-4 text-primary" />
-                                وقت الموعد
-                            </Label>
-                            <Input
-                                type="time"
-                                value={formData.appointment_time}
-                                onChange={(e) => setFormData({ ...formData, appointment_time: e.target.value })}
-                                className="bg-background/50 border-border/50 h-11"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label className="text-sm font-bold">نوع الموعد</Label>
-                        <Select
-                            value={formData.appointment_type}
-                            onValueChange={(value) => setFormData({ ...formData, appointment_type: value })}
-                        >
-                            <SelectTrigger className="bg-background/50 border-border/50 h-11">
-                                <SelectValue placeholder="اختر نوع الموعد" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-xl border-border/50">
-                                <SelectItem value="consultation">استشارة مطولة</SelectItem>
-                                <SelectItem value="checkup">فحص دوري</SelectItem>
-                                <SelectItem value="followup">مراجعة نتيحة</SelectItem>
-                                <SelectItem value="emergency">حظر طارئ</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label className="text-sm font-bold flex items-center gap-2">
-                            <FileText className="h-4 w-4 text-primary" />
-                            ملاحظات إضافية
-                        </Label>
-                        <Textarea
-                            placeholder="أي تفاصيل أخرى حول حالة المريض..."
-                            value={formData.notes}
-                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            className="bg-background/50 border-border/50 min-h-[100px] resize-none"
-                        />
-                    </div>
-
-                    <DialogFooter className="pt-4 gap-3">
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => onOpenChange(false)}
-                            className="h-12 flex-1 font-bold rounded-2xl"
-                        >
-                            إلغاء
-                        </Button>
-                        <Button
-                            type="submit"
-                            disabled={loading}
-                            className="h-12 flex-[2] font-bold rounded-2xl transition-all duration-300"
-                        >
-                            {loading ? "جاري الحفظ..." : "تأكيد وحفظ الموعد"}
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
+                    </DrawerTitle>
+                    <DrawerDescription className="text-sm text-muted-foreground px-1">
+                        أضف بيانات المريض وتفاصيل الحجز بسهولة
+                    </DrawerDescription>
+                </DrawerHeader>
+                <div className="px-1 overflow-y-auto max-h-[80vh]">
+                    {AppointmentForm}
+                </div>
+            </DrawerContent>
+        </Drawer>
     );
 }

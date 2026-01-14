@@ -206,6 +206,13 @@ export default function AppointmentsCalendar() {
                 </div>
             </Card>
 
+            {/* Professional Divider */}
+            <div className="w-full flex items-center justify-center gap-4 my-2 opacity-80">
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+                <div className="h-1.5 w-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1" />
+            </div>
+
             {/* Appointments List */}
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -250,13 +257,13 @@ export default function AppointmentsCalendar() {
 
                                         <div className="p-4 flex flex-col gap-4">
                                             {/* Top Row: Info & Status */}
-                                            <div className="flex items-start justify-between gap-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="h-10 w-10 rounded-sm bg-white/5 border border-white/10 flex items-center justify-center text-blue-500 group-hover:scale-105 transition-transform">
+                                            <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
+                                                <div className="flex items-center gap-3 w-full sm:w-auto">
+                                                    <div className="h-10 w-10 rounded-sm bg-white/5 border border-white/10 flex items-center justify-center text-blue-500 group-hover:scale-105 transition-transform shrink-0">
                                                         <User className="h-5 w-5" />
                                                     </div>
-                                                    <div>
-                                                        <h4 className="font-black text-sm text-foreground leading-tight mb-1">
+                                                    <div className="min-w-0 flex-1">
+                                                        <h4 className="font-black text-sm text-foreground leading-tight mb-1 truncate">
                                                             {(() => {
                                                                 const name = appointment.customerName || appointment.patient_name;
                                                                 if (!name || name === 'Unspecified') return 'غير محدد';
@@ -265,7 +272,7 @@ export default function AppointmentsCalendar() {
                                                         </h4>
                                                         <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-medium font-mono">
                                                             <Phone className="h-2.5 w-2.5 opacity-70" />
-                                                            <a href={`tel:${appointment.phone}`} className="hover:text-blue-500 transition-colors">
+                                                            <a href={`tel:${appointment.phone}`} className="hover:text-blue-500 transition-colors truncate block">
                                                                 {appointment.phone.split('@')[0]}
                                                             </a>
                                                         </div>
@@ -273,7 +280,7 @@ export default function AppointmentsCalendar() {
                                                 </div>
 
                                                 <div className={cn(
-                                                    "px-2 py-0.5 rounded-sm text-[9px] font-black border uppercase tracking-wide",
+                                                    "px-2 py-0.5 rounded-sm text-[9px] font-black border uppercase tracking-wide self-start sm:self-auto",
                                                     statusConfig[appointment.status as keyof typeof statusConfig]?.color
                                                 )}>
                                                     {statusConfig[appointment.status as keyof typeof statusConfig]?.label}
