@@ -129,7 +129,7 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
                                 </div>
 
                                 {/* Desktop Layout - Hidden on Mobile */}
-                                <div className="hidden md:flex w-full items-center justify-between">
+                                <div className="hidden md:flex w-full items-center justify-between gap-4">
                                     {/* Item Hover Light Sweep */}
                                     <div className="light-sweep opacity-30" />
 
@@ -148,8 +148,19 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
                                         </div>
                                     </div>
 
+                                    {/* Date - Integrated into flex layout */}
+                                    {appointment.date && (
+                                        <div className="flex flex-col items-end gap-0.5 shrink-0">
+                                            <span className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">Scheduled Date</span>
+                                            <div className="flex items-center gap-2 text-[10px] font-black text-foreground/60 uppercase tracking-widest">
+                                                <Calendar className="h-3.5 w-3.5 text-primary opacity-50" />
+                                                <span>{appointment.date}</span>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* Time Badge - Always Visible */}
-                                    <div className="flex items-center gap-2 text-xs md:text-base font-black text-primary bg-primary/10 px-3 md:px-6 py-2 md:py-3 border border-primary/30 tabular-nums italic shadow-[0_0_20px_rgba(var(--primary),0.1)] shrink-0 ml-2">
+                                    <div className="flex items-center gap-2 text-xs md:text-base font-black text-primary bg-primary/10 px-3 md:px-6 py-2 md:py-3 border border-primary/30 tabular-nums italic shadow-[0_0_20px_rgba(var(--primary),0.1)] shrink-0">
                                         <motion.div
                                             animate={{ rotate: [0, 10, 0] }}
                                             transition={{ duration: 2, repeat: Infinity }}
@@ -159,18 +170,6 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
                                         <span>{appointment.time}</span>
                                     </div>
                                 </div>
-
-                                {appointment.date && (
-                                    <div className="hidden md:block absolute left-24 top-1/2 -translate-y-1/2">
-                                        <div className="flex flex-col items-end gap-0.5">
-                                            <span className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">Scheduled Date</span>
-                                            <div className="flex items-center gap-2 text-[10px] font-black text-foreground/60 uppercase tracking-widest">
-                                                <Calendar className="h-3.5 w-3.5 text-primary opacity-50" />
-                                                <span>{appointment.date}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
 
                                 {/* Architectural Bottom Glow Line */}
                                 <div className="absolute bottom-0 left-0 w-full flex scale-x-0 group-hover/item:scale-x-100 transition-transform duration-700 origin-right">

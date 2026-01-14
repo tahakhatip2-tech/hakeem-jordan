@@ -213,13 +213,44 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
         let sentMsg;
 
         if (mediaUrl) {
-            // Basic media sending (expanded from legacy sendMessage)
+            // For local files, we need to read them as Buffer
             const mediaOptions: any = {};
-            if (mediaType === 'image') mediaOptions.image = { url: mediaUrl };
-            else if (mediaType === 'video') mediaOptions.video = { url: mediaUrl };
-            else if (mediaType === 'document') mediaOptions.document = { url: mediaUrl };
 
-            sentMsg = await sock.sendMessage(phone, { ...mediaOptions, caption: message });
+            try {
+                // Check if it's a local file path
+                const isLocalFile = !mediaUrl.startsWith('http');
+
+                if (isLocalFile) {
+                    // Read file as buffer for local files
+                    const fileBuffer = fs.readFileSync(mediaUrl);
+                    const fileName = path.basename(mediaUrl);
+
+                    if (mediaType === 'image') {
+                        mediaOptions.image = fileBuffer;
+                    } else if (mediaType === 'video') {
+                        mediaOptions.video = fileBuffer;
+                    } else if (mediaType === 'document') {
+                        mediaOptions.document = fileBuffer;
+                        mediaOptions.mimetype = 'application/pdf';
+                        mediaOptions.fileName = fileName;
+                    }
+                } else {
+                    // For remote URLs
+                    if (mediaType === 'image') mediaOptions.image = { url: mediaUrl };
+                    else if (mediaType === 'video') mediaOptions.video = { url: mediaUrl };
+                    else if (mediaType === 'document') {
+                        mediaOptions.document = { url: mediaUrl };
+                        mediaOptions.mimetype = 'application/pdf';
+                        mediaOptions.fileName = path.basename(mediaUrl);
+                    }
+                }
+
+                sentMsg = await sock.sendMessage(phone, { ...mediaOptions, caption: message });
+                this.logger.log(`[WhatsApp] Sent ${mediaType} to ${phone}`);
+            } catch (error) {
+                this.logger.error(`[WhatsApp] Failed to send media: ${error.message}`);
+                throw new Error(`Failed to send media: ${error.message}`);
+            }
         } else {
             sentMsg = await sock.sendMessage(phone, { text: message });
         }

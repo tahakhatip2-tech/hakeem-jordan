@@ -40,9 +40,9 @@ const OnboardingTutorial = ({ onComplete, onSkip }: OnboardingTutorialProps) => 
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-full max-w-lg px-4 flex items-center justify-center"
+                        className="fixed inset-0 z-[101] flex items-center justify-center px-4"
                     >
-                        <Card className="relative overflow-y-auto max-h-[90vh] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.3)] bg-blue-950/95 backdrop-blur-2xl rounded-3xl p-6 md:p-10 custom-scrollbar">
+                        <Card className="relative overflow-y-auto max-h-[90vh] border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.3)] bg-blue-950/95 backdrop-blur-2xl rounded-3xl p-6 md:p-10 w-full max-w-lg custom-scrollbar">
                             {/* Ambient Glows */}
                             <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
                             <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -65,20 +65,20 @@ const OnboardingTutorial = ({ onComplete, onSkip }: OnboardingTutorialProps) => 
                                 </div>
 
                                 <h2 className="text-2xl md:text-3xl font-black text-white mb-2 md:mb-3 tracking-tight leading-tight">
-                                    مرحباً بك في حكيم جوردان
+                                    Welcome to Hakeem Jordan
                                 </h2>
                                 <p className="text-blue-200/70 mb-6 md:mb-8 font-medium text-sm md:text-base">
-                                    نظام إدارة العيادات الذكي الأول في الأردن
+                                    Jordan's First Smart Clinic Management System
                                 </p>
 
                                 <div className="space-y-2.5 md:space-y-3 mb-6 md:mb-8">
                                     <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
                                         <Gift className="h-4 w-4 md:h-5 md:w-5 text-orange-400" />
-                                        <span className="text-xs md:text-sm font-bold text-white text-right flex-1">تجربة مجانية كاملة لمدة 7 أيام</span>
+                                        <span className="text-xs md:text-sm font-bold text-white flex-1">Full 7-Day Free Trial</span>
                                     </div>
                                     <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
                                         <Shield className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
-                                        <span className="text-xs md:text-sm font-bold text-white text-right flex-1">وصول مباشر لجميع مميزات النظام</span>
+                                        <span className="text-xs md:text-sm font-bold text-white flex-1">Direct Access to All Features</span>
                                     </div>
                                 </div>
 
@@ -86,8 +86,8 @@ const OnboardingTutorial = ({ onComplete, onSkip }: OnboardingTutorialProps) => 
                                     onClick={handleComplete}
                                     className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-black py-5 md:py-6 rounded-2xl shadow-xl shadow-blue-500/20 transition-all border-0 text-sm md:text-base"
                                 >
-                                    ابدأ الآن
-                                    <ArrowRight className="h-4 w-4 md:h-5 md:w-5 mr-2" />
+                                    Get Started
+                                    <ArrowRight className="h-4 w-4 md:h-5 md:w-5 ml-2" />
                                 </Button>
                             </div>
                         </Card>
