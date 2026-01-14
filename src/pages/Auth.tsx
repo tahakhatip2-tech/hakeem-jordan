@@ -63,6 +63,8 @@ const Auth = () => {
             toastWithSound.error(error);
           }
         } else {
+          // Set flag for new user to trigger onboarding tutorial
+          localStorage.setItem('isNewUser', 'true');
           toastWithSound.success("تم إنشاء الحساب بنجاح");
           navigate("/");
         }
@@ -104,10 +106,9 @@ const Auth = () => {
       {/* Background Image with Overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 resize-bg-animation transform scale-105"
-        style={{ backgroundImage: 'url(/auth-bg-pro.png?v=5)' }}
+        style={{ backgroundImage: 'url(/auth-bg-pro.png?v=6)' }}
       >
-        {/* Modern "Sharp" Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-l from-blue-950/80 via-blue-900/40 to-transparent backdrop-blur-[2px]"></div>
+        {/* Modern "Sharp" Overlay Removed for Clarity */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] mix-blend-overlay"></div>
       </div>
 

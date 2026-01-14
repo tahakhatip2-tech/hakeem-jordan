@@ -87,9 +87,9 @@ const Plans = () => {
             {/* Background Image with Overlay */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 resize-bg-animation"
-                style={{ backgroundImage: 'url(/auth-bg-pro.png?v=5)' }}
+                style={{ backgroundImage: 'url(/auth-bg-pro.png?v=6)' }}
             >
-                <div className="absolute inset-0 bg-blue-900/80 backdrop-blur-sm"></div>
+                {/* Overlay Removed */}
             </div>
 
             <div className="relative z-10 w-full max-w-6xl space-y-8 animate-fade-in-up">

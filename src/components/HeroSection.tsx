@@ -61,14 +61,14 @@ export function HeroSection({
             )}
         >
             {/* 1. Ultra-Luxury Background Layering (Refined for Transparency) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-white/10 to-transparent backdrop-blur-[6px]">
+            <div className="absolute inset-0">
                 {/* Image Base */}
                 <motion.div
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
-                    className="absolute inset-0 opacity-[0.08] mix-blend-overlay bg-cover bg-center pointer-events-none grayscale"
-                    style={{ backgroundImage: 'url(/auth-bg-pro.png)' }}
+                    className="absolute inset-0 opacity-[0.15] mix-blend-overlay bg-cover bg-center pointer-events-none grayscale"
+                    style={{ backgroundImage: 'url(/auth-bg-pro.png?v=6)' }}
                 />
 
                 {/* Advanced Medical Scanlines Utility */}
@@ -77,14 +77,7 @@ export function HeroSection({
                 {/* High-Tech Grid Pattern */}
                 <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
 
-                {/* Dynamic Global Light Pulse (Subtle Professional Gradient) */}
-                <motion.div
-                    animate={{
-                        opacity: [0.2, 0.4, 0.2],
-                    }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-white/5"
-                />
+                {/* Dynamic Global Light Pulse Removed for Clarity */}
             </div>
 
             {/* 2. Content Layer (Refactored & Compressed) */}

@@ -7,6 +7,7 @@ import { toastWithSound } from "@/lib/toast-with-sound";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import OnboardingTutorial from "@/components/OnboardingTutorial";
 import { useAuth } from "@/hooks/useAuth";
 import { useContacts } from "@/hooks/useContacts";
 import { useTheme } from "@/hooks/useTheme";
@@ -78,6 +79,28 @@ const Index = () => {
     const [scrollProgress, setScrollProgress] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const itemsPerPage = 8;
+
+    // Onboarding Tutorial State
+    const [showOnboarding, setShowOnboarding] = useState(false);
+
+    // Check for new user on mount
+    useEffect(() => {
+        const isNewUser = localStorage.getItem('isNewUser');
+        if (isNewUser === 'true' && user) {
+            setShowOnboarding(true);
+        }
+    }, [user]);
+
+    const handleOnboardingComplete = () => {
+        localStorage.removeItem('isNewUser');
+        localStorage.setItem('onboardingCompleted', 'true');
+        setShowOnboarding(false);
+    };
+
+    const handleOnboardingSkip = () => {
+        localStorage.removeItem('isNewUser');
+        setShowOnboarding(false);
+    };
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
@@ -635,6 +658,14 @@ const Index = () => {
                     setActiveTab={setActiveTab}
                     onSearchClick={() => setActiveTab('contacts')}
                 />
+
+                {/* Onboarding Tutorial */}
+                {showOnboarding && (
+                    <OnboardingTutorial
+                        onComplete={handleOnboardingComplete}
+                        onSkip={handleOnboardingSkip}
+                    />
+                )}
             </ClinicProvider >
         </div >
     );

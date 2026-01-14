@@ -39,7 +39,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     };
 
     const mainNavItems = [
-        { id: 'dashboard', label: 'الواجهات', icon: LayoutDashboard },
+        { id: 'dashboard', label: 'الرئيسية', icon: LayoutDashboard },
         { id: 'whatsapp-bot', label: 'المحادثات', icon: MessageCircle },
         { id: 'contacts', label: 'المرضى', icon: Users },
         { id: 'appointments', label: 'المواعيد', icon: Calendar },
@@ -79,6 +79,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
                     {mainNavItems.map((item) => (
                         <Button
                             key={item.id}
+                            data-nav-id={item.id}
                             variant={activeTab === item.id ? "secondary" : "ghost"}
                             className={cn(
                                 "w-full flex-row-reverse justify-start gap-3 transition-all duration-300 relative overflow-hidden group mb-1",
