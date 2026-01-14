@@ -380,7 +380,7 @@ const Index = () => {
                                                 visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 25 } }
                                             }}
                                             whileHover={{ y: -5, scale: 1.01 }}
-                                            className="p-4 border-y border-white/10 bg-blue-950/5 backdrop-blur-[100px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-2 md:mx-4"
+                                            className="p-4 border border-white/10 bg-white/[0.08] backdrop-blur-[80px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-2 md:mx-4"
                                             onClick={() => setActiveTab('whatsapp-bot')}
                                         >
                                             <div className="">
@@ -428,7 +428,7 @@ const Index = () => {
                                                 visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 25 } }
                                             }}
                                             whileHover={{ y: -5, scale: 1.01 }}
-                                            className="p-4 border-y border-white/10 bg-blue-950/5 backdrop-blur-[100px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-2 md:mx-4"
+                                            className="p-4 border border-white/10 bg-white/[0.08] backdrop-blur-[80px] shadow-2xl hover:shadow-primary/20 transition-all duration-700 cursor-pointer group relative overflow-hidden rounded-none mx-2 md:mx-4"
                                             onClick={() => setActiveTab('appointments')}
                                         >
                                             <div className="">

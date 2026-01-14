@@ -35,7 +35,7 @@ const MedicalStatsCard = ({
             }}
             className="h-full"
         >
-            <Card className="aspect-square relative overflow-hidden p-4 md:p-6 transition-all duration-700 border-y border-white/5 bg-blue-950/5 backdrop-blur-[80px] rounded-none shadow-2xl group h-full cursor-pointer hover:shadow-primary/20">
+            <Card className="aspect-square relative overflow-hidden p-4 md:p-6 transition-all duration-700 border border-white/10 bg-white/[0.08] backdrop-blur-[60px] rounded-none shadow-2xl group h-full cursor-pointer hover:shadow-primary/20">
                 {/* 1. Content Layer */}
                 <div className="h-full flex flex-col justify-between relative z-20">
                     <div className="light-sweep" />

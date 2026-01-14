@@ -33,7 +33,7 @@ export function BottomNav({ activeTab, setActiveTab, onSearchClick }: BottomNavP
 
     return (
         <>
-            <Card className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/10 dark:bg-black/30 backdrop-blur-3xl border-none border-t border-orange-500/30 rounded-none z-50 shadow-[0_-8px_32px_rgba(37,99,235,0.15)] flex justify-around items-center px-2">
+            <Card className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/[0.08] dark:bg-black/40 backdrop-blur-[40px] border-none border-t border-white/20 rounded-none z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.2)] flex justify-around items-center px-2">
                 {navItems.map((item) => {
                     const isActive = activeTab === item.id;
 

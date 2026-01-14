@@ -46,7 +46,7 @@ export function UpcomingAppointments({ appointments = [], onViewAll }: UpcomingA
             transition={{ duration: 0.8 }}
             className="px-4"
         >
-            <Card className="p-4 md:p-6 border-y border-white/10 bg-blue-950/5 backdrop-blur-[100px] rounded-none shadow-2xl overflow-hidden relative group transition-all duration-700">
+            <Card className="p-4 md:p-6 border border-white/10 bg-white/[0.08] backdrop-blur-[80px] rounded-none shadow-2xl overflow-hidden relative group transition-all duration-700">
                 <div className="">
                     {/* 1. Ultra-Premium Light Sweep */}
                     <div className="light-sweep" />

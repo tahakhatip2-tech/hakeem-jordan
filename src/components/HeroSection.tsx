@@ -56,18 +56,22 @@ export function HeroSection({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className={cn(
-                "relative w-full mb-6 md:mb-12 overflow-hidden border-y border-white/5 group bg-slate-950",
+                "relative w-full mb-6 md:mb-12 overflow-hidden border border-white/10 bg-blue-950/40 backdrop-blur-xl group shadow-[0_0_50px_rgba(0,0,0,0.3)] rounded-none",
                 className
             )}
         >
-            {/* 1. Ultra-Luxury Background Layering (Refined for Transparency) */}
+            {/* Ambient Glows - Matching Auth Identity */}
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/30 transition-colors duration-1000"></div>
+            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-orange-500/20 transition-colors duration-1000"></div>
+
+            {/* 1. Ultra-Luxury Background Layering */}
             <div className="absolute inset-0">
                 {/* Image Base */}
                 <motion.div
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
-                    className="absolute inset-0 opacity-[0.15] mix-blend-overlay bg-cover bg-center pointer-events-none grayscale"
+                    className="absolute inset-0 opacity-[0.12] mix-blend-overlay bg-cover bg-center pointer-events-none grayscale"
                     style={{ backgroundImage: 'url(/auth-bg-pro.png?v=6)' }}
                 />
 
@@ -76,39 +80,37 @@ export function HeroSection({
 
                 {/* High-Tech Grid Pattern */}
                 <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
-
-                {/* Dynamic Global Light Pulse Removed for Clarity */}
             </div>
 
-            {/* 2. Content Layer (Refactored & Compressed) */}
-            <div className="relative z-10 px-4 py-3 md:px-12 md:py-8 flex flex-col items-center md:items-start md:flex-row md:justify-between text-right overflow-hidden gap-4 md:gap-6">
+            {/* 2. Content Layer */}
+            <div className="relative z-10 px-4 py-4 md:px-12 md:py-10 flex flex-col items-center md:items-start md:flex-row md:justify-between text-right overflow-hidden gap-6 md:gap-8">
 
-                {/* BRANDING SECTION (Fixed) */}
-                <div className="flex flex-col items-center md:items-start gap-1 relative flex-1 order-2 md:order-1 w-full">
+                {/* BRANDING SECTION */}
+                <div className="flex flex-col items-center md:items-start gap-2 relative flex-1 order-2 md:order-1 w-full">
 
                     {/* Ghost Branding (Background) */}
                     <motion.div
                         initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 0.04 }}
-                        className="absolute -top-6 -right-10 pointer-events-none select-none text-6xl md:text-8xl font-black italic uppercase tracking-tighter whitespace-nowrap leading-none transition-transform duration-1000 opacity-[0.03]"
+                        animate={{ x: 0, opacity: 0.03 }}
+                        className="absolute -top-10 -right-16 pointer-events-none select-none text-7xl md:text-9xl font-black italic uppercase tracking-tighter whitespace-nowrap leading-none transition-transform duration-1000 opacity-[0.02]"
                     >
                         {brandingName}
                     </motion.div>
 
-                    {/* Dynamic Token */}
+                    {/* Dynamic Token - Styled Like Auth Labels */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2 w-fit mb-2 md:mb-4 group/token hover:bg-white/10 transition-colors"
+                        className="px-4 py-1 rounded-none bg-blue-950/30 border border-blue-500/30 backdrop-blur-md flex items-center gap-2 w-fit mb-1 md:mb-2 group/token hover:bg-white/5 transition-colors"
                     >
-                        <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                        <span className="text-[10px] font-bold text-blue-200 tracking-wider uppercase group-hover/token:text-blue-100 transition-colors">
+                        <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse shadow-[0_0_10px_rgba(249,115,22,0.5)]" />
+                        <span className="text-[9px] font-black text-blue-200 tracking-[0.2em] uppercase">
                             {brandingDesc}
                         </span>
                     </motion.div>
 
-                    {/* Typewriter Doctor Name Title */}
+                    {/* Typewriter Doctor Name Title - Professional Gradient */}
                     <div className="relative inline-block" key={`${doctorName}-${pageTitle}`}>
                         <div className="flex items-center">
                             <motion.h1
@@ -118,7 +120,7 @@ export function HeroSection({
                                     width: { duration: 1.2, ease: "easeOut" },
                                     opacity: { duration: 0.3 }
                                 }}
-                                className="text-xl md:text-3xl font-black text-white tracking-tight leading-none italic uppercase group-hover:text-primary transition-colors duration-700 whitespace-nowrap overflow-hidden pr-1"
+                                className="text-2xl md:text-5xl font-black tracking-tight leading-none bg-gradient-to-r from-blue-400 via-blue-500 to-orange-500 bg-clip-text text-transparent drop-shadow-md whitespace-nowrap overflow-hidden pr-2 py-1"
                             >
                                 {doctorName}
                             </motion.h1>
@@ -131,102 +133,103 @@ export function HeroSection({
                                     repeat: Infinity,
                                     repeatType: "reverse"
                                 }}
-                                className="inline-block w-[3px] h-[0.7em] bg-primary shadow-[0_0_10px_hsl(var(--primary))]"
+                                className="inline-block w-[4px] h-[0.8em] bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.6)]"
                             />
                         </div>
 
-                        {/* Reflection with smooth reveal */}
-                        <div className="absolute inset-0 pointer-events-none select-none flex items-center translate-y-[1px] opacity-20 overflow-hidden">
+                        {/* Reflection Layer */}
+                        <div className="absolute inset-0 pointer-events-none select-none flex items-center translate-y-[2px] opacity-10 overflow-hidden">
                             <motion.span
                                 initial={{ width: 0 }}
                                 animate={{ width: "auto" }}
                                 transition={{ duration: 1.2, ease: "easeOut" }}
-                                className="text-xl md:text-3xl font-black text-white tracking-tight leading-none italic uppercase whitespace-nowrap"
+                                className="text-2xl md:text-5xl font-black text-white tracking-tight leading-none italic uppercase whitespace-nowrap"
                             >
                                 {doctorName}
                             </motion.span>
                         </div>
                     </div>
+
+                    {/* Vision Tagline - Added for Auth consistency */}
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.7 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-[10px] md:text-xs font-bold text-blue-300/80 uppercase tracking-widest mt-1 mr-1"
+                    >
+                        Precision Medical Technology • Next Gen CRM
+                    </motion.p>
                 </div>
 
-                {/* CLOCK SECTION (Transparent & Sleek) */}
+                {/* CLOCK SECTION (Auth Style Sharp Glass) */}
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.3 }}
-                    className="flex order-1 md:order-2 self-center md:self-auto gap-3 items-center"
+                    className="flex order-1 md:order-2 self-center md:self-auto gap-4 items-center"
                 >
-                    {/* Patient Portal Button Removed as per request */}
+                    <div className="relative p-4 md:p-6 bg-white/[0.08] backdrop-blur-2xl border border-white/20 rounded-none shadow-2xl flex flex-col items-center justify-center gap-1.5 group/clock overflow-hidden min-w-[150px] md:min-w-[200px] hover:bg-white/[0.12] transition-all duration-500">
+                        {/* Hover Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover/clock:opacity-100 transition-opacity duration-1000" />
 
-                    <div className="relative p-3 md:p-5 bg-white/[0.02] backdrop-blur-md border border-white/10 rounded-none shadow-2xl flex flex-col items-center justify-center gap-1 group/clock overflow-hidden min-w-[140px] md:min-w-[180px]">
-                        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover/clock:opacity-100 transition-opacity duration-1000" />
+                        <div className="absolute -top-10 -right-10 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover/clock:bg-white/20 transition-colors"></div>
 
-                        <div className="flex items-center gap-2 relative z-10">
-                            <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary animate-pulse" />
-                            <span className="text-xl md:text-3xl font-black font-mono tabular-nums text-primary tracking-tight leading-none drop-shadow-[0_0_15px_rgba(var(--primary),0.3)]">
+                        <div className="flex items-center gap-2.5 relative z-10">
+                            <Clock className="h-4 w-4 md:h-6 md:w-6 text-orange-500 animate-pulse drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]" />
+                            <span className="text-2xl md:text-4xl font-black font-mono tabular-nums text-white tracking-tighter leading-none drop-shadow-lg">
                                 {timeString}
                             </span>
                         </div>
 
-                        <div className="flex items-center gap-1.5 relative z-10 py-0.5 px-3 bg-white/5 border border-white/5 rounded-full mt-1">
-                            <Calendar className="h-2.5 w-2.5 text-primary/60" />
-                            <span className="text-[8px] md:text-[9px] font-black text-primary/80 uppercase tracking-[0.1em] whitespace-nowrap">
+                        <div className="flex items-center gap-2 relative z-10 py-1 px-4 bg-white/5 border border-white/10 rounded-none mt-1 group-hover/clock:border-orange-500/30 transition-colors">
+                            <Calendar className="h-3 w-3 text-blue-400" />
+                            <span className="text-[9px] md:text-[10px] font-black text-blue-100 uppercase tracking-[0.2em] whitespace-nowrap">
                                 {dateString}
                             </span>
                         </div>
 
-                        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-primary/50 origin-left scale-x-50 group-hover/clock:scale-x-100 transition-transform duration-700" />
+                        {/* Bottom Accent Line */}
+                        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent origin-center scale-x-50 group-hover/clock:scale-x-100 transition-transform duration-700" />
                     </div>
                 </motion.div>
             </div>
 
-            {/* 3. NEW PAGE TITLE STRIP (Glass-Transparent) */}
-            <div className="relative z-10 w-full border-t border-white/10 bg-gradient-to-r from-white/10 to-transparent backdrop-blur-[10px]">
-                <div className="px-4 py-3 md:px-12 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="h-6 w-1 bg-primary shadow-[0_0_10px_rgba(var(--primary),0.6)]" />
+            {/* 3. PAGE TITLE STRIP (Matching Auth Panel) */}
+            <div className="relative z-10 w-full border-t border-white/10 bg-blue-950/20 backdrop-blur-md">
+                <div className="px-4 py-4 md:px-12 flex items-center justify-between">
+                    <div className="flex items-center gap-5">
+                        <div className="h-8 w-1.5 bg-gradient-to-b from-blue-600 to-orange-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
                         <div className="flex flex-col">
                             <motion.h2
                                 key={pageTitle}
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="text-sm md:text-lg font-black text-white uppercase tracking-tight leading-none"
+                                className="text-sm md:text-xl font-black text-white uppercase tracking-wider leading-none"
                             >
                                 {pageTitle === 'الرؤية الوطنية' ? 'رؤيتنا' : pageTitle}
                             </motion.h2>
-                            {/* Modern Artistic Panel for Description */}
-                            <div className="hidden md:flex mt-1 relative overflow-hidden group/desc">
-                                <p className="text-[10px] font-bold text-muted-foreground/80 leading-none pl-2 border-l-2 border-primary/20 transition-all group-hover/desc:border-primary/60 group-hover/desc:text-primary/80 group-hover/desc:pl-3">
-                                    {description || "نبدة لتطوير القطاع الصحي العام لتكون لوحة فنية عصرية"}
+                            {/* Professional Subtitle Description */}
+                            <div className="hidden md:flex mt-1.5 relative overflow-hidden group/desc">
+                                <p className="text-[10px] font-bold text-blue-300/60 leading-none pl-3 border-r-2 border-orange-500/30 transition-all group-hover/desc:border-orange-500 group-hover/desc:text-blue-200 group-hover/desc:pr-4">
+                                    {description || "نظام متكامل لإدارة العيادات الطبية بأحدث تقنيات الذكاء الاصطناعي"}
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Mobile Description (Optional/Hidden) or Breadcrumb */}
-                    <div className="flex items-center gap-3">
+                    {/* Action Slot */}
+                    <div className="flex items-center gap-4 relative z-20">
                         {children}
                     </div>
                 </div>
             </div>
 
-            {/* 3. Ultra-Premium Bottom Accent Line */}
-            <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                className="absolute bottom-0 left-0 flex opacity-60 group-hover:opacity-100 transition-opacity duration-1000"
-            >
-                <div className="h-[4px] w-1/3 bg-primary shadow-[0_0_20px_rgba(var(--primary),0.8)]" />
-                <div className="h-[4px] flex-1 bg-white/5" />
-            </motion.div>
-
-            {/* 4. Global Glass Overlay & Refraction */}
+            {/* 4. Global Glass Overlay & Premium Finishing */}
             <div className="absolute inset-0 pointer-events-none border-x border-white/5" />
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
             {/* Interactive Light Refraction Slide */}
-            <div className="light-sweep opacity-20 group-hover:opacity-40 transition-opacity duration-1000" />
+            <div className="light-sweep opacity-10 group-hover:opacity-30 transition-opacity duration-1000" />
         </motion.div>
     );
 }
