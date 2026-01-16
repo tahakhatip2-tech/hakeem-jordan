@@ -18,6 +18,26 @@ export class ContactsController {
         return this.contactsService.findAll(req.user.id);
     }
 
+    @Post()
+    @ApiOperation({ summary: 'إضافة مريض جديد', description: 'إنشاء ملف مريض جديد يدوياً مع البيانات الطبية' })
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                name: { type: 'string', description: 'اسم المريض' },
+                phone: { type: 'string', description: 'رقم الهاتف' },
+                blood_type: { type: 'string', description: 'فصيلة الدم', nullable: true },
+                allergies: { type: 'string', description: 'الحساسية', nullable: true },
+                chronic_diseases: { type: 'string', description: 'الأمراض المزمنة', nullable: true },
+            },
+            required: ['name', 'phone']
+        }
+    })
+    @ApiResponse({ status: 201, description: 'تم إضافة المريض بنجاح' })
+    async create(@Body() data: any, @Request() req) {
+        return this.contactsService.create(req.user.id, data);
+    }
+
     @Get('search/national-id/:id')
     @ApiOperation({ summary: 'البحث بالرقم الوطني', description: 'البحث عن مريض محدد باستخدام رقمه الوطني' })
     @ApiParam({ name: 'id', description: 'الرقم الوطني' })

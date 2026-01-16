@@ -33,11 +33,25 @@ export class ContactsService {
     }
 
     async create(userId: number, data: any): Promise<Contact> {
+        // Map frontend field names to database field names
+        const createData: any = {
+            userId,
+            name: data.name,
+            phone: data.phone,
+            platform: data.platform || 'manual',
+            source: data.source || 'manual_entry',
+            status: data.status || 'active',
+        };
+
+        // Add optional medical fields if provided
+        if (data.blood_type) createData.bloodType = data.blood_type;
+        if (data.allergies) createData.allergies = data.allergies;
+        if (data.chronic_diseases) createData.chronicDiseases = data.chronic_diseases;
+        if (data.national_id) createData.nationalId = data.national_id;
+        if (data.age_range) createData.ageRange = data.age_range;
+
         return this.prisma.contact.create({
-            data: {
-                ...data,
-                userId,
-            },
+            data: createData,
         });
     }
 
