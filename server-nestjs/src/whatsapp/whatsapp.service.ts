@@ -180,8 +180,23 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
 
     async getChats(userId: number) {
         return this.prisma.whatsAppChat.findMany({
-            where: { userId, status: 'active' },
+            where: { userId },
             orderBy: { lastMessageTime: 'desc' },
+        });
+    }
+
+    async deleteChat(chatId: number, userId: number) {
+        // First delete all messages associated with this chat
+        await this.prisma.whatsAppMessage.deleteMany({
+            where: { chatId }
+        });
+
+        // Then delete the chat itself
+        return this.prisma.whatsAppChat.deleteMany({
+            where: {
+                id: chatId,
+                userId: userId // Security check to ensure user owns the chat
+            }
         });
     }
 
@@ -561,21 +576,33 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
                 const appointmentNotes = notes?.trim() || 'AI Generated Appointment';
 
                 if (date && time) {
-                    const appointmentDate = new Date(`${date}T${time}:00`);
+                    let finalDateStr = date;
+                    let finalTimeStr = time;
+
+                    // Support "2:00 PM" or "2:00 ظهراً" by trying to normalize
+                    if (time.includes('PM') || time.includes('م') || time.includes('ظهراً') || time.includes('عصراً') || time.includes('مساءً')) {
+                        let [h, m] = time.replace(/[^\d:]/g, '').split(':');
+                        let hour = parseInt(h);
+                        if (hour < 12) hour += 12;
+                        finalTimeStr = `${hour.toString().padStart(2, '0')}:${m || '00'}`;
+                    }
+
+                    const appointmentDate = new Date(`${finalDateStr}T${finalTimeStr}:00`);
+
                     if (!isNaN(appointmentDate.getTime())) {
-                        this.logger.log(`[AI Action] Creating appointment for ${customerName} on ${appointmentDate}`);
+                        this.logger.log(`[AI Action] Attempting to book: ${customerName} | ${appointmentDate.toISOString()}`);
 
                         // SAFETY CHECK: Verify availability before booking
-                        const isAvailable = await this.appointmentsService.isSlotAvailable(userId, appointmentDate, 30); // Assume 30 min default
+                        const isAvailable = await this.appointmentsService.isSlotAvailable(userId, appointmentDate, 30);
                         if (!isAvailable) {
-                            this.logger.warn(`[AI Action] Slot ${appointmentDate} is busy or invalid. Blocking booking.`);
-                            processedText = processedText.replace(fullMatch, "عذراً، يبدو أن هذا الموعد ( " + time + " ) قد تم حجزه للتو أو غير متاح. هل يمكنك اختيار وقت آخر من الأوقات المقترحة؟");
+                            this.logger.warn(`[AI Action] Slot ${appointmentDate} is busy or invalid.`);
+                            processedText = processedText.replace(fullMatch, "\n\n(ملاحظة: عذراً، هذا الموعد غير متاح حالياً. يرجى اختيار وقت آخر)");
                             continue;
                         }
 
                         const contact = await this.prisma.contact.upsert({
                             where: { userId_phone: { userId, phone } },
-                            update: { status: 'active' },
+                            update: { status: 'active', name: customerName },
                             create: {
                                 userId,
                                 phone,

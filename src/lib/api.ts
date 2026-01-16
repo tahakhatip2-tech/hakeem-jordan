@@ -101,6 +101,7 @@ export const whatsappApi = {
     disconnect: () => apiFetch('/whatsapp/logout', { method: 'DELETE' }),
     // Chats & Messages
     getChats: () => apiFetch('/whatsapp/chats'),
+    deleteChat: (id: string | number) => apiFetch(`/whatsapp/chats/${id}`, { method: 'DELETE' }),
     getMessages: (id: string | number) => apiFetch(`/whatsapp/chats/${id}/messages`),
     send: (data: any) => apiFetch('/whatsapp/send', { method: 'POST', body: JSON.stringify(data) }),
     // Templates

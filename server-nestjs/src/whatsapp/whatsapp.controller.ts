@@ -62,6 +62,15 @@ export class WhatsAppController {
         return this.whatsappService.getChats(req.user.id);
     }
 
+    @Delete('chats/:id')
+    @ApiOperation({ summary: 'حذف محادثة', description: 'حذف سجل محادثة بالكامل من قاعدة البيانات' })
+    @ApiParam({ name: 'id', description: 'معرف المحادثة' })
+    @ApiResponse({ status: 200, description: 'تم الحذف' })
+    async deleteChat(@Param('id') id: string | number, @Request() req) {
+        const chatId = typeof id === 'string' ? parseInt(id) : id;
+        return this.whatsappService.deleteChat(chatId, req.user.id);
+    }
+
     @Get('chats/:id/messages')
     @ApiOperation({ summary: 'جلب رسائل محادثة', description: 'عرض تاريخ الرسائل لمحادثة محددة' })
     @ApiParam({ name: 'id', description: 'معرف المحادثة' })

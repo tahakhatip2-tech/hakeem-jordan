@@ -60,7 +60,8 @@ async function main() {
         if (recentMessages.length > 0) {
             console.log('   📝 Recent AI/System Responses:');
             recentMessages.forEach(msg => {
-                console.log(`      - [${msg.timestamp.toISOString()}] ${msg.content.substring(0, 50)}...`);
+                const content = msg.content || '(empty message)';
+                console.log(`      - [${msg.timestamp.toISOString()}] ${content.substring(0, 50)}...`);
             });
         } else {
             console.log('   ℹ️ No recent outgoing messages found.');

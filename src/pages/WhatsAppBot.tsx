@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { MessageCircle, QrCode, Power, PowerOff, Loader2 } from 'lucide-react';
+import { MessageCircle, QrCode, Power, PowerOff, Loader2, Trash2 } from 'lucide-react';
 import { toastWithSound } from '@/lib/toast-with-sound';
 import { cn } from '@/lib/utils';
 import WhatsAppChat from '@/components/WhatsAppChat';
@@ -144,6 +144,20 @@ export default function WhatsAppBot({ initialPhone, initialName, doctorName, onB
             toastWithSound.success('تم قطع الاتصال');
         } catch (error: any) {
             toastWithSound.error(error.message);
+        }
+    };
+
+    const handleDeleteChat = async (e: React.MouseEvent, chatId: number | string) => {
+        e.stopPropagation(); // Prevent opening the chat
+        if (!confirm('هل أنت متأكد من حذف هذه المحادثة؟')) return;
+
+        try {
+            await whatsappApi.deleteChat(chatId);
+            setChats(prev => prev.filter(c => c.id !== chatId));
+            toastWithSound.success('تم حذف المحادثة بنجاح');
+        } catch (error: any) {
+            console.error('Failed to delete chat:', error);
+            toastWithSound.error('فشل حذف المحادثة');
         }
     };
 
@@ -320,6 +334,15 @@ export default function WhatsAppBot({ initialPhone, initialName, doctorName, onB
                                     >
                                         <div className="absolute top-0 right-0 w-1 h-full bg-primary/0 group-hover:bg-primary/100 transition-all duration-300" />
                                         <div className="light-sweep opacity-0 group-hover:opacity-20" />
+
+                                        {/* Delete Button */}
+                                        <div
+                                            onClick={(e) => handleDeleteChat(e, chat.id)}
+                                            className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 cursor-pointer p-1.5 hover:bg-destructive/10 rounded-sm text-muted-foreground hover:text-destructive"
+                                            title="حذف المحادثة"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </div>
 
                                         <div className="flex items-start gap-4">
                                             <div className="h-12 w-12 rounded-sm bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shadow-sm group-hover:bg-primary group-hover:text-white transition-colors duration-300">

@@ -229,49 +229,51 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                 />
 
                 {/* Floating Action Ribbon */}
-                <div className="absolute top-6 left-6 md:top-12 md:left-12 flex gap-3 z-30">
+                <div className="absolute top-6 left-4 right-4 md:top-12 md:left-12 md:right-auto flex flex-col md:flex-row gap-2 md:gap-3 z-30">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={onBack}
-                        className="h-12 w-12 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none transition-all"
+                        className="h-10 w-10 md:h-12 md:w-12 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none transition-all self-start"
                     >
-                        <ArrowRight className="h-6 w-6" />
+                        <ArrowRight className="h-5 w-5 md:h-6 md:w-6" />
                     </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-12 px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.2em] text-[10px] hidden md:flex"
-                        onClick={() => onOpenChat(patient.phone, patient.name)}
-                    >
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        واتساب
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-12 px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.2em] text-[10px] hidden md:flex"
-                        onClick={handlePrint}
-                    >
-                        <Printer className="h-4 w-4 mr-2" />
-                        طباعة
-                    </Button>
+                    <div className="flex gap-2 md:gap-3">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px] flex-1 md:flex-none"
+                            onClick={() => onOpenChat(patient.phone, patient.name)}
+                        >
+                            <MessageCircle className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                            واتساب
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px] flex-1 md:flex-none"
+                            onClick={handlePrint}
+                        >
+                            <Printer className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                            طباعة
+                        </Button>
+                    </div>
                 </div>
             </div>
 
             {/* Quick Stats Bar */}
-            <Card className="p-6 bg-blue-950/5 backdrop-blur-[80px] border-y border-white/5 rounded-none shadow-2xl flex flex-wrap divide-x divide-x-reverse divide-white/5 relative group overflow-hidden transition-all duration-700">
+            <Card className="p-4 md:p-6 bg-blue-950/5 backdrop-blur-[80px] border-y border-white/5 rounded-none shadow-2xl grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 sm:divide-x sm:divide-x-reverse divide-white/5 relative group overflow-hidden transition-all duration-700">
                 {/* 1. Ultra-Premium Light Sweep */}
                 <div className="light-sweep opacity-40" />
                 <div className="absolute inset-0 holographic-grid opacity-10" />
 
                 {stats.map((stat, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center justify-center p-4 min-w-[140px] group/item relative z-10">
-                        <div className="text-3xl md:text-5xl font-black text-foreground mb-1 tracking-tighter italic uppercase leading-none transition-transform group-hover/item:scale-110 duration-700">
-                            {loading && i === 0 ? <Loader2 className="h-8 w-8 animate-spin opacity-50 text-primary" /> : stat.value}
+                    <div key={i} className="flex flex-col items-center justify-center p-3 md:p-4 group/item relative z-10">
+                        <div className="text-2xl sm:text-3xl md:text-5xl font-black text-foreground mb-1 tracking-tighter italic uppercase leading-none transition-transform group-hover/item:scale-110 duration-700">
+                            {loading && i === 0 ? <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin opacity-50 text-primary" /> : stat.value}
                         </div>
-                        <div className="flex items-center gap-2 text-[9px] md:text-[10px] font-black text-primary uppercase tracking-[0.3em] opacity-70 group-hover/item:opacity-100 transition-opacity">
-                            <stat.icon className="h-4 w-4" />
+                        <div className="flex items-center gap-1.5 md:gap-2 text-[8px] md:text-[10px] font-black text-primary uppercase tracking-[0.2em] md:tracking-[0.3em] opacity-70 group-hover/item:opacity-100 transition-opacity">
+                            <stat.icon className="h-3 w-3 md:h-4 md:w-4" />
                             {stat.label}
                         </div>
                     </div>
