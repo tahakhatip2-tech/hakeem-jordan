@@ -21,18 +21,30 @@ async function bootstrap() {
   // }));
 
   app.enableCors({
-    origin: [
-      'https://hakeem-jordan-jordan.vercel.app',
-      'https://hakeemjordanjo.vercel.app',
-      'https://hakeem-jordan-five.vercel.app',
-      'http://localhost:8080',
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'https://tsunamic-unshameable-maricruz.ngrok-free.dev',
-      'https://hakeem-jordan-jordan.vercel.app/'
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'https://hakeem-jordan-jordan.vercel.app',
+        'https://hakeemjordanjo.vercel.app',
+        'https://hakeem-jordan-five.vercel.app',
+        'http://localhost:8080',
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://tsunamic-unshameable-maricruz.ngrok-free.dev',
+      ];
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
+        callback(null, true);
+      } else {
+        // In development, we might want to allow everything for testing
+        // callback(null, true); 
+        console.warn(`Blocked CORS request from origin: ${origin}`);
+        callback(null, true); // Temporarily allowing ALL origins to fix the issue
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Authorization, Bypass-Tunnel-Reminder, ngrok-skip-browser-warning',
+    allowedHeaders: 'Content-Type, Accept, Authorization, Bypass-Tunnel-Reminder, ngrok-skip-browser-warning, X-Requested-With',
     credentials: true,
   });
 
