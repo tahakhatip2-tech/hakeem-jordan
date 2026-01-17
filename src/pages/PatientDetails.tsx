@@ -229,7 +229,7 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                 />
 
                 {/* Back Button - Top Left */}
-                <div className="absolute top-6 left-6 z-30">
+                <div className="absolute top-4 left-4 z-30">
                     <Button
                         variant="ghost"
                         size="icon"
@@ -240,24 +240,26 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                     </Button>
                 </div>
 
-                {/* Action Buttons - Bottom Right (Under Title) */}
-                <div className="absolute bottom-4 right-4 md:bottom-10 md:right-12 flex gap-2 md:gap-3 z-30">
+                {/* Action Buttons - Optimized Placement */}
+                {/* Mobile: Bottom centered, side-by-side */}
+                {/* Desktop: Bottom Left (balancing the Arabic title on the right) */}
+                <div className="absolute bottom-3 left-0 right-0 md:bottom-6 md:left-8 md:right-auto flex justify-center md:justify-start gap-3 z-30 px-4 md:px-0">
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px]"
+                        className="h-10 md:h-12 px-6 md:px-8 bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-primary/80 hover:text-white rounded-none font-bold uppercase tracking-wider text-[10px] md:text-xs flex-1 md:flex-none shadow-lg"
                         onClick={() => onOpenChat(patient.phone, patient.name)}
                     >
-                        <MessageCircle className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                        <MessageCircle className="h-4 w-4 md:h-4 md:w-4 mr-2" />
                         واتساب
                     </Button>
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px]"
+                        className="h-10 md:h-12 px-6 md:px-8 bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-primary/80 hover:text-white rounded-none font-bold uppercase tracking-wider text-[10px] md:text-xs flex-1 md:flex-none shadow-lg"
                         onClick={handlePrint}
                     >
-                        <Printer className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                        <Printer className="h-4 w-4 md:h-4 md:w-4 mr-2" />
                         طباعة
                     </Button>
                 </div>
