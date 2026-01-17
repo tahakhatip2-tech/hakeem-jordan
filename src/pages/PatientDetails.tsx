@@ -227,7 +227,16 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                     icon={FileText}
                     className="mb-0 border-b-0"
                 >
-                    <div className="flex gap-2 md:gap-3">
+                    <div className="flex gap-2 md:gap-3 items-center">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={onBack}
+                            className="h-8 w-8 md:h-10 md:w-10 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-sm shadow-sm backdrop-blur-sm"
+                            title="رجوع"
+                        >
+                            <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
+                        </Button>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -248,18 +257,6 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                         </Button>
                     </div>
                 </HeroSection>
-
-                {/* Back Button - Top Left */}
-                <div className="absolute top-4 left-4 z-30">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onBack}
-                        className="h-10 w-10 md:h-12 md:w-12 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none transition-all"
-                    >
-                        <ArrowRight className="h-5 w-5 md:h-6 md:w-6" />
-                    </Button>
-                </div>
             </div>
 
             {/* Quick Stats Bar */}
