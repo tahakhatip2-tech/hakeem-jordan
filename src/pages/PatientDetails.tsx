@@ -228,36 +228,38 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                     className="mb-0 border-b-0"
                 />
 
-                {/* Floating Action Ribbon */}
-                <div className="absolute top-6 left-4 right-4 md:top-12 md:left-12 md:right-auto flex flex-col md:flex-row gap-2 md:gap-3 z-30">
+                {/* Back Button - Top Left */}
+                <div className="absolute top-6 left-6 z-30">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={onBack}
-                        className="h-10 w-10 md:h-12 md:w-12 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none transition-all self-start"
+                        className="h-10 w-10 md:h-12 md:w-12 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none transition-all"
                     >
                         <ArrowRight className="h-5 w-5 md:h-6 md:w-6" />
                     </Button>
-                    <div className="flex gap-2 md:gap-3">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px] flex-1 md:flex-none"
-                            onClick={() => onOpenChat(patient.phone, patient.name)}
-                        >
-                            <MessageCircle className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
-                            واتساب
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px] flex-1 md:flex-none"
-                            onClick={handlePrint}
-                        >
-                            <Printer className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
-                            طباعة
-                        </Button>
-                    </div>
+                </div>
+
+                {/* Action Buttons - Bottom Right (Under Title) */}
+                <div className="absolute bottom-4 right-4 md:bottom-10 md:right-12 flex gap-2 md:gap-3 z-30">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px]"
+                        onClick={() => onOpenChat(patient.phone, patient.name)}
+                    >
+                        <MessageCircle className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                        واتساب
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-10 md:h-12 px-4 md:px-8 bg-white/5 backdrop-blur-md border border-white/10 text-primary hover:bg-primary/20 rounded-none font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-[9px] md:text-[10px]"
+                        onClick={handlePrint}
+                    >
+                        <Printer className="h-3.5 w-3.5 md:h-4 md:w-4 mr-1.5 md:mr-2" />
+                        طباعة
+                    </Button>
                 </div>
             </div>
 
