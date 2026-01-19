@@ -21,10 +21,19 @@ export function useSocketNotifications() {
         // Connect to NestJS WebSocket Gateway
         // Ensure this matches your backend URL. If using ngrok/proxy, adjust accordingly.
         // Assuming socket.io server is at the same origin as API or process.env.VITE_API_URL
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        // Determine correct Socket URL
+        let socketUrl = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-        // Remove '/api' from the end if it exists, as socket.io usually connects to root
-        const socketUrl = apiUrl.replace(/\/api$/, '');
+        // Clean up URL: remove '/api' suffix and ensure it points to the server root
+        if (socketUrl.startsWith('/')) {
+            // Probably a relative path (e.g., from generic proxy), explicitly point to backend port in dev
+            // Or assume window.location.origin in production if not explicitly set
+            socketUrl = window.location.hostname === 'localhost'
+                ? 'http://localhost:3000'
+                : window.location.origin;
+        } else {
+            socketUrl = socketUrl.replace(/\/api$/, '');
+        }
 
         console.log('Connecting to Socket.io at:', socketUrl, 'for User:', user.id);
 
@@ -32,8 +41,9 @@ export function useSocketNotifications() {
             query: {
                 userId: user.id
             },
-            transports: ['websocket'], // Force websocket
+            transports: ['websocket', 'polling'], // Allow polling fallack
             reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
         });
 
         socket.on('connect', () => {

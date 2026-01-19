@@ -27,7 +27,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { appointmentsApi } from '@/lib/api';
+import { appointmentsApi, whatsappApi } from '@/lib/api';
 import { toastWithSound } from '@/lib/toast-with-sound';
 import { Calendar as CalendarIcon, Clock, User, Phone, FileText } from 'lucide-react';
 import { appointmentSchema } from "@/lib/validations";
@@ -36,9 +36,10 @@ interface AddAppointmentDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSuccess: () => void;
+    onOpenChat?: (phone: string) => void;
 }
 
-export default function AddAppointmentDialog({ open, onOpenChange, onSuccess }: AddAppointmentDialogProps) {
+export default function AddAppointmentDialog({ open, onOpenChange, onSuccess, onOpenChat }: AddAppointmentDialogProps) {
     const isDesktop = useMediaQuery("(min-width: 768px)");
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -82,6 +83,40 @@ export default function AddAppointmentDialog({ open, onOpenChange, onSuccess }: 
             });
 
             toastWithSound.success('تم إضافة الموعد بنجاح');
+
+            // Auto-send WhatsApp Message
+            let whatsappJID = '';
+            try {
+                // Formatting date and time for the message
+                const d = new Date(fullDateTime);
+                const dateStr = d.toLocaleDateString('ar-JO');
+                const timeStr = d.toLocaleTimeString('ar-JO', { hour: '2-digit', minute: '2-digit' });
+
+                // Clean phone number: remove spaces, +, -, (, ), etc.
+                const cleanPhone = formData.phone.replace(/[\s\-\(\)\+]/g, '');
+                // Add WhatsApp JID suffix
+                whatsappJID = `${cleanPhone}@s.whatsapp.net`;
+                console.log('[Appointment] Sending to JID:', whatsappJID);
+
+                await whatsappApi.send({
+                    phone: whatsappJID,
+                    message: `مرحباً ${formData.customer_name}،\n\nتم تأكيد حجز موعدك في عيادة د. حكيم.\n📅 التاريخ: ${dateStr}\n⏰ الوقت: ${timeStr}\n\nنتمنى لكم السلامة.`
+                });
+
+                toastWithSound.success('تم إرسال رسالة التأكيد واتساب');
+
+                // Chat will be opened after dialog closes
+
+            } catch (whatsappError: any) {
+                console.error('[Appointment] WhatsApp error:', whatsappError);
+                toastWithSound.error(`فشل إرسال واتساب: ${whatsappError?.message || 'خطأ'}`);
+                // Chat will be opened after dialog closes
+            }
+
+            // Store the WhatsApp JID to open the same chat
+            const phoneToOpen = whatsappJID || formData.phone;
+            console.log('[Appointment] Will open chat for:', phoneToOpen);
+
             onSuccess();
             onOpenChange(false);
             setFormData({
@@ -92,6 +127,15 @@ export default function AddAppointmentDialog({ open, onOpenChange, onSuccess }: 
                 appointment_type: 'consultation',
                 notes: '',
             });
+
+            // Open Chat after dialog closes
+            if (onOpenChat && phoneToOpen) {
+                console.log('[Appointment] Opening chat in 300ms for:', phoneToOpen);
+                setTimeout(() => {
+                    console.log('[Appointment] Calling onOpenChat now');
+                    onOpenChat(phoneToOpen);
+                }, 300);
+            }
         } catch (error: any) {
             console.error('Error creating appointment:', error);
             toastWithSound.error(error.message || 'فشل في إضافة الموعد');

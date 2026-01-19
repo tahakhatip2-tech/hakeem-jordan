@@ -671,7 +671,10 @@ const Index = () => {
                                 />
                             )}
 
-                            {activeTab === 'appointments' && <AppointmentsCalendar />}
+                            {activeTab === 'appointments' && <AppointmentsCalendar onOpenChat={(phone) => {
+                                setSelectedPhone(phone);
+                                setActiveTab('whatsapp-bot');
+                            }} />}
 
                             {activeTab === 'clinic-settings' && <ClinicSettings />}
 

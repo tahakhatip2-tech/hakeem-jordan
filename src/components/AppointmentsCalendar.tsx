@@ -45,7 +45,11 @@ const typeConfig = {
     general: 'عام',
 };
 
-export default function AppointmentsCalendar() {
+interface AppointmentsCalendarProps {
+    onOpenChat?: (phone: string) => void;
+}
+
+export default function AppointmentsCalendar({ onOpenChat }: AppointmentsCalendarProps) {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | 'today' | 'week'>('today');
@@ -148,6 +152,7 @@ export default function AppointmentsCalendar() {
                 open={isAddDialogOpen}
                 onOpenChange={setIsAddDialogOpen}
                 onSuccess={loadAppointments}
+                onOpenChat={onOpenChat}
             />
 
             {/* Blue Glass Control Bar (Filters) */}

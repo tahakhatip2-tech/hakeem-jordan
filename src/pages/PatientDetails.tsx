@@ -25,6 +25,7 @@ import {
 import HeroSection from '@/components/HeroSection';
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { motion } from "framer-motion";
 
 interface PatientDetailsProps {
     patient: any;
@@ -259,30 +260,51 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                 </HeroSection>
             </div>
 
-            {/* Quick Stats Bar */}
-            <Card className="p-4 md:p-6 bg-blue-950/5 backdrop-blur-[80px] border-y border-white/5 rounded-none shadow-2xl grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 sm:divide-x sm:divide-x-reverse divide-white/5 relative group overflow-hidden transition-all duration-700">
-                {/* 1. Ultra-Premium Light Sweep */}
-                <div className="light-sweep opacity-40" />
-                <div className="absolute inset-0 holographic-grid opacity-10" />
-
+            {/* Premium Stats Bar with Framer Motion */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {stats.map((stat, i) => (
-                    <div key={i} className="flex flex-col items-center justify-center p-3 md:p-4 group/item relative z-10">
-                        <div className="text-2xl sm:text-3xl md:text-5xl font-black text-foreground mb-1 tracking-tighter italic uppercase leading-none transition-transform group-hover/item:scale-110 duration-700">
-                            {loading && i === 0 ? <Loader2 className="h-6 w-6 md:h-8 md:w-8 animate-spin opacity-50 text-primary" /> : stat.value}
-                        </div>
-                        <div className="flex items-center gap-1.5 md:gap-2 text-[8px] md:text-[10px] font-black text-primary uppercase tracking-[0.2em] md:tracking-[0.3em] opacity-70 group-hover/item:opacity-100 transition-opacity">
-                            <stat.icon className="h-3 w-3 md:h-4 md:w-4" />
-                            {stat.label}
-                        </div>
-                    </div>
-                ))}
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1, duration: 0.5 }}
+                        className="relative group overflow-hidden"
+                    >
+                        <Card className="h-full border-none bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-xl border border-white/5 shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all duration-500 overflow-hidden">
+                            <div className="p-5 flex items-center justify-between relative z-10">
+                                <div className="space-y-1">
+                                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{stat.label}</p>
+                                    <div className="flex items-baseline gap-2">
+                                        <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+                                            {loading && i === 0 ? (
+                                                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                                            ) : (
+                                                stat.value
+                                            )}
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                    <stat.icon className="h-6 w-6" strokeWidth={1.5} />
+                                </div>
+                            </div>
 
-                {/* Bottom Professional "Power Line" */}
-                <div className="absolute bottom-0 left-0 w-full flex opacity-40 group-hover:opacity-100 transition-opacity duration-1000">
-                    <div className="h-[4px] w-1/3 bg-primary shadow-[0_0_20px_rgba(var(--primary),0.6)]" />
-                    <div className="h-[4px] flex-1 bg-white/5" />
-                </div>
-            </Card>
+                            {/* Decorative Elements */}
+                            <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity duration-500 transform group-hover:scale-125 origin-top-right">
+                                <stat.icon className="h-24 w-24" />
+                            </div>
+
+                            {/* Animated Bottom Line */}
+                            <motion.div
+                                className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-primary/50 to-transparent"
+                                initial={{ width: "0%" }}
+                                whileHover={{ width: "100%" }}
+                                transition={{ duration: 0.5 }}
+                            />
+                        </Card>
+                    </motion.div>
+                ))}
+            </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Right Column: Medical Profile (Sticky) */}
@@ -408,8 +430,8 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                                                 </div>
 
                                                 <div className={`px-3 py-1 rounded-full text-[10px] font-bold border ${apt.status === 'completed' ? 'border-green-500/30 text-green-500 bg-green-500/10' :
-                                                        apt.status === 'cancelled' ? 'border-red-500/30 text-red-500 bg-red-500/10' :
-                                                            'border-amber-500/30 text-amber-500 bg-amber-500/10'
+                                                    apt.status === 'cancelled' ? 'border-red-500/30 text-red-500 bg-red-500/10' :
+                                                        'border-amber-500/30 text-amber-500 bg-amber-500/10'
                                                     }`}>
                                                     {apt.status === 'completed' ? 'مكتمل' : apt.status === 'cancelled' ? 'ملغي' : 'مجدول'}
                                                 </div>

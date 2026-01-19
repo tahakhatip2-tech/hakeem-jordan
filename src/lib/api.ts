@@ -47,7 +47,25 @@ export const apiFetch = async (endpoint: string, options: any = {}) => {
             throw new Error(errorMessage);
         }
 
-        return response.json();
+        // Handle empty responses or non-JSON responses
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // If response is not JSON, return a success object
+            return { success: true, message: 'Operation completed' };
+        }
+
+        const text = await response.text();
+        if (!text || text.trim() === '') {
+            // Empty response, return success
+            return { success: true, message: 'Operation completed' };
+        }
+
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.warn('[API] Failed to parse JSON response:', text);
+            return { success: true, message: 'Operation completed', rawResponse: text };
+        }
     } catch (error: any) {
         console.error('[API] Fetch error:', error.message);
         throw error;
@@ -103,6 +121,7 @@ export const whatsappApi = {
     getChats: () => apiFetch('/whatsapp/chats'),
     deleteChat: (id: string | number) => apiFetch(`/whatsapp/chats/${id}`, { method: 'DELETE' }),
     getMessages: (id: string | number) => apiFetch(`/whatsapp/chats/${id}/messages`),
+    markRead: (id: string | number) => apiFetch(`/whatsapp/chats/${id}/read`, { method: 'PATCH' }),
     send: (data: any) => apiFetch('/whatsapp/send', { method: 'POST', body: JSON.stringify(data) }),
     // Templates
     getTemplates: () => apiFetch('/whatsapp/templates'),
@@ -113,6 +132,11 @@ export const whatsappApi = {
     getSettings: () => apiFetch('/whatsapp/settings'),
     updateSettings: (data: any) => apiFetch('/whatsapp/settings', { method: 'POST', body: JSON.stringify(data) }),
     upload: (formData: FormData) => apiFetch('/whatsapp/upload', { method: 'POST', body: formData }),
+    // Tags
+    getTags: () => apiFetch('/whatsapp/tags'),
+    getContactTags: (phone: string) => apiFetch(`/whatsapp/contacts/${phone}/tags`),
+    addContactTag: (phone: string, tagId: number) => apiFetch(`/whatsapp/contacts/${phone}/tags`, { method: 'POST', body: JSON.stringify({ tagId }) }),
+    removeContactTag: (phone: string, tagId: number) => apiFetch(`/whatsapp/contacts/${phone}/tags/${tagId}`, { method: 'DELETE' }),
 };
 
 export const appointmentsApi = {

@@ -236,12 +236,12 @@ export default function WhatsAppChat({ chat, onBack }: WhatsAppChatProps) {
                     return (
                         <div
                             key={msg.id}
-                            className={`flex ${msg.from_me ? 'justify-start' : 'justify-end'} animate-in fade-in slide-in-from-bottom-2 duration-300`}
+                            className={`flex ${msg.from_me ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}
                         >
                             <div
                                 className={`max-w-[75%] p-1.5 rounded-2xl shadow-md ${msg.from_me
-                                    ? 'bg-primary text-primary-foreground rounded-tl-none'
-                                    : 'bg-card text-foreground rounded-tr-none border border-border/40'
+                                    ? 'bg-primary text-primary-foreground rounded-tr-none' // Me (Left): Radius fix
+                                    : 'bg-card text-foreground rounded-tl-none border border-border/40' // Them (Right): Radius fix
                                     }`}
                             >
                                 {isMedia ? (
