@@ -300,65 +300,64 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                         </div>
 
                         <div className="space-y-5 relative z-10">
-                            <div className="p-5 bg-white/[0.03] border border-white/10 hover:border-primary/40 transition-all duration-500 overflow-hidden relative group/inner">
-                                <div className="absolute top-0 right-0 p-2 opacity-5 scale-150 group-hover/inner:opacity-10 transition-opacity">
+                            {/* Allergies Card */}
+                            <div className="p-5 bg-white/[0.03] border border-white/10 hover:border-red-500/30 transition-all duration-500 overflow-hidden relative group/inner rounded-lg">
+                                <div className="absolute top-0 left-0 p-2 opacity-5 scale-150 group-hover/inner:opacity-10 transition-opacity">
                                     <AlertTriangle className="h-12 w-12" />
                                 </div>
                                 <div className="flex items-center gap-2 mb-3">
-                                    <div className="p-1 rounded-sm bg-primary/20 text-primary">
-                                        <AlertTriangle className="h-3.5 w-3.5" strokeWidth={3} />
+                                    <div className="p-1.5 rounded-md bg-red-500/10 text-red-500">
+                                        <AlertTriangle className="h-4 w-4" strokeWidth={2.5} />
                                     </div>
-                                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">HAKEEM_ALLERGIES</span>
+                                    <span className="text-xs font-bold text-red-400">الحساسية</span>
                                 </div>
-                                <p className="text-sm md:text-base font-black text-foreground italic uppercase tracking-tighter leading-tight">
+                                <p className="text-sm md:text-base font-medium text-foreground leading-relaxed">
                                     {patient.allergies || 'لا توجد حساسية مسجلة'}
                                 </p>
                             </div>
 
-                            <div className="p-5 bg-white/[0.03] border border-white/10 hover:border-primary/40 transition-all duration-500 overflow-hidden relative group/inner">
-                                <div className="absolute top-0 right-0 p-2 opacity-5 scale-150 group-hover/inner:opacity-10 transition-opacity">
+                            {/* Chronic Diseases Card */}
+                            <div className="p-5 bg-white/[0.03] border border-white/10 hover:border-blue-500/30 transition-all duration-500 overflow-hidden relative group/inner rounded-lg">
+                                <div className="absolute top-0 left-0 p-2 opacity-5 scale-150 group-hover/inner:opacity-10 transition-opacity">
                                     <Stethoscope className="h-12 w-12" />
                                 </div>
                                 <div className="flex items-center gap-2 mb-3">
-                                    <div className="p-1 rounded-sm bg-primary/20 text-primary">
-                                        <Stethoscope className="h-3.5 w-3.5" strokeWidth={3} />
+                                    <div className="p-1.5 rounded-md bg-blue-500/10 text-blue-500">
+                                        <Stethoscope className="h-4 w-4" strokeWidth={2.5} />
                                     </div>
-                                    <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">MEDICAL_HISTORY</span>
+                                    <span className="text-xs font-bold text-blue-400">الأمراض المزمنة</span>
                                 </div>
-                                <p className="text-sm md:text-base font-black text-foreground italic uppercase tracking-tighter leading-tight">
+                                <p className="text-sm md:text-base font-medium text-foreground leading-relaxed">
                                     {patient.chronic_diseases || 'لا توجد أمراض مزمنة مسجلة'}
                                 </p>
                             </div>
                         </div>
 
-                        {/* Bottom Professional "Power Line" */}
-                        <div className="absolute bottom-0 left-0 w-full flex opacity-40 group-hover:opacity-100 transition-opacity duration-1000">
-                            <div className="h-[3px] w-1/2 bg-primary shadow-[0_0_20px_rgba(var(--primary),0.6)]" />
-                            <div className="h-[3px] flex-1 bg-white/5" />
-                        </div>
+                        {/* Bottom Decoration */}
+                        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-l from-transparent via-primary/30 to-transparent" />
                     </Card>
                 </div>
 
                 {/* Left Column: Visits Timeline */}
                 <div className="lg:col-span-2">
-                    <Card className="p-8 border-y border-white/10 rounded-none shadow-2xl bg-blue-950/10 backdrop-blur-3xl min-h-[500px] relative group overflow-hidden transition-all duration-700">
-                        <div className="absolute inset-0 holographic-grid opacity-5" />
+                    <Card className="p-6 md:p-8 border-none bg-transparent shadow-none min-h-[500px] relative">
 
-                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 relative z-10 gap-6">
-                            <div className="flex items-center gap-5">
-                                <div className="h-16 w-16 bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-xl group-hover:scale-110 transition-transform">
-                                    <FileText className="h-8 w-8 text-primary" strokeWidth={2} />
+                        {/* Section Header */}
+                        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+                            <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-lg">
+                                    <FileText className="h-6 w-6 text-primary" strokeWidth={2} />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter leading-none">سجل المراجعات</h3>
-                                    <p className="text-[10px] md:text-xs font-black text-primary uppercase tracking-[0.3em] mt-2 opacity-60">
-                                        Clinical Diagnosis History Registry
+                                    <h3 className="text-2xl font-bold text-foreground">سجل المراجعات</h3>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        سجل كامل للزيارات والتشخيصات السابقة
                                     </p>
                                 </div>
                             </div>
 
-                            {/* Filter Tabs - Flagship Style */}
-                            <div className="flex bg-white/5 p-1.5 border border-white/10 backdrop-blur-xl">
+                            {/* Filter Tabs */}
+                            <div className="flex bg-white/5 p-1 rounded-lg border border-white/10 backdrop-blur-md">
                                 {[
                                     { id: 'all', label: 'الكل' },
                                     { id: 'diagnosis', label: 'تشخيص' },
@@ -367,9 +366,9 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                                     <button
                                         key={tab.id}
                                         onClick={() => setFilter(tab.id as any)}
-                                        className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${filter === tab.id
-                                            ? 'bg-primary text-white shadow-[0_0_20px_rgba(var(--primary),0.3)]'
-                                            : 'text-muted-foreground/60 hover:text-foreground hover:bg-white/5'
+                                        className={`px-4 py-1.5 text-xs font-bold rounded-md transition-all ${filter === tab.id
+                                            ? 'bg-primary text-white shadow-lg'
+                                            : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                                             }`}
                                     >
                                         {tab.label}
@@ -379,82 +378,83 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                         </div>
 
                         {loading && (
-                            <div className="flex flex-col items-center justify-center py-24 opacity-30">
-                                <Loader2 className="h-12 w-12 text-primary animate-spin mb-4" />
-                                <p className="text-[10px] font-black uppercase tracking-[0.3em]">Accessing Encrypted Records...</p>
+                            <div className="flex flex-col items-center justify-center py-24 opacity-50">
+                                <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
+                                <p className="text-xs font-medium">جاري تحميل السجل الطبي...</p>
                             </div>
                         )}
 
                         {!loading && filteredAppointments.length > 0 ? (
-                            <div className="relative border-r-[3px] border-primary/20 mr-6 space-y-10 py-4">
+                            <div className="relative border-r-2 border-primary/10 mr-4 space-y-8 py-2">
                                 {filteredAppointments.map((apt: any) => (
-                                    <div key={apt.id} className="relative pr-10 group/visit animate-fade-in">
-                                        {/* Timeline Dot Architectural */}
-                                        <div className="absolute -right-[11px] top-0 h-5 w-5 bg-blue-950 border-[3px] border-primary group-hover/visit:scale-125 transition-transform duration-500 shadow-[0_0_15px_rgba(var(--primary),0.5)]" />
+                                    <div key={apt.id} className="relative pr-8 group/visit animate-fade-in">
 
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-6 p-6 bg-white/[0.02] border border-white/5 hover:border-primary/30 transition-all duration-700 relative overflow-hidden group/card">
-                                            <div className="light-sweep opacity-10" />
+                                        {/* Timeline Dot */}
+                                        <div className="absolute -right-[9px] top-6 h-4 w-4 rounded-full bg-background border-[3px] border-primary shadow-[0_0_10px_rgba(var(--primary),0.4)] group-hover/visit:scale-110 transition-transform z-10" />
 
-                                            <div className="relative z-10">
-                                                <div className="text-lg font-black text-foreground mb-2 flex items-center gap-3 italic uppercase tracking-tighter leading-tight">
-                                                    {format(new Date(apt.appointmentDate), 'EEEE, dd MMMM yyyy', { locale: ar })}
-                                                    <span className="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 border border-primary/20 uppercase tracking-widest">
-                                                        Visit_Confirmed
-                                                    </span>
-                                                </div>
-                                                <div className="text-[10px] font-black text-muted-foreground/40 flex items-center gap-2 uppercase tracking-[0.2em]">
-                                                    <Clock className="h-3.5 w-3.5 text-primary opacity-50" />
-                                                    {format(new Date(apt.appointmentDate), 'hh:mm a', { locale: ar })}
-                                                </div>
-                                            </div>
-                                            <div className={`px-6 py-2 border font-black text-[10px] uppercase tracking-[0.2em] italic relative z-10 transition-all duration-700
-                                                ${apt.status === 'completed' ? 'border-primary text-primary bg-primary/10 group-hover/card:bg-primary group-hover/card:text-white' :
-                                                    apt.status === 'cancelled' ? 'border-red-500/50 text-red-500 bg-red-500/10' : 'border-amber-500/50 text-amber-500 bg-amber-500/10'}`}>
-                                                {apt.status === 'completed' ? 'Visit_Completed' : apt.status === 'cancelled' ? 'Visit_Cancelled' : 'Visit_Scheduled'}
-                                            </div>
-                                        </div>
+                                        {/* Card Content */}
+                                        <div className="flex flex-col gap-4 p-5 rounded-xl bg-white/[0.02] border border-white/10 hover:border-primary/30 hover:bg-white/[0.04] transition-all duration-300 relative overflow-hidden">
 
-                                        <div className="mr-6 space-y-4 relative z-10">
-                                            {/* Notes if available */}
-                                            {apt.notes && (
-                                                <div className="p-6 bg-white/[0.03] border-r-4 border-primary/40 backdrop-blur-md">
-                                                    <div className="flex items-center gap-2 mb-3">
-                                                        <StickyNote className="h-4 w-4 text-primary opacity-50" />
-                                                        <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">Reservation_Notes</span>
+                                            {/* Header: Date & Status */}
+                                            <div className="flex flex-wrap items-center justify-between gap-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="text-lg font-bold text-foreground flex items-center gap-2">
+                                                        {format(new Date(apt.appointmentDate), 'EEEE، d MMMM yyyy', { locale: ar })}
                                                     </div>
-                                                    <p className="text-sm font-bold text-foreground/70 leading-relaxed uppercase tracking-wide">{apt.notes}</p>
+                                                    <div className="text-xs font-medium text-muted-foreground flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-md">
+                                                        <Clock className="h-3.5 w-3.5 text-primary opacity-70" />
+                                                        {format(new Date(apt.appointmentDate), 'h:mm a', { locale: ar })}
+                                                    </div>
+                                                </div>
+
+                                                <div className={`px-3 py-1 rounded-full text-[10px] font-bold border ${apt.status === 'completed' ? 'border-green-500/30 text-green-500 bg-green-500/10' :
+                                                        apt.status === 'cancelled' ? 'border-red-500/30 text-red-500 bg-red-500/10' :
+                                                            'border-amber-500/30 text-amber-500 bg-amber-500/10'
+                                                    }`}>
+                                                    {apt.status === 'completed' ? 'مكتمل' : apt.status === 'cancelled' ? 'ملغي' : 'مجدول'}
+                                                </div>
+                                            </div>
+
+                                            {/* Notes Section */}
+                                            {apt.notes && (
+                                                <div className="p-4 rounded-lg bg-white/[0.02] border-r-4 border-primary/40">
+                                                    <div className="flex items-center gap-2 mb-2 opacity-70">
+                                                        <StickyNote className="h-3.5 w-3.5 text-primary" />
+                                                        <span className="text-[10px] font-bold text-primary">ملاحظات الزيارة</span>
+                                                    </div>
+                                                    <p className="text-sm text-foreground/80 leading-relaxed font-medium">{apt.notes}</p>
                                                 </div>
                                             )}
 
-                                            {/* Medical Records */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {/* Medical Records Grid */}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                                                 {apt.medicalRecords?.[0] ? (
                                                     <>
-                                                        <div className="p-6 bg-white/[0.04] border border-white/5 hover:border-primary/20 transition-all group/info">
-                                                            <div className="flex items-center gap-3 mb-4">
-                                                                <div className="p-2 bg-primary/20 text-primary group-hover/info:bg-primary group-hover/info:text-white transition-all">
-                                                                    <Activity className="h-4 w-4" />
-                                                                </div>
-                                                                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Diagnosis_Report</span>
+                                                        {/* Diagnosis */}
+                                                        <div className="p-4 rounded-lg bg-indigo-500/[0.03] border border-indigo-500/10 hover:border-indigo-500/30 transition-colors">
+                                                            <div className="flex items-center gap-2.5 mb-2">
+                                                                <Activity className="h-4 w-4 text-indigo-400" />
+                                                                <span className="text-xs font-bold text-indigo-400">التشخيص الطبي</span>
                                                             </div>
-                                                            <p className="text-base font-black text-foreground italic uppercase tracking-tighter leading-tight">{apt.medicalRecords[0].diagnosis || 'Pending_Diagnosis'}</p>
+                                                            <p className="text-sm font-medium text-foreground leading-relaxed">
+                                                                {apt.medicalRecords[0].diagnosis || 'بانتظار التشخيص'}
+                                                            </p>
                                                         </div>
 
-                                                        <div className="p-6 bg-white/[0.04] border border-white/5 hover:border-primary/20 transition-all group/info">
-                                                            <div className="flex items-center gap-3 mb-4">
-                                                                <div className="p-2 bg-indigo-500/20 text-indigo-500 group-hover/info:bg-indigo-500 group-hover/info:text-white transition-all">
-                                                                    <Pill className="h-4 w-4" />
-                                                                </div>
-                                                                <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em]">Treatment_Plan</span>
+                                                        {/* Treatment */}
+                                                        <div className="p-4 rounded-lg bg-emerald-500/[0.03] border border-emerald-500/10 hover:border-emerald-500/30 transition-colors">
+                                                            <div className="flex items-center gap-2.5 mb-2">
+                                                                <Pill className="h-4 w-4 text-emerald-400" />
+                                                                <span className="text-xs font-bold text-emerald-400">الخطة العلاجية</span>
                                                             </div>
-                                                            <p className="text-sm font-black text-foreground/80 leading-relaxed uppercase tracking-tighter italic">
-                                                                {apt.medicalRecords[0].treatment || 'No_Treatment_Assigned'}
+                                                            <p className="text-sm font-medium text-foreground leading-relaxed">
+                                                                {apt.medicalRecords[0].treatment || 'لم يتم تحديد علاج'}
                                                             </p>
                                                         </div>
                                                     </>
                                                 ) : (
-                                                    <div className="col-span-2 p-12 text-center border-2 border-dashed border-white/5 bg-white/[0.01]">
-                                                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] italic opacity-30">Waiting for Clinical Record Entry</p>
+                                                    <div className="col-span-2 p-6 text-center border border-dashed border-white/10 rounded-lg bg-white/[0.01]">
+                                                        <p className="text-xs text-muted-foreground opacity-50">لا توجد سجلات طبية مرتبطة بهذه الزيارة</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -463,19 +463,13 @@ export const PatientDetails = ({ patient: initialPatient, onBack, onOpenChat, on
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center py-32 border-2 border-dashed border-white/5">
-                                <FileText className="h-20 w-20 text-blue-900/20 mb-8" />
-                                <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.4em] opacity-30 italic leading-loose text-center">
-                                    {loading ? 'Decrypting Secure Database...' : 'DATABASE_QUERY_EMPTY: NO MATCHING CLINICAL RECORDS FOUND'}
+                            <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-white/5 rounded-xl">
+                                <FileText className="h-16 w-16 text-muted-foreground/20 mb-4" />
+                                <p className="text-sm text-muted-foreground opacity-50">
+                                    لا توجد زيارات سابقة مسجلة في النظام
                                 </p>
                             </div>
                         )}
-
-                        {/* Bottom Professional "Power Line" */}
-                        <div className="absolute bottom-0 left-0 w-full flex opacity-30 group-hover:opacity-100 transition-opacity duration-1000">
-                            <div className="h-[4px] w-1/4 bg-primary shadow-[0_0_20px_rgba(var(--primary),0.6)]" />
-                            <div className="h-[4px] flex-1 bg-white/5" />
-                        </div>
                     </Card>
                 </div>
             </div>

@@ -20,6 +20,11 @@ import {
     Menu as MenuIcon,
     Sparkles,
     Languages,
+    UserPlus,
+    CalendarCheck,
+    CalendarX,
+    AlertCircle,
+    Bot,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,6 +39,7 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useSocketNotifications } from '@/hooks/useSocketNotifications';
 import { useTheme } from '@/hooks/useTheme';
 import { whatsappApi, appointmentsApi, BASE_URL } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
@@ -51,6 +57,10 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
     const navigate = useNavigate();
     const { theme, toggleTheme } = useTheme();
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+
+    // Enable Real-Time Socket Notifications
+    useSocketNotifications();
+
     const { settings } = useClinicContext();
     const [stats, setStats] = useState<any>(null);
 
@@ -241,19 +251,136 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        {/* Static Notification Bell */}
-                        <div className="relative">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-11 w-11 rounded-full bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 shadow-sm active:scale-90"
-                            >
-                                <Bell className="h-5 w-5" />
-                                <span className="absolute -top-1 -right-1 h-5 w-5 bg-blue-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-blue-950 shadow-md animate-bounce">
-                                    3
-                                </span>
-                            </Button>
-                        </div>
+                        {/* Mobile Notification Bell */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-11 w-11 rounded-full bg-blue-50/80 dark:bg-blue-900/20 border border-blue-200/50 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 shadow-sm active:scale-90 relative"
+                                >
+                                    <Bell className="h-5 w-5" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-blue-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-blue-950 shadow-md animate-bounce">
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-[calc(100vw-2rem)] sm:w-80 mt-2 p-0 rounded-xl border-border bg-card/95 backdrop-blur-3xl shadow-xl" sideOffset={8}>
+                                <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/20">
+                                    <h4 className="font-bold text-sm text-foreground">الإشعارات</h4>
+                                    {unreadCount > 0 && (
+                                        <Button
+                                            variant="ghost"
+                                            size="xs"
+                                            className="h-6 text-[10px] text-primary hover:bg-primary/10"
+                                            onClick={() => markAllAsRead.mutate()}
+                                        >
+                                            تحديد الكل كمقروء
+                                        </Button>
+                                    )}
+                                </div>
+                                <ScrollArea className="h-[300px]">
+                                    {notifications?.length === 0 ? (
+                                        <div className="flex flex-col items-center justify-center h-[200px] text-muted-foreground">
+                                            <Bell className="h-8 w-8 mb-2 opacity-20" />
+                                            <p className="text-xs">لا توجد إشعارات جديدة</p>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col p-1">
+                                            {notifications?.slice(0, 10).map((notification) => {
+                                                let Icon = Bell;
+                                                let colorClass = 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+
+                                                if (notification.type === 'NEW_PATIENT') {
+                                                    Icon = UserPlus;
+                                                    colorClass = 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
+                                                } else if (notification.type === 'NEW_APPOINTMENT') {
+                                                    Icon = CalendarCheck;
+                                                    colorClass = 'bg-blue-500/10 text-blue-600 border-blue-500/20';
+                                                } else if (notification.type === 'APPOINTMENT_CANCELLED') {
+                                                    Icon = CalendarX;
+                                                    colorClass = 'bg-red-500/10 text-red-600 border-red-500/20';
+                                                } else if (notification.type === 'APPOINTMENT_COMPLETED') {
+                                                    Icon = CheckCircle2;
+                                                    colorClass = 'bg-purple-500/10 text-purple-600 border-purple-500/20';
+                                                } else if (notification.message?.includes('BOT') || notification.title?.includes('BOT')) {
+                                                    Icon = Bot;
+                                                    colorClass = 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20';
+                                                }
+
+                                                return (
+                                                    <DropdownMenuItem
+                                                        key={notification.id}
+                                                        className={cn(
+                                                            "flex flex-col items-start gap-1 p-3 cursor-pointer rounded-xl mb-1 transition-all duration-200 border-b border-border/40 last:border-0",
+                                                            !notification.is_read ? "bg-blue-50/50 dark:bg-blue-900/10" : "hover:bg-muted/50"
+                                                        )}
+                                                        onSelect={() => {
+                                                            if (!notification.is_read) markAsRead.mutate(notification.id);
+
+                                                            // Navigate based on type
+                                                            if (notification.type === 'NEW_PATIENT' || notification.contactId) {
+                                                                if (onTabChange) onTabChange('contacts');
+                                                                navigate('/');
+                                                            } else if (
+                                                                notification.type === 'NEW_APPOINTMENT' ||
+                                                                notification.type === 'APPOINTMENT_CANCELLED' ||
+                                                                notification.type === 'APPOINTMENT_COMPLETED' ||
+                                                                notification.appointmentId
+                                                            ) {
+                                                                if (onTabChange) onTabChange('appointments');
+                                                                navigate('/');
+                                                            }
+                                                        }}
+                                                    >
+                                                        <div className="flex items-start w-full gap-3">
+                                                            {/* Icon Box */}
+                                                            <div className={cn("h-9 w-9 rounded-full flex items-center justify-center border shadow-sm shrink-0 mt-0.5", colorClass)}>
+                                                                <Icon className="h-4 w-4" />
+                                                            </div>
+
+                                                            <div className="flex-1 space-y-1 overflow-hidden">
+                                                                <div className="flex items-center justify-between gap-2">
+                                                                    <p className={cn(
+                                                                        "text-sm leading-none truncate",
+                                                                        !notification.is_read ? "font-black text-foreground" : "font-semibold text-muted-foreground"
+                                                                    )}>
+                                                                        {notification.title}
+                                                                    </p>
+                                                                    {!notification.is_read && (
+                                                                        <span className="h-2 w-2 rounded-full bg-blue-600 ring-2 ring-blue-600/20 animate-pulse" />
+                                                                    )}
+                                                                </div>
+
+                                                                <p className="text-[11px] text-muted-foreground/80 line-clamp-2 leading-relaxed">
+                                                                    {notification.message}
+                                                                </p>
+
+                                                                <p className="text-[9px] text-muted-foreground/40 font-medium flex items-center gap-1 pt-1">
+                                                                    <Clock className="h-2.5 w-2.5" />
+                                                                    {(() => {
+                                                                        try {
+                                                                            const date = new Date(notification.created_at);
+                                                                            return isNaN(date.getTime())
+                                                                                ? 'الآن'
+                                                                                : formatDistanceToNow(date, { addSuffix: true, locale: ar });
+                                                                        } catch (e) {
+                                                                            return 'الآن';
+                                                                        }
+                                                                    })()}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </DropdownMenuItem>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </ScrollArea>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
 
                         {/* Static Language Toggle */}
                         <Button
@@ -452,30 +579,93 @@ const Header = ({ onNavigate, onTabChange, activeTab, transparent }: HeaderProps
                                         </div>
                                     ) : (
                                         <div className="flex flex-col p-1">
-                                            {notifications?.slice(0, 10).map((notification) => (
-                                                <DropdownMenuItem
-                                                    key={notification.id}
-                                                    className={`flex flex-col items-start gap-1 p-3 cursor-pointer rounded-lg mb-1 focus:bg-muted ${!notification.is_read ? 'bg-primary/5' : ''}`}
-                                                    onSelect={() => {
-                                                        if (!notification.is_read) markAsRead.mutate(notification.id);
-                                                    }}
-                                                >
-                                                    <div className="flex items-start w-full gap-3">
-                                                        <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${!notification.is_read ? 'bg-primary' : 'bg-transparent'}`} />
-                                                        <div className="flex-1 space-y-1">
-                                                            <p className={`text-xs leading-none ${!notification.is_read ? 'font-bold text-foreground' : 'font-medium text-muted-foreground'}`}>
-                                                                {notification.title}
-                                                            </p>
-                                                            <p className="text-[10px] text-muted-foreground line-clamp-2">
-                                                                {notification.message}
-                                                            </p>
-                                                            <p className="text-[9px] text-muted-foreground/50 pt-1">
-                                                                {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: ar })}
-                                                            </p>
+                                            {notifications?.slice(0, 10).map((notification) => {
+                                                let Icon = Bell;
+                                                let colorClass = 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+
+                                                if (notification.type === 'NEW_PATIENT') {
+                                                    Icon = UserPlus;
+                                                    colorClass = 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
+                                                } else if (notification.type === 'NEW_APPOINTMENT') {
+                                                    Icon = CalendarCheck;
+                                                    colorClass = 'bg-blue-500/10 text-blue-600 border-blue-500/20';
+                                                } else if (notification.type === 'APPOINTMENT_CANCELLED') {
+                                                    Icon = CalendarX;
+                                                    colorClass = 'bg-red-500/10 text-red-600 border-red-500/20';
+                                                } else if (notification.type === 'APPOINTMENT_COMPLETED') {
+                                                    Icon = CheckCircle2;
+                                                    colorClass = 'bg-purple-500/10 text-purple-600 border-purple-500/20';
+                                                } else if (notification.message?.includes('BOT') || notification.title?.includes('BOT')) {
+                                                    Icon = Bot;
+                                                    colorClass = 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20';
+                                                }
+
+                                                return (
+                                                    <DropdownMenuItem
+                                                        key={notification.id}
+                                                        className={cn(
+                                                            "flex flex-col items-start gap-1 p-3 cursor-pointer rounded-xl mb-1 transition-all duration-200 border-b border-border/40 last:border-0",
+                                                            !notification.is_read ? "bg-blue-50/50 dark:bg-blue-900/10" : "hover:bg-muted/50"
+                                                        )}
+                                                        onSelect={() => {
+                                                            if (!notification.is_read) markAsRead.mutate(notification.id);
+
+                                                            // Navigate based on type
+                                                            if (notification.type === 'NEW_PATIENT' || notification.contactId) {
+                                                                if (onTabChange) onTabChange('contacts');
+                                                                navigate('/');
+                                                            } else if (
+                                                                notification.type === 'NEW_APPOINTMENT' ||
+                                                                notification.type === 'APPOINTMENT_CANCELLED' ||
+                                                                notification.type === 'APPOINTMENT_COMPLETED' ||
+                                                                notification.appointmentId
+                                                            ) {
+                                                                if (onTabChange) onTabChange('appointments');
+                                                                navigate('/');
+                                                            }
+                                                        }}
+                                                    >
+                                                        <div className="flex items-start w-full gap-3">
+                                                            {/* Icon Box */}
+                                                            <div className={cn("h-9 w-9 rounded-full flex items-center justify-center border shadow-sm shrink-0 mt-0.5", colorClass)}>
+                                                                <Icon className="h-4 w-4" />
+                                                            </div>
+
+                                                            <div className="flex-1 space-y-1 overflow-hidden">
+                                                                <div className="flex items-center justify-between gap-2">
+                                                                    <p className={cn(
+                                                                        "text-sm leading-none truncate",
+                                                                        !notification.is_read ? "font-black text-foreground" : "font-semibold text-muted-foreground"
+                                                                    )}>
+                                                                        {notification.title}
+                                                                    </p>
+                                                                    {!notification.is_read && (
+                                                                        <span className="h-2 w-2 rounded-full bg-blue-600 ring-2 ring-blue-600/20 animate-pulse" />
+                                                                    )}
+                                                                </div>
+
+                                                                <p className="text-[11px] text-muted-foreground/80 line-clamp-2 leading-relaxed">
+                                                                    {notification.message}
+                                                                </p>
+
+                                                                <p className="text-[9px] text-muted-foreground/40 font-medium flex items-center gap-1 pt-1">
+                                                                    <Clock className="h-2.5 w-2.5" />
+                                                                    {(() => {
+                                                                        try {
+                                                                            const date = new Date(notification.created_at);
+                                                                            return isNaN(date.getTime())
+                                                                                ? 'الآن'
+                                                                                : formatDistanceToNow(date, { addSuffix: true, locale: ar });
+                                                                        } catch (e) {
+                                                                            return 'الآن';
+                                                                        }
+                                                                    })()}
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </DropdownMenuItem>
-                                            ))}
+                                                    </DropdownMenuItem>
+                                                );
+                                            })}
                                         </div>
                                     )}
                                 </ScrollArea>

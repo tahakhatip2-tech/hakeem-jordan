@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Contact, Prisma } from '@prisma/client';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ContactsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private notificationsService: NotificationsService
+    ) { }
 
     async findAll(userId: number): Promise<any[]> {
         const contacts = await this.prisma.contact.findMany({
@@ -50,9 +54,21 @@ export class ContactsService {
         if (data.national_id) createData.nationalId = data.national_id;
         if (data.age_range) createData.ageRange = data.age_range;
 
-        return this.prisma.contact.create({
+        const contact = await this.prisma.contact.create({
             data: createData,
         });
+
+        // Create notification for new patient
+        await this.notificationsService.createNotification({
+            userId,
+            type: 'NEW_PATIENT',
+            title: 'مريض جديد',
+            message: `تم إضافة سجل المريض الجديد: ${contact.name}`,
+            priority: 'MEDIUM',
+            contactId: contact.id,
+        });
+
+        return contact;
     }
 
     async update(id: number, userId: number, data: any): Promise<Contact> {

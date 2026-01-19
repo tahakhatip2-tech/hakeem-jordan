@@ -573,7 +573,7 @@ export class WhatsAppService implements OnModuleInit, OnModuleDestroy {
                 const date = dateStr?.trim();
                 const time = timeStr?.trim();
                 const customerName = name?.trim() || 'Unspecified';
-                const appointmentNotes = notes?.trim() || 'AI Generated Appointment';
+                const appointmentNotes = (notes?.trim() || '') + ' [BOT]';
 
                 if (date && time) {
                     let finalDateStr = date;

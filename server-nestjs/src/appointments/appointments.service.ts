@@ -1,12 +1,16 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import * as puppeteer from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs';
 
 @Injectable()
 export class AppointmentsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private notificationsService: NotificationsService
+    ) { }
 
     async findAll(userId: number, queryParams: any) {
         const { date, status, doctor_id, date_from, date_to } = queryParams;
@@ -109,21 +113,39 @@ export class AppointmentsService {
 
         // If patientId is missing, try to find or create a contact by phone
         if (!actualPatientId) {
-            const contact = await this.prisma.contact.upsert({
+            let contact = await this.prisma.contact.findUnique({
                 where: { userId_phone: { userId, phone } },
-                update: {}, // Don't overwrite existing info
-                create: {
-                    userId,
-                    phone,
-                    name: customerName || 'مريض جديد',
-                    platform: 'manual',
-                    status: 'active',
-                },
             });
+
+            if (!contact) {
+                contact = await this.prisma.contact.create({
+                    data: {
+                        userId,
+                        phone,
+                        name: customerName || 'مريض جديد',
+                        platform: 'manual',
+                        status: 'active',
+                    },
+                });
+
+                // Create notification for new patient (Manual Entry via Appointment)
+                try {
+                    await this.notificationsService.createNotification({
+                        userId,
+                        type: 'NEW_PATIENT',
+                        title: 'مريض جديد',
+                        message: `تم إضافة سجل المريض الجديد: ${contact.name}`,
+                        priority: 'MEDIUM',
+                        contactId: contact.id,
+                    });
+                } catch (error) {
+                    console.error('Error creating NEW_PATIENT notification:', error);
+                }
+            }
             actualPatientId = contact.id;
         }
 
-        return this.prisma.appointment.create({
+        const appointment = await this.prisma.appointment.create({
             data: {
                 userId,
                 patientId: actualPatientId,
@@ -137,6 +159,27 @@ export class AppointmentsService {
                 notes,
             },
         });
+
+        // Create notification for new appointment
+        const ptName = customerName || 'مريض';
+        const dateStr = new Date(appointmentDate).toLocaleDateString('ar-EG');
+        const timeStr = new Date(appointmentDate).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
+        try {
+            await this.notificationsService.createNotification({
+                userId,
+                type: 'NEW_APPOINTMENT',
+                title: '📅 موعد جديد',
+                message: `تم حجز موعد لـ ${ptName} يوم ${dateStr} الساعة ${timeStr}`,
+                priority: 'HIGH',
+                appointmentId: appointment.id,
+                contactId: actualPatientId,
+            });
+        } catch (error) {
+            console.error('Error creating NEW_APPOINTMENT notification:', error);
+        }
+
+        return appointment;
     }
 
     async update(id: number, userId: number, data: any) {
@@ -172,13 +215,46 @@ export class AppointmentsService {
     }
 
     async updateStatus(id: number, userId: number, status: string) {
-        // Verify ownership
-        await this.findOne(id, userId);
+        // Verify ownership and get old data
+        const oldAppointment = await this.findOne(id, userId);
 
-        return this.prisma.appointment.update({
+        const updatedAppointment = await this.prisma.appointment.update({
             where: { id },
             data: { status },
+            include: { contact: true }
         });
+
+        // Trigger notification on status change
+        if (status !== oldAppointment.status) {
+            let title = '';
+            let message = '';
+            let type = '';
+            const ptName = updatedAppointment.customerName || updatedAppointment.contact?.name || 'مريض';
+
+            if (status === 'cancelled') {
+                title = '🚫 إلغاء موعد';
+                message = `تم إلغاء موعد المريض ${ptName}`;
+                type = 'APPOINTMENT_CANCELLED';
+            } else if (status === 'completed') {
+                title = '✅ اكتمال موعد';
+                message = `تم اكتمال موعد المريض ${ptName} بنجاح`;
+                type = 'APPOINTMENT_COMPLETED';
+            }
+
+            if (title) {
+                await this.notificationsService.createNotification({
+                    userId,
+                    type,
+                    title,
+                    message,
+                    priority: 'MEDIUM',
+                    appointmentId: id,
+                    contactId: updatedAppointment.patientId || undefined,
+                });
+            }
+        }
+
+        return updatedAppointment;
     }
 
     async remove(id: number, userId: number) {
@@ -202,75 +278,52 @@ export class AppointmentsService {
         const sevenDaysAgo = new Date(today);
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
 
-        // Execute all independent queries in parallel
+        // Execute queries in batches to avoid connection pool timeout (limit=5)
+
+        // Batch 1: Critical Counts (4 queries)
         const [
             todayTotal,
             todayCompleted,
             todayWaiting,
+            totalPatients
+        ] = await Promise.all([
+            this.prisma.appointment.count({
+                where: { userId, appointmentDate: { gte: today, lt: tomorrow } },
+            }),
+            this.prisma.appointment.count({
+                where: { userId, appointmentDate: { gte: today, lt: tomorrow }, status: 'completed' },
+            }),
+            this.prisma.appointment.count({
+                where: { userId, appointmentDate: { gte: today, lt: tomorrow }, status: 'scheduled' },
+            }),
+            this.prisma.contact.count({
+                where: { userId },
+            })
+        ]);
+
+        // Batch 2: Analytical Data (4 queries)
+        const [
             thisMonth,
-            totalPatients,
             statusCounts,
             typeCounts,
             last7DaysAppointments
         ] = await Promise.all([
-            // 1. Today Total
-            this.prisma.appointment.count({
-                where: {
-                    userId,
-                    appointmentDate: { gte: today, lt: tomorrow },
-                },
+            this.prisma.appointment.count({ // Changed from findMany to count for thisMonth
+                where: { userId, appointmentDate: { gte: thisMonthStart, lt: nextMonthStart } },
             }),
-            // 2. Today Completed
-            this.prisma.appointment.count({
-                where: {
-                    userId,
-                    appointmentDate: { gte: today, lt: tomorrow },
-                    status: 'completed',
-                },
-            }),
-            // 3. Today Waiting
-            this.prisma.appointment.count({
-                where: {
-                    userId,
-                    appointmentDate: { gte: today, lt: tomorrow },
-                    status: { in: ['scheduled', 'confirmed'] },
-                },
-            }),
-            // 4. This Month
-            this.prisma.appointment.count({
-                where: {
-                    userId,
-                    appointmentDate: { gte: thisMonthStart, lt: nextMonthStart },
-                },
-            }),
-            // 5. Total Patients
-            this.prisma.contact.count({
-                where: { userId }
-            }),
-            // 6. Status Distribution
             this.prisma.appointment.groupBy({
                 by: ['status'],
                 where: { userId },
                 _count: { _all: true },
             }),
-            // 7. Type Distribution
             this.prisma.appointment.groupBy({
                 by: ['type'],
                 where: { userId },
                 _count: { _all: true },
             }),
-            // 8. Last 7 Days (Raw fetch)
             this.prisma.appointment.findMany({
-                where: {
-                    userId,
-                    appointmentDate: {
-                        gte: sevenDaysAgo,
-                        lt: tomorrow, // Include today
-                    },
-                },
-                select: {
-                    appointmentDate: true,
-                },
+                where: { userId, appointmentDate: { gte: sevenDaysAgo } },
+                orderBy: { appointmentDate: 'asc' },
             })
         ]);
 

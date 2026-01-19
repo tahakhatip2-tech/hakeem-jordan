@@ -3,12 +3,17 @@ import { PrismaClient } from '@prisma/client';
 import { AppointmentsService } from './src/appointments/appointments.service';
 import { PrismaService } from './src/prisma/prisma.service';
 
+import { NotificationsService } from './src/notifications/notifications.service';
+import { NotificationsGateway } from './src/notifications/notifications.gateway';
+
 const prisma = new PrismaClient();
 
 async function main() {
     const userId: any = "6"; // Simulate string ID from JWT
     const prismaService = new PrismaService();
-    const appointmentsService = new AppointmentsService(prismaService);
+    const notificationsGateway = new NotificationsGateway();
+    const notificationsService = new NotificationsService(prismaService, notificationsGateway);
+    const appointmentsService = new AppointmentsService(prismaService, notificationsService);
 
     console.log(`--- TESTING AppointmentService FOR User ID: ${userId} (Type: ${typeof userId}) ---`);
 

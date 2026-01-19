@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, User, Phone, FileText, Plus, Filter, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { Calendar, Clock, User, Phone, FileText, Plus, Filter, MessageCircle, CheckCircle2, Bot, PenTool } from 'lucide-react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { toastWithSound } from '@/lib/toast-with-sound';
@@ -297,8 +297,21 @@ export default function AppointmentsCalendar() {
                                                         </span>
                                                     </div>
                                                     <div className="h-3 w-px bg-white/10" />
-                                                    <div className="text-[10px] font-bold text-muted-foreground">
-                                                        {typeConfig[(appointment.type || appointment.appointment_type) as keyof typeof typeConfig] || 'عام'}
+                                                    <div className="text-[10px] font-bold text-muted-foreground flex items-center gap-2">
+                                                        <span>{typeConfig[(appointment.type || appointment.appointment_type) as keyof typeof typeConfig] || 'عام'}</span>
+
+                                                        {/* Source Indicator */}
+                                                        {((appointment.notes || '').includes('[BOT]') || (appointment.notes || '').toLowerCase().includes('ai generated')) ? (
+                                                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 border border-purple-500/20 text-[9px]">
+                                                                <Bot className="h-3 w-3" />
+                                                                <span>آلي</span>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-gray-500/10 text-gray-600 border border-gray-500/20 text-[9px] opacity-70">
+                                                                <PenTool className="h-3 w-3" />
+                                                                <span>يدوي</span>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
 
@@ -323,11 +336,18 @@ export default function AppointmentsCalendar() {
                                             {(appointment.notes || appointment.notes === '') && (
                                                 <div className="bg-orange-500/5 border-r-2 border-orange-500/30 px-2 py-1.5 text-[10px] text-muted-foreground italic line-clamp-2 text-right">
                                                     {(() => {
-                                                        const noteLower = (appointment.notes || '').toLowerCase().trim();
-                                                        if (!noteLower || noteLower === 'notes' || noteLower === 'null') return 'غير متوفر';
-                                                        if (noteLower.includes('confirmed via chat')) return 'تم التأكيد عبر المحادثة';
-                                                        if (noteLower.includes('ai generated appointment')) return 'الموظف الآلي';
-                                                        return appointment.notes;
+                                                        const noteRaw = appointment.notes || '';
+                                                        const noteLower = noteRaw.toLowerCase().trim();
+
+                                                        // Filter out system tags for display
+                                                        const cleanNote = noteRaw.replace('[BOT]', '').replace('AI Generated Appointment', '').trim();
+
+                                                        if (!cleanNote || cleanNote === 'notes' || cleanNote === 'null') return 'لا توجد ملاحظات إضافية';
+
+                                                        // If it was JUST the tag, show specific message or nothing
+                                                        if (cleanNote === '') return 'تم الحجز آلياً عبر واتساب';
+
+                                                        return cleanNote;
                                                     })()}
                                                 </div>
                                             )}
