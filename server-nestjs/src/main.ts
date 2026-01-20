@@ -31,16 +31,16 @@ async function bootstrap() {
         'http://localhost:3000',
         'https://tsunamic-unshameable-maricruz.ngrok-free.dev',
       ];
+
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app')) {
+      // Check if origin is allowed or is a Vercel subdomain
+      if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('ngrok-free.dev')) {
         callback(null, true);
       } else {
-        // In development, we might want to allow everything for testing
-        // callback(null, true); 
-        console.warn(`Blocked CORS request from origin: ${origin}`);
-        callback(null, true); // Temporarily allowing ALL origins to fix the issue
+        console.log(`[CORS] Request from origin: ${origin} - Allowed temporarily for development`);
+        callback(null, true); // Allow all for now to unblock
       }
     },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
