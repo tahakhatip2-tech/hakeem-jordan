@@ -98,9 +98,19 @@ export default function AddAppointmentDialog({ open, onOpenChange, onSuccess, on
                 whatsappJID = `${cleanPhone}@s.whatsapp.net`;
                 console.log('[Appointment] Sending to JID:', whatsappJID);
 
+                // Fetch clinic name for dynamic message
+                let clinicName = 'عيادتنا'; // Default fallback
+                try {
+                    const settings = await whatsappApi.getSettings();
+                    if (settings.clinic_name) clinicName = settings.clinic_name;
+                    else if (settings.doctor_name) clinicName = `عيادة د. ${settings.doctor_name}`;
+                } catch (e) {
+                    console.warn('[Appointment] Failed to fetch settings, using default name');
+                }
+
                 await whatsappApi.send({
                     phone: whatsappJID,
-                    message: `مرحباً ${formData.customer_name}،\n\nتم تأكيد حجز موعدك في عيادة د. حكيم.\n📅 التاريخ: ${dateStr}\n⏰ الوقت: ${timeStr}\n\nنتمنى لكم السلامة.`
+                    message: `مرحباً ${formData.customer_name}،\n\nتم تأكيد حجز موعدك في ${clinicName}.\n📅 التاريخ: ${dateStr}\n⏰ الوقت: ${timeStr}\n\nنتمنى لكم السلامة.`
                 });
 
                 toastWithSound.success('تم إرسال رسالة التأكيد واتساب');

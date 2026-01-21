@@ -143,13 +143,19 @@ export class AppointmentsController {
     @ApiResponse({ status: 200, description: 'تم الإرسال بنجاح' })
     async sendPrescription(@Param('id', ParseIntPipe) id: number, @Request() req, @Body() data: any) {
         const { url, phone } = data;
+
+        // Format phone to JID
+        let formattedPhone = phone.toString().replace(/\D/g, '');
+        if (formattedPhone.startsWith('0')) formattedPhone = '962' + formattedPhone.substring(1);
+        if (!formattedPhone.endsWith('@s.whatsapp.net')) formattedPhone += '@s.whatsapp.net';
+
         const relativePath = url.startsWith('/') ? url.substring(1) : url;
         const absolutePath = join(process.cwd(), relativePath);
 
         console.log(`[Prescription] Sending file: ${absolutePath} to ${phone}`);
 
         const sent = await this.whatsAppService.sendMessage(req.user.id, {
-            phone,
+            phone: formattedPhone,
             message: 'إليك الوصفة الطبية / التقرير الطبي',
             mediaUrl: absolutePath,
             mediaType: 'document'

@@ -13,12 +13,12 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
 
-  // Temporarily disabled ValidationPipe due to class-transformer dependency
-  // app.useGlobalPipes(new ValidationPipe({
-  //   whitelist: true,
-  //   forbidNonWhitelisted: true,
-  //   transform: true,
-  // }));
+  // Enable ValidationPipe for global validation
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }));
 
   app.enableCors({
     origin: (origin, callback) => {
