@@ -162,7 +162,11 @@ export default function WhatsAppChat({ chat, onBack }: WhatsAppChatProps) {
                     </Button>
                     <div className="flex flex-col">
                         <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-lg leading-tight">{chat.name || chat.phone}</h3>
+                            <h3 className="font-bold text-lg leading-tight" dir="auto">
+                                {chat.name === chat.phone || !chat.name
+                                    ? chat.phone.replace('@s.whatsapp.net', '')
+                                    : chat.name}
+                            </h3>
                             <div className="flex gap-1">
                                 {contactTags.map(tag => (
                                     <Badge

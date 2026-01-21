@@ -130,12 +130,16 @@ export default function AddAppointmentDialog({ open, onOpenChange, onSuccess, on
 
             // Open Chat after dialog closes
             if (onOpenChat && phoneToOpen) {
-                // Longer delay on mobile (Drawer animation) vs Desktop (Dialog)
-                const delay = isDesktop ? 300 : 800;
+                // Short delay to allow dialog close state to propagate, but fast enough to feel immediate
+                const delay = 100;
                 console.log(`[Appointment] Opening chat in ${delay}ms for:`, phoneToOpen);
-                setTimeout(() => {
+                window.setTimeout(() => {
                     console.log('[Appointment] Calling onOpenChat now');
-                    onOpenChat(phoneToOpen);
+                    try {
+                        onOpenChat(phoneToOpen);
+                    } catch (err) {
+                        console.error('[Appointment] Failed to open chat:', err);
+                    }
                 }, delay);
             }
         } catch (error: any) {
