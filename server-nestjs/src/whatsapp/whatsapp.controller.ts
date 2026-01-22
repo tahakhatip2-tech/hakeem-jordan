@@ -9,8 +9,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { WhatsAppSendMessageDto, WhatsAppSettingsDto, CreateTemplateDto, WhatsAppStatusResponseDto } from './dto/whatsapp.dto';
 
 @ApiTags('WhatsApp')
-@ApiBearerAuth('JWT-auth')
-@UseGuards(JwtAuthGuard)
 @Controller('whatsapp')
 export class WhatsAppController {
     constructor(
@@ -19,6 +17,8 @@ export class WhatsAppController {
     ) { }
 
     @Get('status')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'حالة اتصال واتساب', description: 'التحقق مما إذا كان واتساب مرتبطاً أو يحتاج لمسح QR code' })
     @ApiResponse({ status: 200, description: 'تم جلب الحالة بنجاح', type: WhatsAppStatusResponseDto })
     async getStatus(@Request() req) {
@@ -27,6 +27,8 @@ export class WhatsAppController {
     }
 
     @Post('connect')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'بدء اتصال جديد', description: 'تشغيل جلسة واتساب جديدة وتوليد رمز QR' })
     @ApiResponse({ status: 200, description: 'بدأت الجلسة بنجاح' })
     async connect(@Request() req) {
@@ -34,6 +36,8 @@ export class WhatsAppController {
     }
 
     @Delete('logout')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'تسجيل الخروج', description: 'قطع الاتصال بواتساب وحذف الجلسة الحالية' })
     @ApiResponse({ status: 200, description: 'تم تسجيل الخروج بنجاح' })
     async logout(@Request() req) {
@@ -41,13 +45,17 @@ export class WhatsAppController {
     }
 
     @Get('settings')
-    @ApiOperation({ summary: 'إعدادات واتساب', description: 'جلب إعدادات الذكاء الاصطناعي والرد التلقائي' })
+    @ApiOperation({ summary: 'إعدادات واتساب (عام)', description: 'جلب إعدادات العيادة الأساسية - لا يتطلب تسجيل دخول' })
     @ApiResponse({ status: 200, description: 'تم جلب الإعدادات بنجاح', type: WhatsAppSettingsDto })
     async getSettings(@Request() req) {
-        return this.whatsappService.getSettings(req.user.id);
+        // If user is authenticated, use their ID, otherwise use default (user 1)
+        const userId = req.user?.id || 1;
+        return this.whatsappService.getSettings(userId);
     }
 
     @Post('settings')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'تحديث الإعدادات', description: 'تعديل خيارات الرد التلقائي والذكاء الاصطناعي' })
     @ApiBody({ type: WhatsAppSettingsDto })
     @ApiResponse({ status: 200, description: 'تم التحديث بنجاح' })
@@ -56,6 +64,8 @@ export class WhatsAppController {
     }
 
     @Get('chats')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'جلب المحادثات', description: 'عرض قائمة بآخر المحادثات على واتساب' })
     @ApiResponse({ status: 200, description: 'تم جلب المحادثات' })
     async getChats(@Request() req) {
@@ -63,6 +73,8 @@ export class WhatsAppController {
     }
 
     @Delete('chats/:id')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'حذف محادثة', description: 'حذف سجل محادثة بالكامل من قاعدة البيانات' })
     @ApiParam({ name: 'id', description: 'معرف المحادثة' })
     @ApiResponse({ status: 200, description: 'تم الحذف' })
@@ -72,6 +84,8 @@ export class WhatsAppController {
     }
 
     @Get('chats/:id/messages')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'جلب رسائل محادثة', description: 'عرض تاريخ الرسائل لمحادثة محددة' })
     @ApiParam({ name: 'id', description: 'معرف المحادثة' })
     @ApiResponse({ status: 200, description: 'تم جلب الرسائل' })
@@ -80,6 +94,8 @@ export class WhatsAppController {
     }
 
     @Post('send')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'إرسال رسالة', description: 'إرسال رسالة نصية أو وسائط لأي رقم هاتف' })
     @ApiBody({ type: WhatsAppSendMessageDto })
     @ApiResponse({ status: 200, description: 'تم إرسال الرسالة بنجاح' })
@@ -88,6 +104,8 @@ export class WhatsAppController {
     }
 
     @Patch('chats/:id/read')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'تمييز كـ مقروء', description: 'تحديث حالة الرسائل في محادثة لتصبح مقروءة' })
     @ApiParam({ name: 'id', description: 'معرف المحادثة' })
     @ApiResponse({ status: 200, description: 'تم التحديث' })
@@ -96,6 +114,8 @@ export class WhatsAppController {
     }
 
     @Get('templates')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'قوالب الرد التلقائي', description: 'عرض قائمة بقوالب الردود المبرمجة' })
     @ApiResponse({ status: 200, description: 'تم جلب القوالب', type: [CreateTemplateDto] })
     async getTemplates(@Request() req) {
@@ -103,6 +123,8 @@ export class WhatsAppController {
     }
 
     @Post('templates')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'إنشاء قالب جديد', description: 'إضافة رد تلقائي جديد بناءً على كلمة مفتاحية' })
     @ApiBody({ type: CreateTemplateDto })
     @ApiResponse({ status: 201, description: 'تم إنشاء القالب' })
@@ -111,6 +133,8 @@ export class WhatsAppController {
     }
 
     @Put('templates/:id')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'تحديث قالب', description: 'تعديل نص الرد أو كلمة الزناد لقالب موجود' })
     @ApiParam({ name: 'id', description: 'معرف القالب' })
     @ApiResponse({ status: 200, description: 'تم التحديث' })
@@ -119,6 +143,8 @@ export class WhatsAppController {
     }
 
     @Delete('templates/:id')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'حذف قالب', description: 'إزالة قالب رد تلقائي من النظام' })
     @ApiParam({ name: 'id', description: 'معرف القالب' })
     @ApiResponse({ status: 200, description: 'تم الحذف' })
@@ -127,6 +153,8 @@ export class WhatsAppController {
     }
 
     @Get('analytics')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'إحصائيات واتساب', description: 'تحليل أداء الردود التلقائية وعدد الرسائل المرسلة' })
     @ApiResponse({ status: 200, description: 'تم جلب الإحصائيات' })
     async getAnalytics(@Request() req) {
@@ -134,6 +162,8 @@ export class WhatsAppController {
     }
 
     @Post('upload')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'رفع شعار العيادة', description: 'رفع صورة جديدة لاستخدامها كشعار للعيادة في النظام والتقارير' })
     @ApiConsumes('multipart/form-data')
     @ApiBody({
@@ -157,6 +187,8 @@ export class WhatsAppController {
     }
 
     @Get('tags')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'تصنيفات (Tags)', description: 'جلب جميع التصنيفات المتاحة لجهات الاتصال' })
     @ApiResponse({ status: 200, description: 'تم جلب التصنيفات' })
     async getTags(@Request() req) {
@@ -164,6 +196,8 @@ export class WhatsAppController {
     }
 
     @Get('contacts/:phone/tags')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'تصنيفات مريض محدد', description: 'جلب جميع الـ Tags المرتبطة برقم هاتف معين' })
     @ApiParam({ name: 'phone', description: 'رقم الهاتف' })
     async getContactTags(@Param('phone') phone: string, @Request() req) {
@@ -171,6 +205,8 @@ export class WhatsAppController {
     }
 
     @Post('contacts/:phone/tags')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'إضافة تصنيف لمريض', description: 'ربط Tag محدد بجهة اتصال' })
     @ApiParam({ name: 'phone', description: 'رقم الهاتف' })
     @ApiBody({ schema: { properties: { tagId: { type: 'number' } } } })
@@ -179,6 +215,8 @@ export class WhatsAppController {
     }
 
     @Delete('contacts/:phone/tags/:tagId')
+    @ApiBearerAuth('JWT-auth')
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'حذف تصنيف من مريض', description: 'فك ارتباط Tag معين عن جهة اتصال' })
     @ApiParam({ name: 'phone', description: 'رقم الهاتف' })
     @ApiParam({ name: 'tagId', description: 'معرف التصنيف' })

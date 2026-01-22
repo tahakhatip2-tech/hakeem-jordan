@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class LoginDto {
     @ApiProperty({
@@ -6,6 +7,8 @@ export class LoginDto {
         example: 'tahakhatip2@gmail.com',
         required: true,
     })
+    @IsEmail({}, { message: 'البريد الإلكتروني غير صحيح' })
+    @IsNotEmpty({ message: 'البريد الإلكتروني مطلوب' })
     email: string;
 
     @ApiProperty({
@@ -14,6 +17,9 @@ export class LoginDto {
         required: true,
         minLength: 6,
     })
+    @IsString({ message: 'كلمة المرور يجب أن تكون نصاً' })
+    @IsNotEmpty({ message: 'كلمة المرور مطلوبة' })
+    @MinLength(6, { message: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' })
     password: string;
 }
 
@@ -23,6 +29,8 @@ export class RegisterDto {
         example: 'doctor@clinic.com',
         required: true,
     })
+    @IsEmail({}, { message: 'البريد الإلكتروني غير صحيح' })
+    @IsNotEmpty({ message: 'البريد الإلكتروني مطلوب' })
     email: string;
 
     @ApiProperty({
@@ -31,6 +39,9 @@ export class RegisterDto {
         required: true,
         minLength: 6,
     })
+    @IsString({ message: 'كلمة المرور يجب أن تكون نصاً' })
+    @IsNotEmpty({ message: 'كلمة المرور مطلوبة' })
+    @MinLength(6, { message: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' })
     password: string;
 
     @ApiProperty({
@@ -38,6 +49,7 @@ export class RegisterDto {
         example: 'د. أحمد محمد',
         required: false,
     })
+    @IsString({ message: 'الاسم يجب أن يكون نصاً' })
     name?: string;
 }
 
@@ -47,6 +59,7 @@ export class UpdateProfileDto {
         example: 'د. أحمد محمد',
         required: false,
     })
+    @IsString({ message: 'الاسم يجب أن يكون نصاً' })
     name?: string;
 
     @ApiProperty({
@@ -54,6 +67,7 @@ export class UpdateProfileDto {
         example: 'doctor@clinic.com',
         required: false,
     })
+    @IsEmail({}, { message: 'البريد الإلكتروني غير صحيح' })
     email?: string;
 
     @ApiProperty({
@@ -61,6 +75,7 @@ export class UpdateProfileDto {
         example: '+962791234567',
         required: false,
     })
+    @IsString({ message: 'رقم الهاتف يجب أن يكون نصاً' })
     phone?: string;
 }
 
