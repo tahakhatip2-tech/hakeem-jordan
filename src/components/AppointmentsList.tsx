@@ -79,10 +79,19 @@ export default function AppointmentsList({ onOpenChat }: AppointmentsListProps) 
 
         setActionLoading(id);
         try {
-            await appointmentsApi.update(id, { status });
-            toastWithSound.success('تم تحديث حالة الموعد');
-            setAppointments(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+            const updated = await appointmentsApi.update(id, { status });
+            console.log('[AppointmentsList] Update response:', updated);
+
+            // Verify the update was successful
+            if (updated && updated.status === status) {
+                toastWithSound.success('تم تحديث حالة الموعد');
+                setAppointments(prev => prev.map(a => a.id === id ? { ...a, status } : a));
+            } else {
+                console.error('[AppointmentsList] Status mismatch:', updated);
+                toastWithSound.error('فشل في تحديث الحالة - يرجى المحاولة مرة أخرى');
+            }
         } catch (error) {
+            console.error('[AppointmentsList] Update error:', error);
             toastWithSound.error('فشل في تحديث الحالة');
         } finally {
             setActionLoading(null);

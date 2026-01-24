@@ -14,6 +14,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Auth = () => {
       // Validate with Zod
       const validationData = isLogin
         ? { email, password }
-        : { email, password, name: fullName };
+        : { email, password, name: fullName, phone };
 
       const validation = authSchema.safeParse(validationData);
 
@@ -55,7 +56,7 @@ const Auth = () => {
           navigate("/");
         }
       } else {
-        const { error } = await signUp(email, password, fullName);
+        const { error } = await signUp(email, password, fullName, phone);
         if (error) {
           if (error.includes("already exists") || error.includes("400")) {
             toastWithSound.error("هذا البريد الإلكتروني مسجل مسبقاً");
@@ -154,17 +155,31 @@ const Auth = () => {
 
             <form onSubmit={handleSubmit} className="space-y-2 w-full">
               {!isLogin && (
-                <div className="space-y-1">
-                  <Label htmlFor="fullName" className="text-blue-200/80 text-[10px] font-bold uppercase tracking-wide">الاسم الكامل</Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="أدخل اسمك الكامل"
-                    className="!bg-transparent border border-orange-500/50 focus:border-orange-400 focus:ring-0 text-white placeholder:text-blue-200/20 rounded-none h-9 text-sm transition-all text-right"
-                  />
-                </div>
+                <>
+                  <div className="space-y-1">
+                    <Label htmlFor="fullName" className="text-blue-200/80 text-[10px] font-bold uppercase tracking-wide">الاسم الكامل</Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="أدخل اسمك الكامل"
+                      className="!bg-transparent border border-orange-500/50 focus:border-orange-400 focus:ring-0 text-white placeholder:text-blue-200/20 rounded-none h-9 text-sm transition-all text-right"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="phone" className="text-blue-200/80 text-[10px] font-bold uppercase tracking-wide">رقم الهاتف</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="0791234567"
+                      required={!isLogin}
+                      className="!bg-transparent border border-orange-500/50 focus:border-orange-400 focus:ring-0 text-white placeholder:text-blue-200/20 rounded-none h-9 text-sm transition-all font-mono text-left direction-ltr"
+                    />
+                  </div>
+                </>
               )}
 
               <div className="space-y-1">

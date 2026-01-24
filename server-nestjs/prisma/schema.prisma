@@ -14,6 +14,7 @@ model User {
   password           String
   name               String?
   avatar             String?
+  phone              String?             @unique
   role               UserRole            @default(USER)
   status             String              @default("active")
   expiryDate         DateTime?

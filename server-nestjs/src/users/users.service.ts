@@ -13,7 +13,18 @@ export class UsersService {
         });
 
         if (existingUser) {
-            throw new ConflictException('Email already exists');
+            throw new ConflictException('البريد الإلكتروني مستخدم من قبل');
+        }
+
+        // Check if phone already exists
+        if (data.phone) {
+            const existingPhone = await this.prisma.user.findUnique({
+                where: { phone: data.phone },
+            });
+
+            if (existingPhone) {
+                throw new ConflictException('رقم الهاتف مستخدم من قبل');
+            }
         }
 
         const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -61,8 +72,26 @@ export class UsersService {
         });
     }
 
+    async findByPhone(phone: string): Promise<User | null> {
+        return this.prisma.user.findUnique({
+            where: { phone },
+        });
+    }
+
     async update(id: number, data: any): Promise<User> {
         const updateData = { ...data };
+
+        // Check if phone is being updated and if it's already taken by another user
+        if (updateData.phone) {
+            const existingUser = await this.prisma.user.findUnique({
+                where: { phone: updateData.phone },
+            });
+
+            if (existingUser && existingUser.id !== id) {
+                throw new ConflictException('رقم الهاتف مستخدم من قبل');
+            }
+        }
+
         if (updateData.password) {
             updateData.password = await bcrypt.hash(updateData.password, 10);
         }

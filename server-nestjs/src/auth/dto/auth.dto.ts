@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, Matches } from 'class-validator';
 
 export class LoginDto {
     @ApiProperty({
@@ -45,10 +45,23 @@ export class RegisterDto {
     password: string;
 
     @ApiProperty({
+        description: 'رقم الهاتف',
+        example: '+962791234567',
+        required: true,
+    })
+    @IsString({ message: 'رقم الهاتف يجب أن يكون نصاً' })
+    @IsNotEmpty({ message: 'رقم الهاتف مطلوب' })
+    @Matches(/^(\+962|00962|962|0)?7[789]\d{7}$/, {
+        message: 'رقم الهاتف يجب أن يكون رقم أردني صحيح (مثال: 0791234567 أو +962791234567)',
+    })
+    phone: string;
+
+    @ApiProperty({
         description: 'اسم المستخدم',
         example: 'د. أحمد محمد',
         required: false,
     })
+    @IsOptional()
     @IsString({ message: 'الاسم يجب أن يكون نصاً' })
     name?: string;
 }
@@ -59,6 +72,7 @@ export class UpdateProfileDto {
         example: 'د. أحمد محمد',
         required: false,
     })
+    @IsOptional()
     @IsString({ message: 'الاسم يجب أن يكون نصاً' })
     name?: string;
 
@@ -67,6 +81,7 @@ export class UpdateProfileDto {
         example: 'doctor@clinic.com',
         required: false,
     })
+    @IsOptional()
     @IsEmail({}, { message: 'البريد الإلكتروني غير صحيح' })
     email?: string;
 
@@ -75,6 +90,7 @@ export class UpdateProfileDto {
         example: '+962791234567',
         required: false,
     })
+    @IsOptional()
     @IsString({ message: 'رقم الهاتف يجب أن يكون نصاً' })
     phone?: string;
 }

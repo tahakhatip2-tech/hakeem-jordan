@@ -21,9 +21,9 @@ export const useAuth = () => {
     return () => window.removeEventListener('user-updated', handleUserUpdate);
   }, []);
 
-  const signUp = async (email: string, password: string, name?: string) => {
+  const signUp = async (email: string, password: string, name?: string, phone?: string) => {
     try {
-      await authApi.register({ email, password, name });
+      await authApi.register({ email, password, name, phone });
       // In our NestJS setup, registration might return the user or an error
       // If the user wants to login immediately:
       return signIn(email, password);

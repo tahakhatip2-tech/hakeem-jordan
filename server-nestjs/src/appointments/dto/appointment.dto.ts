@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString, IsDateString, IsNumber, IsEnum } from 'class-validator';
 
 export class CreateAppointmentDto {
     @ApiProperty({
@@ -65,12 +66,16 @@ export class UpdateAppointmentDto {
         description: 'رقم هاتف المريض',
         example: '+962791234567',
     })
+    @IsOptional()
+    @IsString()
     phone?: string;
 
     @ApiPropertyOptional({
         description: 'اسم المريض',
         example: 'أحمد محمد',
     })
+    @IsOptional()
+    @IsString()
     customerName?: string;
 
     @ApiPropertyOptional({
@@ -79,19 +84,25 @@ export class UpdateAppointmentDto {
         type: 'string',
         format: 'date-time',
     })
+    @IsOptional()
+    @IsDateString()
     appointmentDate?: string | Date;
 
     @ApiPropertyOptional({
         description: 'حالة الموعد',
         example: 'confirmed',
-        enum: ['confirmed', 'pending', 'cancelled', 'completed'],
+        enum: ['confirmed', 'pending', 'cancelled', 'completed', 'scheduled'],
     })
+    @IsOptional()
+    @IsString()
     status?: string;
 
     @ApiPropertyOptional({
         description: 'ملاحظات إضافية',
         example: 'تم تأجيل الموعد',
     })
+    @IsOptional()
+    @IsString()
     notes?: string;
 
     @ApiPropertyOptional({
@@ -99,6 +110,8 @@ export class UpdateAppointmentDto {
         example: 45,
         type: 'number',
     })
+    @IsOptional()
+    @IsNumber()
     duration?: number;
 
     @ApiPropertyOptional({
@@ -106,6 +119,8 @@ export class UpdateAppointmentDto {
         example: 'follow-up',
         enum: ['consultation', 'follow-up', 'emergency', 'checkup'],
     })
+    @IsOptional()
+    @IsString()
     type?: string;
 }
 

@@ -191,6 +191,7 @@ export class AppointmentsService {
             appointmentDate,
             duration,
             appointmentType,
+            type,
             status,
             notes,
         } = data;
@@ -198,20 +199,28 @@ export class AppointmentsService {
         // Verify ownership
         await this.findOne(id, userId);
 
-        return this.prisma.appointment.update({
+        // Build update object, excluding undefined values
+        const updateData: any = {};
+        if (patientId !== undefined) updateData.patientId = patientId;
+        if (doctorId !== undefined) updateData.doctorId = doctorId;
+        if (phone !== undefined) updateData.phone = phone;
+        if (customerName !== undefined) updateData.customerName = customerName;
+        if (appointmentDate !== undefined) updateData.appointmentDate = new Date(appointmentDate);
+        if (duration !== undefined) updateData.duration = duration;
+        if (appointmentType !== undefined || type !== undefined) updateData.type = appointmentType || type;
+        if (status !== undefined) updateData.status = status;
+        if (notes !== undefined) updateData.notes = notes;
+
+        console.log(`[AppointmentsService] Updating appointment ${id} with data:`, updateData);
+
+        const updated = await this.prisma.appointment.update({
             where: { id },
-            data: {
-                patientId,
-                doctorId,
-                phone,
-                customerName,
-                appointmentDate: appointmentDate ? new Date(appointmentDate) : undefined,
-                duration,
-                type: appointmentType,
-                status,
-                notes,
-            },
+            data: updateData,
         });
+
+        console.log(`[AppointmentsService] Updated appointment ${id}, new status:`, updated.status);
+
+        return updated;
     }
 
     async updateStatus(id: number, userId: number, status: string) {
